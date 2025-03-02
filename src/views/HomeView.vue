@@ -1,9 +1,11 @@
 <script setup>
-import barChart from '../components/barChart.vue'
+import BarChart from '../components/BarChart.vue'
+import MapChart from '../components/MapChart.vue'
 </script>
 
 <template>
   <main>
-    <barChart />
+    <!-- <BarChart /> -->
+    <MapChart />
   </main>
 </template>
