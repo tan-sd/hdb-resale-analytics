@@ -33,3 +33,67 @@ a,
     padding: 0 2rem;
   }
 } */
+
+@font-face {
+  font-family: "sf-pro-display";
+  src: url("/font/SF-Pro-Display-Regular.otf");
+}
+
+@font-face {
+  font-family: "sf-pro-display-medium";
+  src: url("/font/SF-Pro-Display-Medium.otf");
+}
+
+* {
+  font-family: sf-pro-display;
+}
+
+.map-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.map-container svg {
+  padding: 20px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.tooltip {
+  position: absolute;
+  visibility: hidden;
+  background: white;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+#constituency-name {
+  font-family: sf-pro-display-medium;
+  margin-bottom: 10px;
+}
+
+#party {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#party-logo {
+  width: 20px;
+  height: auto;
+  margin-right: 5px;
+}
+
+.reset-zoom {
+  margin-top: 10px;
+  background: white;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+}
