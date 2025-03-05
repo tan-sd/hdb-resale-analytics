@@ -97,3 +97,37 @@ a,
   border-radius: 5px;
   cursor: pointer;
 }
+
+.map-wrapper {
+  display: flex;
+}
+
+.poi-controls {
+  margin-left: 10px;
+  height: 100%;
+  width: auto;
+  padding: 10px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+}
+
+.poi-controls label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.year-controls {
+  margin-bottom: 10px;
+}
+
+.year-controls button {
+  margin-right: 5px;
+  background: white;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+}
