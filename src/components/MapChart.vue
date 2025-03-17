@@ -1,10 +1,31 @@
 <template>
     <div class="map-container">
-        <div class="year-controls">
-            <button @click="switchYear(2006)">2006</button>
-            <button @click="switchYear(2011)">2011</button>
-            <button @click="switchYear(2015)">2015</button>
-            <button @click="switchYear(2020)">2020</button>
+        <div class="controls">
+            <div>
+                <label for="year-slider">
+                    Year: {{ selectedYear }} (Using {{ currentYear }} data)
+                </label>
+                <input
+                    id="year-slider"
+                    type="range"
+                    min="2006"
+                    max="2020"
+                    step="1"
+                    v-model="selectedYear"
+                    @input="updateYear"
+                />
+            </div>
+
+            <div class="toggle-container">
+                <label>
+                    <input type="radio" value="electoral" v-model="selectedMode" />
+                    Electoral Boundary
+                </label>
+                <label>
+                    <input type="radio" value="planning" v-model="selectedMode" />
+                    Planning Area
+                </label>
+            </div>
         </div>
         <div class="map-wrapper">
             <svg ref="map" :width="width" :height="height"></svg>
@@ -74,8 +95,13 @@ const showJuniorColleges = ref(false);
 const showPolytechnics = ref(false);
 const showUniversities = ref(false);
 
+const availableYears = [2006, 2011, 2015, 2020];
+const planningYears = [2019];
+const selectedYear = ref(2020);
 const currentYear = ref(2020);
+const selectedMode = ref("electoral");
 const electoralBoundaries = ref({});
+const planningAreas = ref({});
 const electionResults = ref({});
 const hawkerCentres = ref(null);
 const gyms = ref(null);
@@ -103,8 +129,24 @@ const partyColors = {
     NSP: "#F39C12",
 };
 
-const switchYear = (year) => {
-    currentYear.value = year;
+const updateYear = () => {
+    if (selectedMode.value === "electoral") {
+        if (selectedYear.value < 2011) {
+            currentYear.value = 2006;
+        } else if (selectedYear.value < 2015) {
+            currentYear.value = 2011;
+        } else if (selectedYear.value < 2020) {
+            currentYear.value = 2015;
+        } else {
+            currentYear.value = 2020;
+        }
+    } else {
+        if (selectedYear.value < 2019) {
+            currentYear.value = 2019;
+        } else {
+            currentYear.value = 2019;
+        }
+    }
 };
 
 const loadData = async () => {
@@ -152,6 +194,12 @@ const loadData = async () => {
             "/data/electoral_boundary/ElectoralBoundary2020GEOJSON.geojson"
         ),
     };
+
+    planningAreas.value = {
+        2019: await d3.json(
+            "/data/master_plan/MasterPlan2019PlanningAreaBoundaryNoSea.geojson"
+        ),
+    };
 };
 
 const resetZoom = () => {
@@ -188,16 +236,10 @@ onMounted(async () => {
 });
 
 const drawMap = () => {
-    if (
-        !map.value ||
-        !electoralBoundaries.value[currentYear.value] ||
-        !electionResults.value
-    )
-        return;
+    if (!map.value) return;
 
     const svg = d3.select(map.value);
     svg.selectAll("g").remove();
-
     const mapGroup = svg.append("g");
 
     projection = d3
@@ -208,35 +250,49 @@ const drawMap = () => {
 
     path = d3.geoPath().projection(projection);
 
-    const electoralYear = electoralBoundaries.value[currentYear.value];
-    const electionYearResults = electionResults.value.filter(
-        (d) => d.year === String(currentYear.value)
-    );
+    let selectedDataset;
+    let fillColor = "lightblue";
 
-    const constituencyToParty = {};
-    electionYearResults.forEach((entry) => {
-        const { constituency, party, vote_count, vote_percentage } = entry;
-        const upperConstituency = constituency.toUpperCase();
-        if (!constituencyToParty[upperConstituency]) {
-            constituencyToParty[upperConstituency] = {
-                party,
-                vote_count,
-                vote_percentage,
-            };
-        } else if (
-            parseFloat(entry.vote_percentage) >
-            parseFloat(constituencyToParty[upperConstituency].vote_percentage)
-        ) {
-            constituencyToParty[upperConstituency] = {
-                party,
-                vote_count,
-                vote_percentage,
-            };
-        }
-    });
+    if (selectedMode.value === "electoral") {
+        selectedDataset = electoralBoundaries.value[currentYear.value];
+    } else {
+        selectedDataset = planningAreas.value[currentYear.value];
+    }
 
-    if (electoralYear && electoralYear.features) {
-        electoralYear.features.forEach((feature) => {
+    if (!selectedDataset || !selectedDataset.features) {
+        console.warn(`No data for ${selectedMode.value} in ${currentYear.value}`);
+        return;
+    }
+
+    // Electoral Mode
+    if (selectedMode.value === "electoral") {
+        const electionYearResults = electionResults.value.filter(
+            (d) => d.year === String(currentYear.value)
+        );
+
+        const constituencyToParty = {};
+        electionYearResults.forEach((entry) => {
+            const { constituency, party, vote_count, vote_percentage } = entry;
+            const upperConstituency = constituency.toUpperCase();
+            if (!constituencyToParty[upperConstituency]) {
+                constituencyToParty[upperConstituency] = {
+                    party,
+                    vote_count,
+                    vote_percentage,
+                };
+            } else if (
+                parseFloat(entry.vote_percentage) >
+                parseFloat(constituencyToParty[upperConstituency].vote_percentage)
+            ) {
+                constituencyToParty[upperConstituency] = {
+                    party,
+                    vote_count,
+                    vote_percentage,
+                };
+            }
+        });
+
+        selectedDataset.features.forEach((feature) => {
             let constituencyName;
 
             if (currentYear.value === 2020) {
@@ -275,11 +331,16 @@ const drawMap = () => {
 
         mapGroup
             .selectAll("boundaries")
-            .data(electoralYear.features)
+            .data(selectedDataset.features)
             .enter()
             .append("path")
             .attr("d", path)
-            .attr("fill", (d) => d.properties.color)
+            .attr("fill", (d) => {
+                if (selectedMode.value === "electoral") {
+                    return d.properties.color;
+                }
+                return "lightblue";
+            })
             .attr("stroke", "black")
             .attr("stroke-width", 0.5)
             .style("pointer-events", "visible")
@@ -288,11 +349,12 @@ const drawMap = () => {
                     .attr("stroke-width", 1.5)
                     .style("cursor", "pointer");
 
-                let constituencyName;
+                let areaName;
 
-                if (currentYear.value === 2020) {
-                    constituencyName = d.properties.Name;
-                } else {
+                if (selectedMode.value === "electoral") {
+                    if (currentYear.value === 2020) {
+                        areaName = d.properties.Name || "Unknown Constituency";
+                    } else {
                     const description = d.properties.Description;
                     const parser = new DOMParser();
                     const htmlDoc = parser.parseFromString(
@@ -309,16 +371,17 @@ const drawMap = () => {
                     });
 
                     if (edDescTd) {
-                        constituencyName = edDescTd.textContent;
+                        areaName = edDescTd.textContent;
                     } else {
-                        constituencyName = "UNKNOWN";
+                        areaName = "UNKNOWN";
                     }
                 }
+            }
 
                 d3.select(tooltip.value)
                     .style("visibility", "visible")
                     .html(
-                        `<div id="constituency-name">${constituencyName
+                        `<div id="constituency-name">${areaName
                             .toLowerCase()
                             .split(" ")
                             .map(
@@ -354,6 +417,79 @@ const drawMap = () => {
             .on("click", function (event, d) {
                 zoomToBoundary(d);
             });
+    }
+
+    // Planning Mode
+    if (selectedMode.value === "planning") {
+        mapGroup
+            .selectAll("path.planning")
+            .data(selectedDataset.features)
+            .enter()
+            .append("path")
+            .attr("d", path)
+            .attr("fill", "lightgray")
+            .attr("stroke", "black")
+            .attr("stroke-width", 0.5)
+            .style("pointer-events", "visible")
+            .on("mouseover", function (event, d) {
+                d3.select(this)
+                    .attr("stroke-width", 1.5)
+                    .style("cursor", "pointer");
+
+                let areaName;
+                const description = d.properties.Description;
+                    const parser = new DOMParser();
+                    const htmlDoc = parser.parseFromString(
+                        description,
+                        "text/html"
+                    );
+                    const edDescTd = Array.from(
+                        htmlDoc.querySelectorAll("td")
+                    ).find((td) => {
+                        const prevTh = td.previousElementSibling;
+                        return (
+                            prevTh && prevTh.textContent.trim() === "PLN_AREA_N"
+                        );
+                    });
+
+                    if (edDescTd) {
+                        areaName = edDescTd.textContent;
+                    } else {
+                        areaName = "UNKNOWN";
+                    }
+                    
+                d3.select(tooltip.value)
+                    .style("visibility", "visible")
+                    .html(
+                        `<div>${areaName
+                            .toLowerCase()
+                            .split(" ")
+                            .map(
+                                (word) =>
+                                    word.charAt(0).toUpperCase() + word.slice(1)
+                            )
+                            .join(" ")
+                            .replace(
+                                /\b(\w+)-(\w+)\b/g,
+                                (match, p1, p2) =>
+                                    `${p1}\-${p2
+                                        .charAt(0)
+                                        .toUpperCase()}${p2.slice(1)}`
+                            )}</div>
+                    `
+                    );
+                    
+            })
+            .on("mousemove", (event) => {
+                d3.select(tooltip.value)
+                    .style("top", `${event.pageY - 10}px`)
+                    .style("left", `${event.pageX + 10}px`);
+            })
+            .on("mouseout", function () {
+                d3.select(this).attr("stroke-width", 0.5);
+                d3.select(tooltip.value).style("visibility", "hidden");
+            })
+            .on("click", (event, d) => zoomToBoundary(d));
     }
 
     updatePOIs(mapGroup, projection);
@@ -818,7 +954,14 @@ watch(
     { deep: true }
 );
 
-watch(currentYear, () => {
+watch([currentYear, selectedMode], (newMode) => {
+    console.log(`Mode changed to: ${newMode[1]}`);
+
+    if (newMode[1] === "planning") {
+        selectedYear.value = 2019;
+        currentYear.value = 2019;
+    }
+
     drawMap();
 });
 
