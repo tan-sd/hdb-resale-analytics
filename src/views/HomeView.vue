@@ -1,5 +1,5 @@
 <script setup>
-import BarChart from '../components/BarChart.vue'
+import BarChart from '../components/barChart.vue'
 import MapChart from '../components/MapChart.vue'
 import Title from '../components/Title.vue'
 import Dashboard from '@/components/Dashboard.vue'
@@ -10,6 +10,6 @@ import Dashboard from '@/components/Dashboard.vue'
     <!-- <BarChart /> -->
      <Title />
     <Dashboard />
-    <MapChart />
+    <!-- <MapChart /> -->
   </main>
 </template>
