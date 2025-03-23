@@ -728,7 +728,10 @@ const redrawMap = (forceReset = false) => {
 
     console.log("Redrawing map with dimensions:", width.value, height.value);
 
+    
     const svg = d3.select(map.value);
+    const currentTransform = svg.property("__zoom") || d3.zoomIdentity;
+
     svg.selectAll("*").remove();
 
     mapGroup = svg.append("g");
@@ -762,10 +765,28 @@ const redrawMap = (forceReset = false) => {
 
     if (forceReset) {
         svg.call(zoom.transform, d3.zoomIdentity);
+    } else {
+        svg.call(zoom.transform, currentTransform);
     }
 
     drawMapContent();
     updatePOIs();
+
+    if (selectedAreaName.value) {
+        nextTick(() => {
+            drawHistogram(selectedAreaName.value);
+            const svg = d3.select(map.value);
+
+            svg.selectAll("path").each(function (d) {
+                const areaName = extractPlanningAreaName(d);
+                if (areaName === selectedAreaName.value) {
+                    d3.select(this)
+                        .attr("stroke", "#4c51bf")
+                        .attr("stroke-width", 3);
+                }
+            })
+        })
+    }
 };
 
 const formattedAreaName = (area) =>
