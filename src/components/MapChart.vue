@@ -338,6 +338,7 @@ const selectedFeature = ref(null);
 const searchQuery = ref("");
 const hoveredAreaName = ref(null);
 const selectedArea = ref(null);
+const tooltipLocked = ref(false);
 
 const showHawkerCentres = ref(false);
 const showGyms = ref(false);
@@ -812,6 +813,20 @@ const filteredPlanningAreas = computed(() => {
     );
 });
 
+function extractPlanningAreaName(feature) {
+    const description = feature.properties.Description;
+    const parser = new DOMParser();
+    const htmlDoc = parser.parseFromString(description, "text/html");
+
+    const areaTd = Array.from(htmlDoc.querySelectorAll("td")).find((td) => {
+        const prevTh = td.previousElementSibling;
+        return prevTh && prevTh.textContent.trim() === "PLN_AREA_N";
+    });
+
+    return areaTd?.textContent ?? "UNKNOWN";
+}
+
+
 function selectAreaFromList(areaName) {
     const features = planningAreas.value[2019]?.features || [];
 
@@ -1040,9 +1055,11 @@ const drawMapContent = () => {
                     );
             })
             .on("mousemove", function (event) {
+                const [mouseX, mouseY] = d3.pointer(event, map.value);
+
                 d3.select(tooltip.value)
-                    .style("top", `${event.clientY - 350}px`)
-                    .style("left", `${event.clientX - 140}px`);
+                    .style("top", `${mouseY - 50}px`)
+                    .style("left", `${mouseX + 10}px`);
             })
             .on("mouseout", function () {
                 d3.select(this).attr("stroke-width", 0.5);
@@ -1129,25 +1146,9 @@ const drawMapContent = () => {
                     .attr("stroke-width", 2.5)
                     .style("cursor", "pointer");
 
-                let areaName;
-                const description = d.properties.Description;
-                const parser = new DOMParser();
-                const htmlDoc = parser.parseFromString(
-                    description,
-                    "text/html"
-                );
-                const edDescTd = Array.from(
-                    htmlDoc.querySelectorAll("td")
-                ).find((td) => {
-                    const prevTh = td.previousElementSibling;
-                    return prevTh && prevTh.textContent.trim() === "PLN_AREA_N";
-                });
+                const areaName = extractPlanningAreaName(d);
 
-                if (edDescTd) {
-                    areaName = edDescTd.textContent;
-                } else {
-                    areaName = "UNKNOWN";
-                }
+                if (tooltipLocked.value && selectedAreaName.value === areaName) return;
 
                 const medianPrice = medianPriceByPlanningArea.get(areaName);
                 const formattedPrice = medianPrice
@@ -1182,9 +1183,11 @@ const drawMapContent = () => {
                     );
             })
             .on("mousemove", (event) => {
+                const [mouseX, mouseY] = d3.pointer(event, map.value);
+
                 d3.select(tooltip.value)
-                    .style("top", `${event.clientY - 330}px`)
-                    .style("left", `${event.clientX - 140}px`);
+                    .style("top", `${mouseY - 30}px`)
+                    .style("left", `${mouseX + 10}px`);
             })
             .on("mouseout", function (event, d) {
                 const htmlDoc = new DOMParser().parseFromString(
@@ -1263,6 +1266,9 @@ const drawMapContent = () => {
                 };
                 searchQuery.value = formattedAreaName(areaName);
 
+                tooltipLocked.value = true;
+                d3.select(tooltip.value).style("visibility", "hidden");
+
                 nextTick(() => {
                     drawHistogram(areaName);
                 });
@@ -1285,6 +1291,7 @@ const clearSearch = () => {
     searchQuery.value = "";
     selectedArea.value = null;
     selectedAreaInfo.value = null;
+    tooltipLocked.value = false;
 
     const container = d3.select("#histogram");
     container.selectAll("*").remove();
@@ -1496,9 +1503,11 @@ function updatePOIs() {
                     .html(`${name}`);
             })
             .on("mousemove", function (event) {
+                const [mouseX, mouseY] = d3.pointer(event, map.value);
+
                 d3.select(tooltip.value)
-                    .style("top", `${event.clientY - 310}px`)
-                    .style("left", `${event.clientX - 140}px`);
+                    .style("top", `${mouseY - 20}px`)
+                    .style("left", `${mouseX + 10}px`);
             })
             .on("mouseout", function () {
                 d3.select(tooltip.value).style("visibility", "hidden");
@@ -1549,9 +1558,11 @@ function updatePOIs() {
                     .html(`${name}`);
             })
             .on("mousemove", function (event) {
+                const [mouseX, mouseY] = d3.pointer(event, map.value);
+
                 d3.select(tooltip.value)
-                    .style("top", `${event.clientY - 310}px`)
-                    .style("left", `${event.clientX - 140}px`);
+                    .style("top", `${mouseY - 20}px`)
+                    .style("left", `${mouseX + 10}px`);
             })
             .on("mouseout", function () {
                 d3.select(tooltip.value).style("visibility", "hidden");
@@ -1586,9 +1597,11 @@ function updatePOIs() {
                     .html(`${name}`);
             })
             .on("mousemove", function (event) {
+                const [mouseX, mouseY] = d3.pointer(event, map.value);
+
                 d3.select(tooltip.value)
-                    .style("top", `${event.clientY - 310}px`)
-                    .style("left", `${event.clientX - 140}px`);
+                    .style("top", `${mouseY - 20}px`)
+                    .style("left", `${mouseX + 10}px`);
             })
             .on("mouseout", function () {
                 d3.select(tooltip.value).style("visibility", "hidden");
@@ -1623,9 +1636,11 @@ function updatePOIs() {
                     .html(`${name}`);
             })
             .on("mousemove", function (event) {
+                const [mouseX, mouseY] = d3.pointer(event, map.value);
+
                 d3.select(tooltip.value)
-                    .style("top", `${event.clientY - 310}px`)
-                    .style("left", `${event.clientX - 140}px`);
+                    .style("top", `${mouseY - 20}px`)
+                    .style("left", `${mouseX + 10}px`);
             })
             .on("mouseout", function () {
                 d3.select(tooltip.value).style("visibility", "hidden");
@@ -1673,9 +1688,11 @@ function updatePOIs() {
                     .html(`${name}`);
             })
             .on("mousemove", function (event) {
+                const [mouseX, mouseY] = d3.pointer(event, map.value);
+
                 d3.select(tooltip.value)
-                    .style("top", `${event.clientY - 310}px`)
-                    .style("left", `${event.clientX - 140}px`);
+                    .style("top", `${mouseY - 20}px`)
+                    .style("left", `${mouseX + 10}px`);
             })
             .on("mouseout", function () {
                 d3.select(tooltip.value).style("visibility", "hidden");
@@ -1715,9 +1732,11 @@ function updatePOIs() {
                     .html(`${name}`);
             })
             .on("mousemove", function (event) {
+                const [mouseX, mouseY] = d3.pointer(event, map.value);
+
                 d3.select(tooltip.value)
-                    .style("top", `${event.clientY - 310}px`)
-                    .style("left", `${event.clientX - 140}px`);
+                    .style("top", `${mouseY - 20}px`)
+                    .style("left", `${mouseX + 10}px`);
             })
             .on("mouseout", function () {
                 d3.select(tooltip.value).style("visibility", "hidden");
@@ -1755,9 +1774,11 @@ function updatePOIs() {
                     .html(`<b>${d.school_name}</b>`);
             })
             .on("mousemove", function (event) {
+                const [mouseX, mouseY] = d3.pointer(event, map.value);
+
                 d3.select(tooltip.value)
-                    .style("top", `${event.clientY - 310}px`)
-                    .style("left", `${event.clientX - 140}px`);
+                    .style("top", `${mouseY - 20}px`)
+                    .style("left", `${mouseX + 10}px`);
             })
             .on("mouseout", function () {
                 d3.select(tooltip.value).style("visibility", "hidden");
@@ -1795,9 +1816,11 @@ function updatePOIs() {
                     .html(`<b>${d.school_name}</b>`);
             })
             .on("mousemove", function (event) {
+                const [mouseX, mouseY] = d3.pointer(event, map.value);
+
                 d3.select(tooltip.value)
-                    .style("top", `${event.clientY - 310}px`)
-                    .style("left", `${event.clientX - 140}px`);
+                    .style("top", `${mouseY - 20}px`)
+                    .style("left", `${mouseX + 10}px`);
             })
             .on("mouseout", function () {
                 d3.select(tooltip.value).style("visibility", "hidden");
@@ -1835,9 +1858,11 @@ function updatePOIs() {
                     .html(`<b>${d.school_name}</b>`);
             })
             .on("mousemove", function (event) {
+                const [mouseX, mouseY] = d3.pointer(event, map.value);
+
                 d3.select(tooltip.value)
-                    .style("top", `${event.clientY - 310}px`)
-                    .style("left", `${event.clientX - 140}px`);
+                    .style("top", `${mouseY - 20}px`)
+                    .style("left", `${mouseX + 10}px`);
             })
             .on("mouseout", function () {
                 d3.select(tooltip.value).style("visibility", "hidden");
@@ -1875,9 +1900,11 @@ function updatePOIs() {
                     .html(`<b>${d.school_name}</b>`);
             })
             .on("mousemove", function (event) {
+                const [mouseX, mouseY] = d3.pointer(event, map.value);
+
                 d3.select(tooltip.value)
-                    .style("top", `${event.clientY - 310}px`)
-                    .style("left", `${event.clientX - 140}px`);
+                    .style("top", `${mouseY - 20}px`)
+                    .style("left", `${mouseX + 10}px`);
             })
             .on("mouseout", function () {
                 d3.select(tooltip.value).style("visibility", "hidden");
