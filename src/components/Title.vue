@@ -14,7 +14,7 @@
             </span>
         </h1>
         <p
-            class="text-xs md:text-sm lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed tracking-wide"
+            class="text-[0.625rem] md:text-sm lg:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed tracking-widest"
         >
             A deep dive into Singapore's HDB Resale Market
         </p>
