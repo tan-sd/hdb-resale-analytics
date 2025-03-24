@@ -115,7 +115,7 @@ body {
     width: 100vw;
 }
 
-#main-title {
+.section-title {
     color: hsl(353 75% 53%);
 }
 

@@ -2,7 +2,7 @@
     <section
         class="w-screen h-screen bg-gradient-to-br to-white flex flex-col justify-center items-center text-center space-y-6 px-4 relative"
     >
-        <h1 class="text-5xl md:text-7xl lg:text-9xl uppercase" id="main-title">
+        <h1 class="text-5xl md:text-7xl lg:text-9xl uppercase section-title">
             <span
                 class="font-extrabold inline-flex flex-col items-center gap-2"
             >
