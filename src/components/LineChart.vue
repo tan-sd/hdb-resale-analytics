@@ -150,13 +150,13 @@ export default {
                     const minYear = d3.min(this.highlightYears);
                     const maxYear = d3.max(this.highlightYears);
 
-                    svg.insert("rect", ":first-child") // insert at back
+                    svg.insert("rect", ":first-child")
                         .attr("class", "highlight-rect")
                         .attr("x", x(new Date(minYear, 0)))
                         .attr("y", 0)
                         .attr(
                             "width",
-                            x(new Date(maxYear + 1, 0)) -
+                            x(new Date(maxYear, 0)) -
                                 x(new Date(minYear, 0))
                         )
                         .attr("height", this.height)
@@ -227,7 +227,9 @@ export default {
                 })
                 .on("mouseout", (event, d) => {
                     tooltip.style("display", "none");
-                    d3.select(event.target).attr("r", 5);
+
+                    const isHighlighted = this.shouldHighlight && this.highlightYears.includes(d.Year);
+                    d3.select(event.target).attr("r", isHighlighted ? 5 : 3);
                 });
 
             const tl = gsap.timeline({
