@@ -646,89 +646,11 @@ function drawHistogram(areaName) {
         .text("Median");
 }
 
-function highlightArea(areaName) {
-    hoveredAreaName.value = areaName;
-    const feature = planningAreaFeatureMap.value.get(areaName);
-    if (!feature) return;
-
-    const svg = d3.select(map.value);
-
-    svg.selectAll("path").each(function (d) {
-        d3.select(this).attr("stroke-width", 0.5);
-    });
-
-    const pathEl = svg
-        .selectAll("path")
-        .filter((d) => d === feature)
-        .attr("stroke-width", 2.5)
-        .attr("stroke", "#4c51bf")
-        .style("cursor", "pointer");
-
-    const centroid = path.centroid(feature);
-
-    const resaleData = resaleHDBs.value.filter(
-        (r) =>
-            r.planning_area === areaName &&
-            String(r.year) === String(selectedYear.value)
-    );
-    const medianPrice = d3.median(resaleData, (r) => +r.resale_price);
-    const formattedPrice = medianPrice
-        ? `${d3.format(",.2f")(medianPrice)}`
-        : "No data";
-
-    d3
-        .select(tooltip.value)
-        .style("visibility", "visible")
-        .style("top", `${centroid[1] - 50}px`)
-        .style("left", `${centroid[0] + 10}px`).html(`
-            <div class="font-bold text-center">${formattedAreaName(
-                areaName
-            )}</div>
-            <div class="flex flex-row items-center gap-1">
-                <div class="tracking-wider">$${formattedPrice}</div>
-                <div>Median Price</div>
-            </div>
-        `);
-}
-
-function clearHighlight() {
-    hoveredAreaName.value = null;
-
-    d3.select(map.value)
-        .selectAll("path")
-        .each(function (d) {
-            const htmlDoc = new DOMParser().parseFromString(
-                d.properties.Description,
-                "text/html"
-            );
-            const cell = Array.from(htmlDoc.querySelectorAll("td")).find(
-                (td) => {
-                    const prevTh = td.previousElementSibling;
-                    return prevTh && prevTh.textContent.trim() === "PLN_AREA_N";
-                }
-            );
-
-            const areaName = cell?.textContent;
-            if (areaName === selectedAreaName.value) {
-                d3.select(this)
-                    .attr("stroke", "#4c51bf")
-                    .attr("stroke-width", 3);
-            } else {
-                d3.select(this)
-                    .attr("stroke", "black")
-                    .attr("stroke-width", 0.5);
-            }
-        });
-
-    d3.select(tooltip.value).style("visibility", "hidden");
-}
-
 const redrawMap = (forceReset = false) => {
     if (!map.value || width.value <= 0 || height.value <= 0) return;
 
     console.log("Redrawing map with dimensions:", width.value, height.value);
 
-    
     const svg = d3.select(map.value);
     const currentTransform = svg.property("__zoom") || d3.zoomIdentity;
 
@@ -784,8 +706,8 @@ const redrawMap = (forceReset = false) => {
                         .attr("stroke", "#4c51bf")
                         .attr("stroke-width", 3);
                 }
-            })
-        })
+            });
+        });
     }
 };
 
@@ -846,7 +768,6 @@ function extractPlanningAreaName(feature) {
 
     return areaTd?.textContent ?? "UNKNOWN";
 }
-
 
 function selectAreaFromList(areaName) {
     const features = planningAreas.value[2019]?.features || [];
@@ -910,6 +831,28 @@ function selectAreaFromList(areaName) {
                             .attr("stroke-width", 0.5);
                     }
                 });
+
+            const buildingsInArea = resaleHDBs.value.filter(
+                (d) =>
+                    d.planning_area === areaName &&
+                    String(d.year) === String(selectedYear.value)
+            );
+
+            mapGroup.selectAll(".building-dot").remove();
+
+            mapGroup
+                .selectAll(".building-dot")
+                .data(buildingsInArea)
+                .enter()
+                .append("circle")
+                .attr("class", "building-dot")
+                .attr("cx", (d) => projection([+d.Longitude, +d.Latitude])[0])
+                .attr("cy", (d) => projection([+d.Longitude, +d.Latitude])[1])
+                .attr("r", 1)
+                .attr("fill", "#38bdf8")
+                .attr("stroke", "#1e40af")
+                .attr("stroke-width", 0.5)
+                .attr("opacity", 0.8);
         });
     }
 }
@@ -1169,7 +1112,8 @@ const drawMapContent = () => {
 
                 const areaName = extractPlanningAreaName(d);
 
-                if (tooltipLocked.value && selectedAreaName.value === areaName) return;
+                if (tooltipLocked.value && selectedAreaName.value === areaName)
+                    return;
 
                 const medianPrice = medianPriceByPlanningArea.get(areaName);
                 const formattedPrice = medianPrice
