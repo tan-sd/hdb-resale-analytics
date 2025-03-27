@@ -34,9 +34,10 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 import { watch } from "vue";
+import { useDataStore } from "../stores/dataStore";
 
 export default {
-    name: "LineChart",
+    name: "LineChartMedian",
     props: {
         highlightYears: {
             type: Array,
@@ -53,52 +54,33 @@ export default {
             width: 0,
             height: 0,
             data: [],
-            dotSelection: null,
+            dotSelection: [],
         };
     },
+    computed: {
+        chartData() {
+            const store = useDataStore();
+            return store.yearMedians || [];
+        },
+        isDataLoader() {
+            return this.chartData.length > 0;
+        }
+    },
     mounted() {
-        if (this.data.length > 0) return;
-
         this.setDimensions();
-
         window.addEventListener("resize", this.setDimensions);
+        
+        const dataStore = useDataStore();
 
-        Promise.all([
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_1990.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_1991.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_1992.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_1993.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_1994.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_1995.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_1996.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_1997.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_1998.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_1999.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2000.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2001.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2002.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2003.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2004.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2005.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2006.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2007.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2008.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2009.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2010.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2011.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2012.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2013.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2014.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2015.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2016.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2017.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2018.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2019.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2020.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2021.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2022.csv"),
-            d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2023.csv"),
-        ]).then(this.createChart);
+        watch(
+            () => dataStore.isDataReady,
+            (isReady) => {
+            if (isReady) {
+                this.createChart();
+            }
+            },
+            { immediate: true }
+        );
     },
     methods: {
         setDimensions() {
@@ -115,24 +97,13 @@ export default {
             }
         },
 
-        createChart(data) {
-            const allData = [].concat(...data);
+        createChart() {
+            const yearMedians = this.chartData;
 
-            allData.forEach((d) => {
-                d.Year = +d.Year;
-                d.Month = +d.Month;
-                d.ResalePrice = +d["Resale Price"];
-                d.Date = new Date(d.Year, d.Month - 1);
-            });
-
-            const groupedByYear = d3.group(allData, (d) => d.Year);
-
-            const yearMedians = Array.from(groupedByYear, ([year, values]) => {
-                return {
-                    Year: year,
-                    median: d3.median(values, (d) => d.ResalePrice),
-                };
-            });
+            if (!yearMedians.length) {
+                console.error("No data available to render the chart.");
+                return;
+            }
 
             const x = d3
                 .scaleTime()
@@ -212,10 +183,10 @@ export default {
                     tooltip.style("display", "inline-block").html(
                         `Year: ${
                             d.Year
-                        }<br>Median Price: $${new Intl.NumberFormat(undefined, {
+                        }<br>Median Price: <span class="tracking-wider">$${new Intl.NumberFormat(undefined, {
                             minimumFractionDigits: 0,
                             maximumFractionDigits: 2,
-                        }).format(d.median)}`
+                        }).format(d.median)}</span>`
                     );
                     d3.select(event.target).attr("r", 6);
                 })

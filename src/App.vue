@@ -1,23 +1,20 @@
 <script setup>
+import { onMounted } from 'vue'
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
+import { useDataStore } from './stores/dataStore';
+import GlobalLoader from './components/GlobalLoader.vue';
+
+onMounted(() => {
+  const dataStore = useDataStore();
+  dataStore.loadData();
+});
 </script>
 
 <template>
-  <!-- <header> -->
-    <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
-
-    <!-- <div class="wrapper"> -->
-      <!-- <HelloWorld msg="You did it!" /> -->
-
-      <!-- <nav> -->
-        <!-- <RouterLink to="/">Home</RouterLink> -->
-        <!-- <RouterLink to="/about">About</RouterLink> -->
-      <!-- </nav> -->
-    <!-- </div> -->
-  <!-- </header> -->
-
+  <GlobalLoader>
   <RouterView />
+  </GlobalLoader>
 </template>
 
 <style scoped>

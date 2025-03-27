@@ -39,16 +39,18 @@
             </div>
 
             <div class="w-full lg:w-3/5 lg:sticky lg:top-32">
-                <!-- <LineChart
-                    :highlightYears="activeYears"
-                    :shouldHighlight="activeHighlight"
-                /> -->
+                <!-- <ScatterPlotStories /> -->
+                <LineChartFlatType />
+                <BoxPlotPricePerSqm />
             </div>
         </div>
     </section>
 </template>
 
 <script setup>
+import LineChartFlatType from './LineChartFlatType.vue';
+import ScatterPlotStories from './ScatterPlotStories.vue';
+import BoxPlotPricePerSqm from './BoxPlotPricePerSqm.vue';
 const steps = [
     {
         title: "Stories",
