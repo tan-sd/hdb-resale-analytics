@@ -39,7 +39,11 @@
             </div>
 
             <div class="w-full lg:w-3/5 lg:sticky lg:top-32">
-                <LineChart
+                <LineChartMedian
+                    :highlightYears="activeYears"
+                    :shouldHighlight="activeHighlight"
+                />
+                <LineChartTransaction
                     :highlightYears="activeYears"
                     :shouldHighlight="activeHighlight"
                 />
@@ -49,7 +53,8 @@
 </template>
 
 <script setup>
-import LineChart from "@/components/LineChart.vue";
+import LineChartMedian from "@/components/LineChartMedian.vue";
+import LineChartTransaction from "@/components/LineChartTransaction.vue";
 import { ref, onMounted } from "vue";
 const activeHighlight = ref(false);
 
@@ -80,7 +85,7 @@ const steps = [
         title: "Setting the Stage (1990-2023)",
         description: [
             "To understand the forces behind rising HDB resale prices, we begin with a bird's-eye view of the last two decades. From economic swings to government interventions, a pattern emerges — one shaped by policy, inflation, and people.",
-            "This chart tracks the median resale price of HDB flats from 2000 to 2023. It offers a macro perspective on how prices have shifted nationally — and how key moments like cooling measures or interest rate changes influenced the market.",
+            "This chart tracks the median resale price of HDB flats from 1990 to 2023. It offers a macro perspective on how prices have shifted nationally — and how key moments like cooling measures or interest rate changes influenced the market.",
             "Keep an eye out for major events: the introduction of TDSR, the global financial crisis, and the post-COVID market surge. Each left a visible imprint on price trends.",
         ],
         years: [
