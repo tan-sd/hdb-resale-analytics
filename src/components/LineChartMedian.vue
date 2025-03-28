@@ -1,13 +1,20 @@
 <template>
-    <div class="chart-container relative flex flex-col items-center justify-center">
-        <h3 class="text-sm mb-2 text-center">Median HDB Resale Price per Year</h3>
+    <div
+        class="chart-container relative flex flex-col items-center justify-center"
+    >
+        <h3 class="text-sm mb-1 text-center tracking-wide font-semibold">
+            Median HDB Resale Price per Year
+        </h3>
         <div id="line-chart">
             <svg
-                viewbox="0 0 1000 600"
-                :width="width + margin.left + margin.right"
-                :height="height + margin.top + margin.bottom"
+                :viewBox="`0 0 ${width + margin.left + margin.right} ${
+                    height + margin.top + margin.bottom
+                }`"
+                preserveAspectRatio="xMidYMid meet"
+                class="w-full h-auto"
             >
                 <g
+                    class="chart-group"
                     :transform="
                         'translate(' + margin.left + ',' + margin.top + ')'
                     "
@@ -50,7 +57,7 @@ export default {
     },
     data() {
         return {
-            margin: { top: 20, right: 30, bottom: 40, left: 60 },
+            margin: { top: 20, right: 30, bottom: 40, left: 70 },
             width: 0,
             height: 0,
             data: [],
@@ -64,25 +71,37 @@ export default {
         },
         isDataLoader() {
             return this.chartData.length > 0;
-        }
+        },
     },
     mounted() {
         this.setDimensions();
-        window.addEventListener("resize", this.setDimensions);
-        
+        window.addEventListener("resize", this.handleResize);
+
         const dataStore = useDataStore();
 
         watch(
             () => dataStore.isDataReady,
             (isReady) => {
-            if (isReady) {
-                this.createChart();
-            }
+                if (isReady) {
+                    this.createChart();
+                }
             },
             { immediate: true }
         );
     },
+    beforeUnmount() {
+        window.removeEventListener("resize", this.handleResize);
+    },
     methods: {
+        handleResize() {
+            this.setDimensions();
+            d3.select(this.$el)
+                .select("svg")
+                .select("g")
+                .selectAll("*")
+                .remove();
+            this.createChart();
+        },
         setDimensions() {
             const container = this.$el.querySelector("#line-chart");
             if (container) {
@@ -144,6 +163,25 @@ export default {
 
             svg.append("g").call(d3.axisLeft(y));
 
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("x", this.width / 2)
+                .attr("y", this.height + 35)
+                .text("Year")
+                .style("fill", "#4b5563")
+                .style("font-size", "12px")
+                .style("font-weight", "500");
+
+            svg.append("text")
+                .attr("text-anchor", "middle")
+                .attr("transform", "rotate(-90)")
+                .attr("x", -this.height / 2)
+                .attr("y", -60)
+                .text("Resale Price")
+                .style("fill", "#4b5563")
+                .style("font-size", "12px")
+                .style("font-weight", "500");
+
             const line = d3
                 .line()
                 .x((d) => x(new Date(d.Year, 0)))
@@ -159,12 +197,37 @@ export default {
                 .style("stroke-width", 2);
 
             const pathElement = path.node();
-            const totalLength = pathElement.getTotalLength();
 
-            path.attr("stroke-dasharray", `${totalLength} ${totalLength}`).attr(
-                "stroke-dashoffset",
-                totalLength
-            );
+            requestAnimationFrame(() => {
+                const totalLength = pathElement.getTotalLength();
+
+                path.attr(
+                    "stroke-dasharray",
+                    `${totalLength} ${totalLength}`
+                ).attr("stroke-dashoffset", totalLength);
+
+                gsap.set(this.$el.querySelector(".chart-group"), {
+                    opacity: 0,
+                });
+
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: this.$el,
+                        start: "top 80%",
+                        toggleActions: "play none none none",
+                    },
+                });
+
+                tl.to(this.$el.querySelector(".chart-group"), {
+                    opacity: 1,
+                    duration: 1,
+                    ease: "power1.out",
+                }).to(pathElement, {
+                    strokeDashoffset: 0,
+                    duration: 2,
+                    ease: "power2.out",
+                });
+            });
 
             const tooltip = d3.select("#tooltip-median");
 
@@ -183,10 +246,13 @@ export default {
                     tooltip.style("display", "inline-block").html(
                         `Year: ${
                             d.Year
-                        }<br>Median Price: <span class="tracking-wider">$${new Intl.NumberFormat(undefined, {
-                            minimumFractionDigits: 0,
-                            maximumFractionDigits: 2,
-                        }).format(d.median)}</span>`
+                        }<br>Median Price: <span class="tracking-wider">$${new Intl.NumberFormat(
+                            undefined,
+                            {
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 2,
+                            }
+                        ).format(d.median)}</span>`
                     );
                     d3.select(event.target).attr("r", 6);
                 })
@@ -205,20 +271,6 @@ export default {
                         this.highlightYears.includes(d.Year);
                     d3.select(event.target).attr("r", isHighlighted ? 5 : 3);
                 });
-
-            const tl = gsap.timeline({
-                scrollTrigger: {
-                    trigger: "#chart-container",
-                    start: "top 80%",
-                    toggleActions: "play none none none",
-                },
-            });
-
-            tl.to(pathElement, {
-                strokeDashoffset: 0,
-                duration: 3,
-                ease: "power2.out",
-            });
 
             watch(
                 () => [this.highlightYears, this.shouldHighlight],
@@ -252,8 +304,8 @@ export default {
 .chart-container {
     position: relative;
     width: 100%;
-    max-width: 800px;
-    height: 300px;
+    max-width: 500px;
+    min-height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;

@@ -127,6 +127,11 @@ body {
     color: hsl(353 75% 53%);
 }
 
+.section-border {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+    border-radius: 5px;
+}
+
 @layer base {
     :root {
         --background: 0 0% 100%;
