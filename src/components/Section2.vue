@@ -1,5 +1,5 @@
 <template>
-    <section class="w-screen min-h-screen px-8 py-20 bg-white">
+    <section class="w-full min-h-screen px-8 py-20 bg-white">
         <div
             class="max-w-7xl mx-auto flex flex-col lg:flex-row items-start justify-between gap-12"
         >

@@ -5,7 +5,7 @@
         <h3 class="text-sm mb-1 text-center tracking-wide font-semibold">
             Median HDB Resale Price per Year
         </h3>
-        <div id="line-chart">
+        <div id="line-chart-median" ref="chartContainer">
             <svg
                 :viewBox="`0 0 ${width + margin.left + margin.right} ${
                     height + margin.top + margin.bottom
@@ -23,13 +23,17 @@
         </div>
         <div
             id="tooltip-median"
+            ref="tooltip"
             style="
                 position: absolute;
-                padding: 8px;
+                padding: 5px 10px;
                 background: rgba(0, 0, 0, 0.7);
                 color: white;
                 border-radius: 5px;
                 display: none;
+                z-index: 1000;
+                pointer-events: none;
+                max-width: 300px;
             "
         ></div>
     </div>
@@ -103,7 +107,7 @@ export default {
             this.createChart();
         },
         setDimensions() {
-            const container = this.$el.querySelector("#line-chart");
+            const container = this.$refs.chartContainer;
             if (container) {
                 this.width =
                     container.clientWidth -
@@ -115,7 +119,39 @@ export default {
                     this.margin.bottom;
             }
         },
-
+        positionTooltip(event, tooltipElement) {
+            if (!tooltipElement) return;
+            
+            const chartRect = this.$refs.chartContainer.getBoundingClientRect();
+            const tooltipRect = tooltipElement.getBoundingClientRect();
+            
+            const relativeX = event.clientX - chartRect.left;
+            const relativeY = event.clientY - chartRect.top;
+            
+            let top, left;
+            
+            const preferredTop = relativeY - tooltipRect.height + 20;
+            const preferredLeft = relativeX + 5;
+            
+            if (preferredTop < 0) {
+                top = relativeY + 20;
+            } else {
+                top = preferredTop;
+            }
+            
+            if (preferredLeft + tooltipRect.width > chartRect.width) {
+                left = relativeX - tooltipRect.width - 5;
+                
+                if (left < 0) {
+                    left = Math.max(0, relativeX - (tooltipRect.width / 2));
+                }
+            } else {
+                left = preferredLeft;
+            }
+            
+            tooltipElement.style.top = `${top}px`;
+            tooltipElement.style.left = `${left}px`;
+        },
         createChart() {
             const yearMedians = this.chartData;
 
@@ -229,8 +265,8 @@ export default {
                 });
             });
 
-            const tooltip = d3.select("#tooltip-median");
-
+            const tooltip = this.$refs.tooltip;
+            
             this.dotSelection = svg
                 .selectAll(".dot")
                 .data(yearMedians)
@@ -243,28 +279,29 @@ export default {
                 .style("fill", "red")
                 .style("opacity", 0)
                 .on("mouseover", (event, d) => {
-                    tooltip.style("display", "inline-block").html(
-                        `Year: ${
-                            d.Year
-                        }<br>Median Price: <span class="tracking-wider">$${new Intl.NumberFormat(
-                            undefined,
-                            {
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 2,
-                            }
-                        ).format(d.median)}</span>`
-                    );
+                    d3.select(tooltip)
+                        .style("display", "inline-block")
+                        .html(
+                            `Year: ${
+                                d.Year
+                            }<br>Median Price: <span class="tracking-wider">$${new Intl.NumberFormat(
+                                undefined,
+                                {
+                                    minimumFractionDigits: 0,
+                                    maximumFractionDigits: 2,
+                                }
+                            ).format(d.median)}</span>`
+                        );
+                    
+                    this.positionTooltip(event, tooltip);
+                    
                     d3.select(event.target).attr("r", 6);
                 })
-                .on("mousemove", function (event) {
-                    const [mouseX, mouseY] = d3.pointer(event, this);
-
-                    tooltip
-                        .style("top", `${mouseY - 30}px`)
-                        .style("left", `${mouseX + 10}px`);
+                .on("mousemove", (event) => {
+                    this.positionTooltip(event, tooltip);
                 })
                 .on("mouseout", (event, d) => {
-                    tooltip.style("display", "none");
+                    d3.select(tooltip).style("display", "none");
 
                     const isHighlighted =
                         this.shouldHighlight &&
@@ -304,14 +341,14 @@ export default {
 .chart-container {
     position: relative;
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
     min-height: 100px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-#line-chart {
+#line-chart-median{
     flex: 1;
     width: 100%;
     height: 100%;

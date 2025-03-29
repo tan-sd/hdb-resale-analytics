@@ -1,5 +1,5 @@
 <template>
-    <section class="pt-40 w-screen min-h-screen py-20 bg-white">
+    <section class="pt-40 w-full min-h-screen py-20 bg-white">
         <div
             class="w-full px-6 mx-auto grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12"
         >
@@ -113,7 +113,7 @@ onMounted(() => {
 
     const handleScroll = () => {
         const scrollY = window.scrollY;
-        const isSmallScreen = window.innerWidth < 1024;
+        const isSmallScreen = window.innerWidth < 1280;
         const lastSection = document.querySelector(
             `[data-title="${steps[steps.length - 1].title}"]`
         );
@@ -243,3 +243,8 @@ const steps = [
 
 const currentStep = computed(() => steps[currentStepIndex.value]);
 </script>
+
+<style>
+* {
+  outline: 1px solid red;
+}</style>
