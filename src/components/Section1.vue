@@ -179,65 +179,55 @@ onBeforeUnmount(() => {
 
 const steps = [
     {
-        title: "Setting the Stage (1990-2023)",
+        title: "1990–1993: Early Stagnation in a Restricted Market",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            "During this period, the HDB resale market was still nascent and heavily restricted. There were no CPF housing grants available for resale buyers, meaning that first-time buyers had little financial support if they chose to buy on the open market. Eligibility was also tightly controlled — only families with a valid family nucleus could buy resale flats, and singles were completely excluded. With limited access and no incentives, demand for resale flats was low, and prices remained relatively stagnant."
         ],
         years: [
-            1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
-            2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-            2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022,
-            2023,
+            1990, 1991, 1992, 1993
         ],
     },
     {
-        title: "Slow Growth (1990-1994)",
+        title: "1994–1996: Policy Liberalisation and a Surge in Demand",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
-        ],
-        years: [1990, 1991, 1992, 1993, 1994],
-    },
-    {
-        title: "Sharp Surge (1994-1996)",
-        description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            "The market began to transform in 1994 with the introduction of the CPF Housing Grant. This policy provided up to $30,000 to first-time buyers purchasing resale flats near their parents, making resale flats significantly more affordable and competitive with BTO flats. In 1995, the government also expanded eligibility by allowing singles aged 35 and above to purchase resale flats, further increasing demand. These changes broadened access to the market and triggered a sharp surge in resale transactions and prices."
         ],
         years: [1994, 1995, 1996],
     },
     {
-        title: "Plateau (1997-2006)",
+        title: "1997–2006: Market Cooling through Supply and Usage Restrictions",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            "Following the mid-90s spike, the government began tightening policy levers to control demand and maintain long-term affordability. In 1997, CPF usage was restricted for the purchase of older flats, reducing financing options for aging resale units. The Minimum Occupation Period (MOP) was also enforced more stringently, requiring flat owners to live in their homes for at least five years before selling, which limited speculative activity. During the early 2000s, HDB scaled back BTO launches in response to oversupply concerns. These combined measures led to a long period of price decline and market plateau."
         ],
         years: [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006],
     },
     {
-        title: "Rapid Growth (2007-2013)",
+        title: "2007–2012: Demand Revival Amid Supply Constraints",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            "As population growth resumed and household formation increased, the resale market regained momentum. New flat supply had not kept up with demand, resulting in long BTO waiting times and pushing many first-time buyers toward the resale market. At the same time, the government enhanced grant support for resale buyers — the Additional CPF Housing Grant (AHG) and Special CPF Housing Grant (SHG) were improved, increasing affordability for lower- and middle-income households. These policies, combined with continued supply lag, caused resale prices to climb steadily."
         ],
-        years: [2007, 2008, 2009, 2010, 2011, 2012, 2013],
+        years: [2007, 2008, 2009, 2010, 2011, 2012],
     },
     {
-        title: "Cooling Measures (2013-2019)",
+        title: "2013–2018: Cooling Measures and Loan Restrictions Stabilise the Market",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            "In response to rising prices and concerns about overheating, the government introduced a series of cooling measures to slow demand. In 2011, the Additional Buyer’s Stamp Duty (ABSD) was introduced, imposing higher taxes on property purchases by PRs, foreigners, and second-time buyers. Its effects became more prominent in the following years. In 2013, two significant loan curbs were implemented: the Total Debt Servicing Ratio (TDSR), which limited total loan repayments to 60% of gross monthly income, and the Mortgage Servicing Ratio (MSR), which capped HDB loan repayments at 30%. These rules effectively reduced loan sizes and borrowing power for many buyers. In 2018, ABSD was increased again, particularly targeting investors and upgraders. These measures collectively cooled the market, leading to a plateau in resale prices."
         ],
-        years: [2013, 2014, 2015, 2016, 2017, 2018, 2019],
+        years: [2013, 2014, 2015, 2016, 2017, 2018],
     },
     {
-        title: "Post-COVID Recovery (2019-2023)",
+        title: "2019–2021: Recovery Driven by Grant Reform and Pandemic Effects",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            "The resale market rebounded from 2019, largely due to renewed affordability initiatives. The Enhanced CPF Housing Grant (EHG) was launched in 2019, consolidating and replacing AHG and SHG. This grant provided up to $80,000 for eligible first-time buyers and could be applied to both BTO and resale flats. Simultaneously, the CPF usage policy was tightened for flats with less than 60 years of lease remaining, nudging demand toward newer resale flats. When the COVID-19 pandemic hit in 2020, BTO construction delays caused many buyers to turn to resale as a faster route to homeownership. The shift to remote work also increased demand for larger or better-located flats. These factors collectively created a demand surge, driving prices up through 2020 and 2021."
         ],
-        years: [2019, 2020, 2021, 2022, 2023],
+        years: [2019, 2020, 2021],
+    },
+    {
+        title: "2022–2023: Moderation Through Renewed Cooling Measures",
+        description: [
+            "As prices continued rising post-pandemic, the government responded with new rounds of cooling measures aimed at tempering demand and ensuring long-term affordability. In December 2021 and again in September 2022, HDB introduced policies that included stricter stress-testing for HDB loan applicants and a mandatory 15-month wait-out period for private property owners before they could purchase a resale flat. These measures were designed to reduce demand from cash-rich buyers and ensure that public housing remained accessible to genuine owner-occupiers. By 2023, the resale market remained elevated but more stable, reflecting the balancing act between sustaining flat values and preventing excessive speculation."
+        ],
+        years: [2022, 2023],
     },
 ];
 
