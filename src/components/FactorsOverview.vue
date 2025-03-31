@@ -1,5 +1,5 @@
 <template>
-    <section class="w-full h-screen px-6 sm:px-12 py-20">
+    <section class="w-full h-screen px-6 sm:px-12 py-20" style="background-color: #f2f2f2">
       <div class="flex flex-col lg:flex-row gap-12 h-full items-center justify-center">
         <div class="max-w-xl space-y-4">
           <h2 class="text-base sm:text-lg font-bold uppercase tracking-tight mb-2 text-rose-500">
