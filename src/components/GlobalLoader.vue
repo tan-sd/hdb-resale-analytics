@@ -52,7 +52,31 @@
           }
         },
         {
-            name: "Flat Type Chart",
+          name: 'Scatter Plot Storey Levels',
+          renderMethod: async () => {
+            const chartContainer = document.createElement('div');
+            chartContainer.style.display = "none";
+            document.body.appendChild(chartContainer);
+        
+            const { default: ScatterPlotStories } = await import('@/components/ScatterPlotStoreyGroup.vue');
+            const app = createApp(ScatterPlotStories);
+            app.mount(chartContainer);
+          }
+        },
+        // {
+        //   name: 'Line Chart Floor Group',
+        //   renderMethod: async () => {
+        //     const chartContainer = document.createElement('div');
+        //     chartContainer.style.display = "none";
+        //     document.body.appendChild(chartContainer);
+        
+        //     const { default: LineChartFloorGroup } = await import('@/components/LineChartStoreyGroup.vue');
+        //     const app = createApp(LineChartFloorGroup);
+        //     app.mount(chartContainer);
+        //   },
+        // },
+        {
+            name: "Flat Type Line Chart",
             renderMethod: async() => {
                 const chartContainer = document.createElement('div');
                 chartContainer.style.display = "none";
@@ -60,6 +84,18 @@
 
                 const { default: LineChartFlatType } = await import('@/components/LineChartFlatType.vue');
                 const app = createApp(LineChartFlatType);
+                app.mount(chartContainer);
+            }
+        },
+        {
+          name: "Flat Type Scatter Plot",
+          renderMethod: async() => {
+                const chartContainer = document.createElement('div');
+                chartContainer.style.display = "none";
+                document.body.appendChild(chartContainer);
+
+                const { default: ScatterPlotFlatType } = await import('@/components/ScatterPlotFlatType.vue');
+                const app = createApp(ScatterPlotFlatType);
                 app.mount(chartContainer);
             }
         },
