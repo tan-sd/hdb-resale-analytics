@@ -28,27 +28,31 @@
   
       const preRenderCharts = [
         {
-            name: "Transactions Chart",
-            renderMethod: async() => {
-                const chartContainer = document.createElement('div');
-                chartContainer.style.display = "none";
-                document.body.appendChild(chartContainer);
+          name: "Transactions Chart",
+          renderMethod: async() => {
+            const chartContainer = document.createElement('div');
+            chartContainer.style.display = "none";
+            document.body.appendChild(chartContainer);
 
-                const { default: LineChartTransaction } = await import('@/components/LineChartTransaction.vue');
-                const app = createApp(LineChartTransaction);
-                app.mount(chartContainer);
-            }
+            const { default: LineChartTransaction } = await import('@/components/LineChartTransaction.vue');
+            const app = createApp(LineChartTransaction);
+            const vm = app.mount(chartContainer);
+            app.unmount();
+            document.body.removeChild(chartContainer);
+          }
         },
         { 
-            name: 'Median Chart', 
-            renderMethod: async () => {
+          name: 'Median Chart', 
+          renderMethod: async () => {
             const chartContainer = document.createElement('div');
             chartContainer.style.display = "none";
             document.body.appendChild(chartContainer);
         
             const { default: LineChartMedian } = await import('@/components/LineChartMedian.vue');
             const app = createApp(LineChartMedian);
-            app.mount(chartContainer);
+            const vm = app.mount(chartContainer);
+            app.unmount();
+            document.body.removeChild(chartContainer);
           }
         },
         {
@@ -59,8 +63,10 @@
             document.body.appendChild(chartContainer);
         
             const { default: ScatterPlotStories } = await import('@/components/ScatterPlotStoreyGroup.vue');
-            const app = createApp(ScatterPlotStories);
-            app.mount(chartContainer);
+            const app = createApp(ScatterPlotStories, { preloadMode: true});
+            const vm = app.mount(chartContainer);
+            app.unmount();
+            document.body.removeChild(chartContainer);
           }
         },
         // {
@@ -76,52 +82,60 @@
         //   },
         // },
         {
-            name: "Flat Type Line Chart",
-            renderMethod: async() => {
-                const chartContainer = document.createElement('div');
-                chartContainer.style.display = "none";
-                document.body.appendChild(chartContainer);
+          name: "Flat Type Line Chart",
+          renderMethod: async() => {
+            const chartContainer = document.createElement('div');
+            chartContainer.style.display = "none";
+            document.body.appendChild(chartContainer);
 
-                const { default: LineChartFlatType } = await import('@/components/LineChartFlatType.vue');
-                const app = createApp(LineChartFlatType);
-                app.mount(chartContainer);
-            }
+            const { default: LineChartFlatType } = await import('@/components/LineChartFlatType.vue');
+            const app = createApp(LineChartFlatType);
+            const vm = app.mount(chartContainer);
+            app.unmount();
+            document.body.removeChild(chartContainer);
+          }
         },
         {
           name: "Flat Type Scatter Plot",
           renderMethod: async() => {
-                const chartContainer = document.createElement('div');
-                chartContainer.style.display = "none";
-                document.body.appendChild(chartContainer);
+            const chartContainer = document.createElement('div');
+            chartContainer.style.display = "none";
+            document.body.appendChild(chartContainer);
 
-                const { default: ScatterPlotFlatType } = await import('@/components/ScatterPlotFlatType.vue');
-                const app = createApp(ScatterPlotFlatType);
-                app.mount(chartContainer);
-            }
+            const { default: ScatterPlotFlatType } = await import('@/components/ScatterPlotFlatType.vue');
+            const app = createApp(ScatterPlotFlatType);
+            const vm = app.mount(chartContainer);
+            app.unmount();
+            document.body.removeChild(chartContainer);
+          }
         },
         {
-            name: "Box Plot Price per Sqm",
-            renderMethod: async() => {
-                const chartContainer = document.createElement('div');
-                chartContainer.style.display = "none";
-                document.body.appendChild(chartContainer);
+          name: "Box Plot Price per Sqm",
+          renderMethod: async() => {
+            const chartContainer = document.createElement('div');
+            chartContainer.style.display = "none";
+            document.body.appendChild(chartContainer);
 
-                const { default: BoxPlotPricePerSqm } = await import('@/components/BoxPlotPricePerSqm.vue');
-                const app = createApp(BoxPlotPricePerSqm);
-                app.mount(chartContainer);
-            }
+            const { default: BoxPlotPricePerSqm } = await import('@/components/BoxPlotPricePerSqm.vue');
+            const app = createApp(BoxPlotPricePerSqm);
+            const vm = app.mount(chartContainer);
+            app.unmount();
+            document.body.removeChild(chartContainer);
+          }
         },
         {
-            name: "Dashboard",
-            renderMethod: async() => {
-                const chartContainer = document.createElement('div');
-                chartContainer.style.display = "none";
-                document.body.appendChild(chartContainer);
+          name: "Dashboard",
+          renderMethod: async() => {
+            const chartContainer = document.createElement('div');
+            chartContainer.style.display = "none";
+            document.body.appendChild(chartContainer);
 
-                const { default: Dashboard } = await import('@/components/Dashboard.vue');
-                const app = createApp(Dashboard);
-                app.mount(chartContainer);
-            }
+            const { default: Dashboard } = await import('@/components/Dashboard.vue');
+            const app = createApp(Dashboard);
+            const vm = app.mount(chartContainer);
+            app.unmount();
+            document.body.removeChild(chartContainer);
+          }
         }
       ];
   
