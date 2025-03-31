@@ -20,8 +20,8 @@
                     </div>
                     <Slider
                         :model-value="[selectedYear]"
-                        :min="2006"
-                        :max="2020"
+                        :min="1990"
+                        :max="2023"
                         :step="1"
                         class="w-full mt-2 mb-2"
                         @update:modelValue="updateYear"
@@ -351,8 +351,8 @@ const showJuniorColleges = ref(false);
 const showPolytechnics = ref(false);
 const showUniversities = ref(false);
 
-const selectedYear = ref(2020);
-const currentYear = ref(2020);
+const selectedYear = ref(2023);
+const currentYear = ref(2023);
 const selectedMode = ref("electoral");
 const electoralBoundaries = ref({});
 const planningAreas = ref({});
@@ -368,6 +368,8 @@ const juniorColleges = ref(null);
 const polytechnics = ref(null);
 const universities = ref(null);
 const resaleHDBs = ref(null);
+
+const emit = defineEmits(['areaSelected', 'resetSelection']);
 
 const partyColors = {
     PAP: "#1A56A3",
@@ -391,13 +393,60 @@ let projection;
 let resizeObserver = null;
 let mapGroup = null;
 
+function emitAggregatedStats() {
+  if (!resaleHDBs.value) return;
+  
+  const filteredData = resaleHDBs.value.filter(
+    (d) => String(d.year) === String(selectedYear.value)
+  );
+  
+  const totalUnits = filteredData.length;
+  const totalPrice = d3.sum(filteredData, d => +d["Resale Price"]);
+  
+  const pricePerSqm = d3.median(filteredData, d => {
+      return +d["Resale Price"] / +d["Floor Area Sqm"];
+  });
+  
+  emit('areaSelected', {
+    areaName: 'All Singapore',
+    totalUnits,
+    totalPrice,
+    pricePerSqm,
+    year: selectedYear.value,
+    isAggregated: true,
+    rawData: filteredData,
+  });
+}
+
 function handleSelection(area) {
     if (area) {
         searchQuery.value = area.label;
         selectedArea.value = area;
+
+        const areaName = area.value;
+        const resaleHDBsData = resaleHDBs.value.filter(
+            (d) => d.planning_area === areaName && String(d.year) === String(selectedYear.value)
+        );
+
+        const totalUnits = resaleHDBsData.length;
+        const totalPrice = d3.sum(resaleHDBsData, d => +d["Resale Price"]);
+        
+        const pricePerSqm = d3.median(resaleHDBsData, d => {
+                return +d["Resale Price"] / +d["Floor Area Sqm"];
+        });
+        
+        emit('areaSelected', {
+            areaName,
+            totalUnits,
+            totalPrice,
+            pricePerSqm,
+            year: selectedYear.value,
+            rawData: resaleHDBsData,
+        });
     } else {
         searchQuery.value = "";
         selectedArea.value = null;
+        emitAggregatedStats();
     }
 }
 
@@ -472,6 +521,8 @@ const createZoom = () => {
             d3.select(".map-container").style("cursor", "grab");
         });
 };
+
+
 
 const createLegend = () => {
     const legendContainer = d3.select(legend.value);
@@ -682,6 +733,8 @@ const redrawMap = (forceReset = false) => {
                     .selectAll("path")
                     .attr("stroke", "black")
                     .attr("stroke-width", 0.5);
+                
+                emitAggregatedStats();
             }
         });
 
@@ -832,27 +885,27 @@ function selectAreaFromList(areaName) {
                     }
                 });
 
-            const buildingsInArea = resaleHDBs.value.filter(
-                (d) =>
-                    d.planning_area === areaName &&
-                    String(d.year) === String(selectedYear.value)
-            );
+            // const buildingsInArea = resaleHDBs.value.filter(
+            //     (d) =>
+            //         d.planning_area === areaName &&
+            //         String(d.year) === String(selectedYear.value)
+            // );
 
-            mapGroup.selectAll(".building-dot").remove();
+            // mapGroup.selectAll(".building-dot").remove();
 
-            mapGroup
-                .selectAll(".building-dot")
-                .data(buildingsInArea)
-                .enter()
-                .append("circle")
-                .attr("class", "building-dot")
-                .attr("cx", (d) => projection([+d.Longitude, +d.Latitude])[0])
-                .attr("cy", (d) => projection([+d.Longitude, +d.Latitude])[1])
-                .attr("r", 1)
-                .attr("fill", "#38bdf8")
-                .attr("stroke", "#1e40af")
-                .attr("stroke-width", 0.5)
-                .attr("opacity", 0.8);
+            // mapGroup
+            //     .selectAll(".building-dot")
+            //     .data(buildingsInArea)
+            //     .enter()
+            //     .append("circle")
+            //     .attr("class", "building-dot")
+            //     .attr("cx", (d) => projection([+d.Longitude, +d.Latitude])[0])
+            //     .attr("cy", (d) => projection([+d.Longitude, +d.Latitude])[1])
+            //     .attr("r", 1)
+            //     .attr("fill", "#38bdf8")
+            //     .attr("stroke", "#1e40af")
+            //     .attr("stroke-width", 0.5)
+            //     .attr("opacity", 0.8);
         });
     }
 }
@@ -1237,6 +1290,28 @@ const drawMapContent = () => {
                 nextTick(() => {
                     drawHistogram(areaName);
                 });
+
+                const resaleHDBsData = resaleHDBs.value.filter(
+                    (d) =>
+                        d.planning_area === areaName &&
+                        String(d.year) === String(selectedYear.value)
+                );
+
+                const totalUnits = resaleHDBsData.length;
+                const totalPrice = d3.sum(resaleHDBsData, (d) => +d["Resale Price"]);
+
+                const pricePerSqm = d3.median(resaleHDBsData, (d) => {
+                        return +d["Resale Price"] / +d["Floor Area Sqm"];
+                });
+
+                emit('areaSelected', {
+                    areaName,
+                    totalUnits,
+                    totalPrice,
+                    pricePerSqm,
+                    year: selectedYear.value,
+                    rawData: resaleHDBsData,
+                });
             });
     }
 };
@@ -1253,18 +1328,20 @@ const planningAreaOptions = computed(() =>
 );
 
 const clearSearch = () => {
-    searchQuery.value = "";
-    selectedArea.value = null;
-    selectedAreaInfo.value = null;
-    tooltipLocked.value = false;
+  searchQuery.value = "";
+  selectedArea.value = null;
+  selectedAreaInfo.value = null;
+  tooltipLocked.value = false;
 
-    const container = d3.select("#histogram");
-    container.selectAll("*").remove();
+  const container = d3.select("#histogram");
+  container.selectAll("*").remove();
 
-    d3.select(map.value)
-        .selectAll("path")
-        .attr("stroke", "black")
-        .attr("stroke-width", 0.5);
+  d3.select(map.value)
+    .selectAll("path")
+    .attr("stroke", "black")
+    .attr("stroke-width", 0.5);
+   
+  emitAggregatedStats();
 };
 
 const updateYear = (value) => {
@@ -1406,6 +1483,10 @@ onMounted(async () => {
     window.addEventListener("resize", updateDimensions);
 
     updateDimensions();
+
+    await loadResaleDataForYear(selectedYear.value);
+
+    emitAggregatedStats();
 });
 
 onUnmounted(() => {
@@ -1907,6 +1988,32 @@ watch([selectedYear, selectedMode], async () => {
 
     redrawMap();
     createLegend();
+
+    if (!selectedArea.value) {
+        emitAggregatedStats();
+    } else {
+        const areaName = selectedArea.value.value;
+        const resaleHDBsData = resaleHDBs.value.filter(
+        (d) => d.planning_area === areaName && 
+        String(d.year) === String(selectedYear.value)
+        );
+        
+        const totalUnits = resaleHDBsData.length;
+        const totalPrice = d3.sum(resaleHDBsData, d => +d["Resale Price"]);
+        
+        const pricePerSqm = d3.median(resaleHDBsData, d => {
+            return +d["Resale Price"] / +d["Floor Area Sqm"];
+        });
+        
+        emit('areaSelected', {
+        areaName,
+        totalUnits,
+        totalPrice,
+        pricePerSqm,
+        year: selectedYear.value,
+        rawData: resaleHDBsData,
+        });
+    }
 });
 
 watch(selectedArea, (newArea) => {
