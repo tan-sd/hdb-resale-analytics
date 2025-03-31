@@ -109,7 +109,7 @@ const showBox = ref(true);
 const isPastLastSection = ref(false);
 
 onMounted(() => {
-    ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+    // ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
 
     const handleScroll = () => {
         const scrollY = window.scrollY;
@@ -243,8 +243,3 @@ const steps = [
 
 const currentStep = computed(() => steps[currentStepIndex.value]);
 </script>
-
-<style>
-* {
-  outline: 1px solid red;
-}</style>
