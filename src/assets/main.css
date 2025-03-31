@@ -21,6 +21,13 @@
     font-style: normal;
 }
 
+/*
+ * For debugging purposes, add a red outline to all elements
+ */
+/* * {
+    outline: 1px solid red;
+} */
+
 body {
     background-color: rgb(242, 242, 242) / 1;
 }
