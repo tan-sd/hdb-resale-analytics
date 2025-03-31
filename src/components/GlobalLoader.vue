@@ -124,6 +124,20 @@
           }
         },
         {
+          name: "Box Plot Electoral Boundaries",
+          renderMethod: async() => {
+            const chartContainer = document.createElement('div');
+            chartContainer.style.display = "none";
+            document.body.appendChild(chartContainer);
+
+            const { default: BoxPlotElectoralBoundaries } = await import('@/components/BoxPlotElectoralBoundaries.vue');
+            const app = createApp(BoxPlotElectoralBoundaries);
+            const vm = app.mount(chartContainer);
+            app.unmount();
+            document.body.removeChild(chartContainer);
+          }
+        },
+        {
           name: "Dashboard",
           renderMethod: async() => {
             const chartContainer = document.createElement('div');
