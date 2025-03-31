@@ -21,12 +21,18 @@
 
 <script>
 import * as d3 from "d3";
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, registerRuntimeCompiler, watch } from "vue";
 import { useDataStore } from "../stores/dataStore";
 
 export default {
   name: "ScatterPlotStories",
-  setup() {
+  props: {
+    preloadMode: {
+      type: Boolean,
+      default: false
+    }
+  },
+  setup(props) {
     const canvas = ref(null);
     const svg = ref(null);
     const chartWrapper = ref(null);
@@ -57,6 +63,9 @@ export default {
   }
 
     const drawScatter = (data) => {
+      if (props.preloadMode) return;
+      if (!canvas.value || !svg.value) return; 
+
       const ctx = canvas.value.getContext("2d");
       const svgEl = d3.select(svg.value);
       svgEl.selectAll("*").remove();
@@ -172,23 +181,22 @@ export default {
       window.addEventListener("resize", setDimensions);
 
       watch(
-        () => dataStore.isDataReady,
-        (ready) => {
-          if (ready) {
-            const raw = dataStore.chartData;
-            const data = raw
-              .filter(d => d["Storey Lower"] && d["Storey Upper"] && d["Resale Price Adj 2024"] && d["Floor Area Sqm"])
-              .map(d => ({
-                AvgStorey: (parseInt(d["Storey Lower"]) + parseInt(d["Storey Upper"])) / 2,
-                PricePerSqm: parseFloat(d["Resale Price Adj 2024"]) / parseFloat(d["Floor Area Sqm"]),
-              }))
-              .filter(d => !isNaN(d.AvgStorey) && !isNaN(d.PricePerSqm));
+      [() => dataStore.isDataReady, () => dataStore.chartData],
+      ([ready, raw]) => {
+        if (!ready || !raw) return;
 
-            drawScatter(data);
-          }
-        },
-        { immediate: true }
-      );
+        const data = raw
+          .filter(d => d["Storey Lower"] && d["Storey Upper"] && d["Resale Price Adj 2024"] && d["Floor Area Sqm"])
+          .map(d => ({
+            AvgStorey: (parseInt(d["Storey Lower"]) + parseInt(d["Storey Upper"])) / 2,
+            PricePerSqm: parseFloat(d["Resale Price Adj 2024"]) / parseFloat(d["Floor Area Sqm"]),
+          }))
+          .filter(d => !isNaN(d.AvgStorey) && !isNaN(d.PricePerSqm));
+
+        drawScatter(data);
+      },
+      { immediate: true }
+    );
     });
 
     return {

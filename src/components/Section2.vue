@@ -1,12 +1,13 @@
 <template>
     <section class="w-full min-h-screen py-20 bg-white">
+        <div data-section2="before-steps" class="h-[1vh]"></div>
         <div
             class="w-full px-6 mx-auto grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12"
         >
             <div class="w-full max-w-lg mx-auto">
                 <div
                     class="xl:sticky xl:top-64 fixed bottom-3 left-0 right-0 z-10 px-4 xl:px-0"
-                    :class="{ hidden: !showBox }"
+                    :class="['transition-opacity duration-300', { 'opacity-0 pointer-events-none': !showBox, 'opacity-100': showBox }]"
                 >
                     <div
                         class="border rounded-lg backdrop-blur-[6.5px] p-6 space-y-6 bg-white relative overflow-hidden shadow-md"
@@ -74,11 +75,11 @@
                         class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
                     />
 
-                    <ScatterPlotFlatType
+                    <!-- <ScatterPlotFlatType
                         ref="flatTypeScatterChartRef"
                         v-show="currentStepIndex === 2"
                         class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                    />
+                    /> -->
 
                     <BoxPlotPricePerSqm
                         ref="boxPlotPricePerSqmChartRef"
@@ -93,10 +94,12 @@
                     <div
                         v-for="(step, index) in steps"
                         :key="index"
-                        :data-title="index"
+                        :data-section2="index"
                         class="h-[99vh]"
                     ></div>
                     </div>
+
+                    <div data-section2="after-steps" class="h-[1vh]"></div>
                 </div>
             </div>
         </div>
@@ -109,7 +112,7 @@ import ScatterPlotStoreyGroup from './ScatterPlotStoreyGroup.vue';
 import LineChartStoreyGroup from './LineChartStoreyGroup.vue';
 import ScatterPlotFlatType from './ScatterPlotFlatType.vue';
 import BoxPlotPricePerSqm from './BoxPlotPricePerSqm.vue';
-import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue';
+import { ref, computed, onMounted, watch, onBeforeUnmount, watchEffect } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
@@ -125,6 +128,8 @@ const flatTypeLineChartRef = ref(null);
 const flatTypeScatterChartRef = ref(null);
 const boxPlotPricePerSqmChartRef = ref(null);
 const hasDrawnLineChart = ref(false);
+const isAfterSteps = ref(false);
+const isBeforeSteps = ref(true);
 
 const steps = [
     {
@@ -227,60 +232,70 @@ const steps = [
 
 const currentStep = computed(() => steps[currentStepIndex.value]);
 
-const handleScroll = () => {
-    const scrollY = window.scrollY;
-    const isSmallScreen = window.innerWidth < 1280;
-    const lastSection = document.querySelector(
-        `[data-title="${steps[steps.length - 1].title}"]`
-    );
-
-    if (lastSection) {
-        const lastSectionBottom =
-            lastSection.getBoundingClientRect().bottom;
-        isPastLastSection.value = lastSectionBottom < window.innerHeight / 2;
-    }
-    if (isSmallScreen) {
-        showBox.value = scrollY > 600 && !isPastLastSection.value;
-    } else {
-        showBox.value = true;
-    }
-};
-
 onMounted(() => {
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
+  steps.forEach((step, index) => {
+    const triggerElement = document.querySelector(`[data-section2="${index}"]`);
 
-    steps.forEach((step, index) => {
-        const triggerElement = document.querySelector(
-            `[data-title="${index}"]`
-        );
+    if (triggerElement) {
+      const trigger = ScrollTrigger.create({
+        trigger: triggerElement,
+        start: "top center",
+        end: "bottom center",
+        onEnter: () => {
+          currentStepIndex.value = index;
+        },
+        onEnterBack: () => {
+          currentStepIndex.value = index;
+        },
+        onUpdate: (self) => {
+          progress.value = Math.round(self.progress * 100);
+        }
+      });
 
-        if (triggerElement) {
-            const trigger = ScrollTrigger.create({
-                trigger: triggerElement,
-                start: "top center",
-                end: "bottom center",
-                onEnter: () => {
-                    currentStepIndex.value = index;
-                },
-                onEnterBack: () => {
-                    currentStepIndex.value = index;
-                },
-                onUpdate: (self) => {
-                    const progressValue = Math.round(self.progress * 100);
-                    progress.value = progressValue;
-                },
-            });
+      triggers.value.push(trigger);
+    }
+  });
 
-            triggers.value.push(trigger);
+  const afterStepsTrigger = document.querySelector('[data-section2="after-steps"]');
+  if (afterStepsTrigger) {
+    const trigger = ScrollTrigger.create({
+      trigger: afterStepsTrigger,
+      start: "top center",
+      end: "bottom center",
+      onEnter: () => {
+        isAfterSteps.value = true;
+      },
+      onEnterBack: () => {
+        isAfterSteps.value = false;
+      }
+    });
+    triggers.value.push(trigger);
+  }
+  
+  const beforeStepsTrigger = document.querySelector('[data-section2="before-steps"]');
+  if (beforeStepsTrigger) {
+    const trigger = ScrollTrigger.create({
+        trigger: beforeStepsTrigger,
+        start: "top center",
+        end: "bottom center",
+        onEnter: () => {
+            isBeforeSteps.value = false;
+        },
+        onEnterBack: () => {
+            isBeforeSteps.value = true;
         }
     });
+    triggers.value.push(trigger);
+  }
 
-    ScrollTrigger.refresh();
+  ScrollTrigger.refresh();
+});
+
+watchEffect(() => {
+    showBox.value = !isBeforeSteps.value && !isAfterSteps.value;
 });
 
 onBeforeUnmount(() => {
-    window.removeEventListener("scroll", handleScroll);
     triggers.value.forEach((trigger) => trigger?.kill());
     triggers.value = [];
 });

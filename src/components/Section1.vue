@@ -1,12 +1,13 @@
 <template>
     <section class="pt-40 w-full min-h-screen py-20 bg-white">
+        <div data-section1="before-steps" class="h-[1vh]"></div>
         <div
             class="w-full px-6 mx-auto grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12"
         >
             <div class="w-full max-w-lg mx-auto">
                 <div
                     class="xl:sticky xl:top-64 fixed bottom-3 left-0 right-0 z-10 px-4 xl:px-0"
-                    :class="{ hidden: !showBox }"
+                    :class="['transition-opacity duration-300', { 'opacity-0 pointer-events-none': !showBox, 'opacity-100': showBox }]"
                 >
                     <div
                         class="border rounded-lg backdrop-blur-[6.5px] p-6 space-y-6 bg-white relative overflow-hidden shadow-md"
@@ -82,10 +83,12 @@
                         <div
                             v-for="(step, index) in steps"
                             :key="index"
-                            :data-title="step.title"
+                            :data-section1="step.title"
                             class="h-[99vh]"
                         ></div>
                     </div>
+
+                    <div data-section1="after-steps" class="h-[1vh]"></div>
                 </div>
             </div>
         </div>
@@ -95,7 +98,7 @@
 <script setup>
 import LineChartMedian from "@/components/LineChartMedian.vue";
 import LineChartTransaction from "@/components/LineChartTransaction.vue";
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, onMounted, onBeforeUnmount, watchEffect } from "vue";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
@@ -107,36 +110,13 @@ const progress = ref(0);
 const triggers = ref([]);
 const showBox = ref(true);
 const isPastLastSection = ref(false);
+const isAfterSteps = ref(false);
+const isBeforeSteps = ref(true);
 
 onMounted(() => {
-    // ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-
-    const handleScroll = () => {
-        const scrollY = window.scrollY;
-        const isSmallScreen = window.innerWidth < 1280;
-        const lastSection = document.querySelector(
-            `[data-title="${steps[steps.length - 1].title}"]`
-        );
-
-        if (lastSection) {
-            const lastSectionBottom =
-                lastSection.getBoundingClientRect().bottom;
-            isPastLastSection.value =
-                lastSectionBottom < window.innerHeight / 2;
-        }
-        if (isSmallScreen) {
-            showBox.value = scrollY > 600 && !isPastLastSection.value;
-        } else {
-            showBox.value = true;
-        }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    handleScroll();
-
     steps.forEach((step, index) => {
         const triggerElement = document.querySelector(
-            `[data-title="${step.title}"]`
+            `[data-section1="${step.title}"]`
         );
 
         if (triggerElement) {
@@ -144,8 +124,6 @@ onMounted(() => {
                 trigger: triggerElement,
                 start: "top center",
                 end: "bottom center",
-                // For debugging
-                // markers: true,
                 onEnter: () => {
                     currentStepIndex.value = index;
                     activeYears.value = step.years;
@@ -166,11 +144,46 @@ onMounted(() => {
         }
     });
 
+    const afterStepsTrigger = document.querySelector('[data-section1="after-steps"]');
+    if (afterStepsTrigger) {
+        const trigger = ScrollTrigger.create({
+            trigger: afterStepsTrigger,
+            start: 'top center',
+            end: 'bottom center',
+            onEnter: () => {
+            isAfterSteps.value = true;
+            },
+            onEnterBack: () => {
+            isAfterSteps.value = false;
+            }
+        });
+        triggers.value.push(trigger);
+    }
+
+    const beforeStepsTrigger = document.querySelector('[data-section1="before-steps"]');
+    if (beforeStepsTrigger) {
+        const trigger = ScrollTrigger.create({
+            trigger: beforeStepsTrigger,
+            start: "top center",
+            end: "bottom center",
+            onEnter: () => {
+                isBeforeSteps.value = false;
+            },
+            onEnterBack: () => {
+                isBeforeSteps.value = true;
+            }
+        });
+    triggers.value.push(trigger);
+  }
+
     ScrollTrigger.refresh();
 });
 
+watchEffect(() => {
+    showBox.value = !isBeforeSteps.value && !isAfterSteps.value;
+});
+
 onBeforeUnmount(() => {
-    window.removeEventListener("scroll", handleScroll);
     triggers.value.forEach((trigger) => {
         if (trigger) trigger.kill();
     });
@@ -181,7 +194,8 @@ const steps = [
     {
         title: "1990–1993: Early Stagnation in a Restricted Market",
         description: [
-            "During this period, the HDB resale market was still nascent and heavily restricted. There were no CPF housing grants available for resale buyers, meaning that first-time buyers had little financial support if they chose to buy on the open market. Eligibility was also tightly controlled — only families with a valid family nucleus could buy resale flats, and singles were completely excluded. With limited access and no incentives, demand for resale flats was low, and prices remained relatively stagnant."
+            "In the early 1990s, the HDB resale market was still finding its footing. Regulations were tight, and opportunities for buyers were limited. There were no CPF housing grants for resale purchases, which meant first-time buyers had little financial help if they opted for the open market.",
+            "Eligibility was equally stringent — only families with a valid family nucleus could buy resale flats, while singles were left out entirely. With access so restricted and few incentives in place, the market saw low demand and prices remained largely flat.",
         ],
         years: [
             1990, 1991, 1992, 1993
@@ -190,42 +204,48 @@ const steps = [
     {
         title: "1994–1996: Policy Liberalisation and a Surge in Demand",
         description: [
-            "The market began to transform in 1994 with the introduction of the CPF Housing Grant. This policy provided up to $30,000 to first-time buyers purchasing resale flats near their parents, making resale flats significantly more affordable and competitive with BTO flats. In 1995, the government also expanded eligibility by allowing singles aged 35 and above to purchase resale flats, further increasing demand. These changes broadened access to the market and triggered a sharp surge in resale transactions and prices."
+            "The market began to shift in 1994 with the introduction of the CPF Housing Grant. First-time buyers purchasing resale flats near their parents could now receive up to $30,000 in support, making resale flats far more affordable and competitive with BTO options.",
+            "In 1995, the government further widened access by allowing singles aged 35 and above to purchase resale flats. These key policy changes opened the floodgates for a broader pool of buyers, triggering a sharp surge in resale demand — and with it, a rapid increase in transaction volumes and prices.",
         ],
         years: [1994, 1995, 1996],
     },
     {
         title: "1997–2006: Market Cooling through Supply and Usage Restrictions",
         description: [
-            "Following the mid-90s spike, the government began tightening policy levers to control demand and maintain long-term affordability. In 1997, CPF usage was restricted for the purchase of older flats, reducing financing options for aging resale units. The Minimum Occupation Period (MOP) was also enforced more stringently, requiring flat owners to live in their homes for at least five years before selling, which limited speculative activity. During the early 2000s, HDB scaled back BTO launches in response to oversupply concerns. These combined measures led to a long period of price decline and market plateau."
+            "After the rapid surge in the mid-90s, the government moved to cool the market and safeguard long-term affordability. In 1997, CPF usage was restricted for the purchase of older flats, reducing financing options for aging resale units. The Minimum Occupation Period (MOP) was also more strictly enforced, requiring flat owners to live in their homes for at least five years before they could sell — a move aimed at curbing speculative activity.",
+            "In the early 2000s, HDB also scaled back the launch of new BTO flats in response to oversupply concerns. These combined measures — tighter financing rules, stricter eligibility, and reduced supply — contributed to a prolonged period of declining prices and a relatively stagnant resale market.",
         ],
         years: [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006],
     },
     {
         title: "2007–2012: Demand Revival Amid Supply Constraints",
         description: [
-            "As population growth resumed and household formation increased, the resale market regained momentum. New flat supply had not kept up with demand, resulting in long BTO waiting times and pushing many first-time buyers toward the resale market. At the same time, the government enhanced grant support for resale buyers — the Additional CPF Housing Grant (AHG) and Special CPF Housing Grant (SHG) were improved, increasing affordability for lower- and middle-income households. These policies, combined with continued supply lag, caused resale prices to climb steadily."
+            "As population growth picked up and household formation accelerated, the HDB resale market began to regain momentum. New flat supply had not kept pace with rising demand, leading to long BTO waiting times and pushing many first-time buyers toward the more accessible resale market.",
+            "To improve affordability, the government enhanced support schemes such as the Additional CPF Housing Grant (AHG) and the Special CPF Housing Grant (SHG), particularly for lower- and middle-income households. With demand rising and new supply lagging behind, resale prices climbed steadily throughout this period.",
         ],
         years: [2007, 2008, 2009, 2010, 2011, 2012],
     },
     {
         title: "2013–2018: Cooling Measures and Loan Restrictions Stabilise the Market",
         description: [
-            "In response to rising prices and concerns about overheating, the government introduced a series of cooling measures to slow demand. In 2011, the Additional Buyer’s Stamp Duty (ABSD) was introduced, imposing higher taxes on property purchases by PRs, foreigners, and second-time buyers. Its effects became more prominent in the following years. In 2013, two significant loan curbs were implemented: the Total Debt Servicing Ratio (TDSR), which limited total loan repayments to 60% of gross monthly income, and the Mortgage Servicing Ratio (MSR), which capped HDB loan repayments at 30%. These rules effectively reduced loan sizes and borrowing power for many buyers. In 2018, ABSD was increased again, particularly targeting investors and upgraders. These measures collectively cooled the market, leading to a plateau in resale prices."
+            "To curb rising prices and cool an overheating market, the government introduced several policy interventions. The Additional Buyer’s Stamp Duty (ABSD), first implemented in 2011, began to bite as it raised costs for PRs, foreigners, and second-home buyers.",
+            "In 2013, tighter loan rules followed: the Total Debt Servicing Ratio (TDSR) and Mortgage Servicing Ratio (MSR) reduced borrowing capacity. ABSD was raised again in 2018, further dampening investor demand. These measures collectively slowed demand and stabilised the market, leading to a prolonged period of flat resale prices.",
         ],
         years: [2013, 2014, 2015, 2016, 2017, 2018],
     },
     {
         title: "2019–2021: Recovery Driven by Grant Reform and Pandemic Effects",
         description: [
-            "The resale market rebounded from 2019, largely due to renewed affordability initiatives. The Enhanced CPF Housing Grant (EHG) was launched in 2019, consolidating and replacing AHG and SHG. This grant provided up to $80,000 for eligible first-time buyers and could be applied to both BTO and resale flats. Simultaneously, the CPF usage policy was tightened for flats with less than 60 years of lease remaining, nudging demand toward newer resale flats. When the COVID-19 pandemic hit in 2020, BTO construction delays caused many buyers to turn to resale as a faster route to homeownership. The shift to remote work also increased demand for larger or better-located flats. These factors collectively created a demand surge, driving prices up through 2020 and 2021."
+            "The resale market rebounded in 2019, fuelled by new affordability measures. The Enhanced CPF Housing Grant (EHG) replaced previous schemes, offering up to $80,000 for eligible first-time buyers — applicable to both BTO and resale flats. At the same time, CPF usage rules were tightened for older flats, steering demand toward newer resale units.",
+            "When COVID-19 struck in 2020, BTO construction delays pushed more buyers to the resale market. The rise of remote work also spurred demand for larger or better-located homes. Combined, these factors triggered a sharp rise in resale prices.",
         ],
         years: [2019, 2020, 2021],
     },
     {
         title: "2022–2023: Moderation Through Renewed Cooling Measures",
         description: [
-            "As prices continued rising post-pandemic, the government responded with new rounds of cooling measures aimed at tempering demand and ensuring long-term affordability. In December 2021 and again in September 2022, HDB introduced policies that included stricter stress-testing for HDB loan applicants and a mandatory 15-month wait-out period for private property owners before they could purchase a resale flat. These measures were designed to reduce demand from cash-rich buyers and ensure that public housing remained accessible to genuine owner-occupiers. By 2023, the resale market remained elevated but more stable, reflecting the balancing act between sustaining flat values and preventing excessive speculation."
+            "As post-pandemic prices continued to climb, the government introduced fresh cooling measures to rein in demand and protect affordability. In December 2021 and September 2022, policies were rolled out to tighten stress-testing for HDB loan applicants and impose a 15-month wait-out period for private property owners before buying resale flats.",
+            "These moves targeted wealthier buyers and aimed to keep public housing accessible to genuine owner-occupiers. By 2023, resale prices remained elevated but had begun to stabilise, reflecting efforts to curb speculation without undermining home values.",
         ],
         years: [2022, 2023],
     },
