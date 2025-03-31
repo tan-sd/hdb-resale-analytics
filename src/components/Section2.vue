@@ -1,47 +1,103 @@
 <template>
-    <section class="w-full min-h-screen px-8 py-20 bg-white">
+    <section class="w-full min-h-screen py-20 bg-white">
         <div
-            class="max-w-7xl mx-auto flex flex-col lg:flex-row items-start justify-between gap-12"
+            class="w-full px-6 mx-auto grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12"
         >
-            <div class="w-full lg:w-2/5 space-y-6">
-                <div>
-                    <h2
-                        class="text-3xl md:text-5xl font-bold mb-4 uppercase tracking-tight section-title"
+            <div class="w-full max-w-lg mx-auto">
+                <div
+                    class="xl:sticky xl:top-64 fixed bottom-3 left-0 right-0 z-10 px-4 xl:px-0"
+                    :class="{ hidden: !showBox }"
+                >
+                    <div
+                        class="border rounded-lg backdrop-blur-[6.5px] p-6 space-y-6 bg-white relative overflow-hidden shadow-md"
                     >
-                        Factors
-                    </h2>
-                    <div>
-                        <div
-                            v-for="step in steps"
-                            :key="step.title"
-                            :data-title="step.title"
-                            class="min-h-[80vh] flex flex-col justify-content space-y-2"
+                        <h2
+                            class="text-sm sm:text-base font-bold uppercase tracking-tight mb-3 section-title"
                         >
-                            <p
-                                class="uppercase text-sm text-muted-foreground font-semibold tracking-wide"
-                            >
-                                {{ step.title }}
-                            </p>
+                            Factors
+                        </h2>
 
-                            <div
-                                class="space-y-5 text-sm text-muted-foreground leading-relaxed"
-                            >
+                        <div class="space-y-3">
+                            <p class="flex items-center gap-2 uppercase text-xs md:text-sm font-semibold tracking-wide">
+                                <span
+                                    class="text-white font-bold w-7 h-7 flex items-center justify-center rounded-full text-sm"
+                                    style="background-color: hsl(353 75% 53%)"
+                                >
+                                    {{ currentStep.number }}
+                                </span>
+                                {{ currentStep.title }}
+                            </p>
+                            <div class="space-y-4 text-xs md:text-sm leading-relaxed">
                                 <p
-                                    v-for="(para, index) in step.description"
-                                    :key="index"
+                                    v-for="(para, idx) in currentStep.description"
+                                    :key="idx"
                                 >
                                     {{ para }}
                                 </p>
+                            </div>
+
+                            <div
+                                class="absolute bottom-0 left-0 w-full h-2 overflow-hidden rounded-b-[calc(1rem-1px)] bg-gray-200"
+                            >
+                                <div
+                                    class="h-full"
+                                    style="background-color: hsl(353 75% 53%)"
+                                    :style="{ width: progress + '%' }"
+                                ></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="w-full lg:w-3/5 lg:sticky lg:top-32">
-                <!-- <ScatterPlotStories /> -->
-                <LineChartFlatType />
-                <BoxPlotPricePerSqm />
+            <div
+            class="flex-1 relative"
+            :style="{ height: `${steps.length * 115}vh` }"
+            >
+                <div class="sticky top-12 xl:top-28 w-full flex justify-center">
+                    <div class="relative w-full h-[500px] max-w-[1000px]">
+                    <ScatterPlotStoreyGroup
+                        ref="storeyScatterChartRef"
+                        v-show="currentStepIndex === 0"
+                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-100"
+                    />
+
+                    <!-- <LineChartStoreyGroup
+                        ref="storeyLineChartRef"
+                        v-show="currentStepIndex === 1 || currentStepIndex === 2"
+                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                    /> -->
+
+                    <LineChartFlatType
+                        ref="flatTypeLineChartRef"
+                        v-show="currentStepIndex === 1"
+                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                    />
+
+                    <ScatterPlotFlatType
+                        ref="flatTypeScatterChartRef"
+                        v-show="currentStepIndex === 2"
+                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                    />
+
+                    <BoxPlotPricePerSqm
+                        ref="boxPlotPricePerSqmChartRef"
+                        v-show="currentStepIndex === 3 || currentStepIndex === 4"
+                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                    />
+                    </div>
+                </div>
+
+                <div class="absolute inset-0 pointer-events-none">
+                    <div class="space-y-[1vh]">
+                    <div
+                        v-for="(step, index) in steps"
+                        :key="index"
+                        :data-title="index"
+                        class="h-[99vh]"
+                    ></div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -49,13 +105,34 @@
 
 <script setup>
 import LineChartFlatType from './LineChartFlatType.vue';
-import ScatterPlotStories from './ScatterPlotStories.vue';
+import ScatterPlotStoreyGroup from './ScatterPlotStoreyGroup.vue';
+import LineChartStoreyGroup from './LineChartStoreyGroup.vue';
+import ScatterPlotFlatType from './ScatterPlotFlatType.vue';
 import BoxPlotPricePerSqm from './BoxPlotPricePerSqm.vue';
+import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+gsap.registerPlugin(ScrollTrigger);
+
+const currentStepIndex = ref(0);
+const progress = ref(0);
+const triggers = ref([]);
+const showBox = ref(true);
+const isPastLastSection = ref(false);
+const storeyScatterChartRef = ref(null);
+const storeyLineChartRef = ref(null);
+const flatTypeLineChartRef = ref(null);
+const flatTypeScatterChartRef = ref(null);
+const boxPlotPricePerSqmChartRef = ref(null);
+const hasDrawnLineChart = ref(false);
+
 const steps = [
     {
-        title: "Stories",
+        number: 1,
+        title: "Storey Levels",
         description: [
-            "lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
         ],
         years: [
             1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
@@ -64,33 +141,220 @@ const steps = [
             2023,
         ],
     },
+    // {
+    //     number: 1,
+    //     title: "Storey Levels",
+    //     description: [
+    //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
+    //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+    //     ],
+    //     years: [
+    //         1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
+    //         2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
+    //         2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022,
+    //         2023,
+    //     ],
+    // },
+    // {
+    //     number: 1,
+    //     title: "Storey Levels",
+    //     description: [
+    //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
+    //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+    //     ],
+    //     years: [
+    //         1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
+    //         2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
+    //         2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022,
+    //         2023,
+    //     ],
+    // },
     {
-        title: "Flat types and sizes",
+        number: 2,
+        title: "Flat Types & Sizes",
         description: [
-            "lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
         ],
         years: [1990, 1991, 1992, 1993, 1994],
     },
     {
-        title: "Price per square metre HDB in different planning areas",
+        number: 2,
+        title: "Flat Types & Sizes",
         description: [
-            "lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+        ],
+        years: [1990, 1991, 1992, 1993, 1994],
+    },
+    {
+        number: 3,
+        title: "Price per sqm by Planning Area",
+        description: [
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
         ],
         years: [1994, 1995, 1996],
     },
     {
-        title: "Number of amenities and distance to amenities",
+        number: 3,
+        title: "Price per sqm by Planning Area",
         description: [
-            "The number of amenities and distance to amenities are important factors that influence the resale price of HDB flats.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+        ],
+        years: [1994, 1995, 1996],
+    },
+    {
+        number: 4,
+        title: "Amenities & Accessibility",
+        description: [
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
         ],
         years: [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006],
     },
     {
-        title: "Electoral boundaries",
+        number: 5,
+        title: "Electoral Boundaries",
         description: [
-            "Grant enhancements and limited BTO supply pushed resale prices higher.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
         ],
         years: [2007, 2008, 2009, 2010, 2011, 2012, 2013],
     },
 ];
+
+const currentStep = computed(() => steps[currentStepIndex.value]);
+
+const handleScroll = () => {
+    const scrollY = window.scrollY;
+    const isSmallScreen = window.innerWidth < 1280;
+    const lastSection = document.querySelector(
+        `[data-title="${steps[steps.length - 1].title}"]`
+    );
+
+    if (lastSection) {
+        const lastSectionBottom =
+            lastSection.getBoundingClientRect().bottom;
+        isPastLastSection.value = lastSectionBottom < window.innerHeight / 2;
+    }
+    if (isSmallScreen) {
+        showBox.value = scrollY > 600 && !isPastLastSection.value;
+    } else {
+        showBox.value = true;
+    }
+};
+
+onMounted(() => {
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    steps.forEach((step, index) => {
+        const triggerElement = document.querySelector(
+            `[data-title="${index}"]`
+        );
+
+        if (triggerElement) {
+            const trigger = ScrollTrigger.create({
+                trigger: triggerElement,
+                start: "top center",
+                end: "bottom center",
+                onEnter: () => {
+                    currentStepIndex.value = index;
+                },
+                onEnterBack: () => {
+                    currentStepIndex.value = index;
+                },
+                onUpdate: (self) => {
+                    const progressValue = Math.round(self.progress * 100);
+                    progress.value = progressValue;
+                },
+            });
+
+            triggers.value.push(trigger);
+        }
+    });
+
+    ScrollTrigger.refresh();
+});
+
+onBeforeUnmount(() => {
+    window.removeEventListener("scroll", handleScroll);
+    triggers.value.forEach((trigger) => trigger?.kill());
+    triggers.value = [];
+});
+
+watch(currentStepIndex, (newIndex) => {
+  const showScatter = newIndex === 0;
+//   const showLineChart = newIndex === 1 || newIndex === 2;
+  const showFlatCharts = newIndex === 1;
+  const showScatterFlat = newIndex === 2;
+  const showBoxPlot = newIndex === 3 || newIndex === 4;
+
+  gsap.to(storeyScatterChartRef.value?.$el, {
+    opacity: showScatter ? 1 : 0,
+    duration: 0.3,
+    ease: 'power2.out',
+  });
+
+//   gsap.to(storeyLineChartRef.value?.$el, {
+//     opacity: showLineChart ? 1 : 0,
+//     duration: 0.3,
+//     ease: 'power2.out',
+//     onStart: () => {
+//       if (showLineChart && !hasDrawnLineChart.value && typeof storeyLineChartRef.value?.resizeAndRedraw === 'function') {
+//         storeyLineChartRef.value.resizeAndRedraw();
+//         hasDrawnLineChart.value = true;
+//       }
+
+//       if (newIndex === 2) {
+//         storeyLineChartRef.value?.highlightLines(["Very Low", "High"]);
+//       } else {
+//         storeyLineChartRef.value?.highlightLines([]);
+//       }
+//     }
+//   });
+
+  gsap.to(flatTypeLineChartRef.value?.$el, {
+    opacity: showFlatCharts ? 1 : 0,
+    duration: 0.3,
+    ease: 'power2.out',
+    onStart: () => {
+      if (typeof flatTypeLineChartRef.value?.resizeAndRedraw === 'function') {
+        flatTypeLineChartRef.value.resizeAndRedraw();
+      }
+    }
+  });
+
+  gsap.to(flatTypeScatterChartRef.value?.$el, {
+    opacity: showScatterFlat ? 1 : 0,
+    duration: 0.3,
+    ease: 'power2.out',
+    onStart: () => {
+        if (showScatterFlat && typeof flatTypeScatterChartRef.value?.handleResize === 'function') {
+            flatTypeScatterChartRef.value.handleResize();
+            }
+        }
+    });
+
+    gsap.to(boxPlotPricePerSqmChartRef.value?.$el, {
+        opacity: showBoxPlot ? 1 : 0,
+        duration: 0.3,
+        ease: 'power2.out',
+        onStart: () => {
+            if (showBoxPlot && typeof boxPlotPricePerSqmChartRef.value?.handleResize === 'function') {
+                boxPlotPricePerSqmChartRef.value.resizeAndRedraw();
+            }
+
+            if (newIndex === 3 && typeof boxPlotPricePerSqmChartRef.value?.sortToOriginalOrder === 'function') {
+                boxPlotPricePerSqmChartRef.value.sortToOriginalOrder();
+            }
+
+            if (newIndex === 4 && typeof boxPlotPricePerSqmChartRef.value?.sortByMedianDescending === 'function') {
+                boxPlotPricePerSqmChartRef.value.sortByMedianDescending();
+            }
+        }
+    });
+});
 </script>
