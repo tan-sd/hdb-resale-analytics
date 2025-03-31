@@ -3,14 +3,15 @@ import { defineStore } from 'pinia';
 import * as d3 from 'd3';
 
 export const useDataStore = defineStore('dataStore', () => {
-  const chartData = ref(null);
+  let rawChartData = null;
+  const chartData = computed(() => rawChartData ?? []);
   const yearMedians = ref([]);
   const yearCounts = ref([]);
   const yearFlatTypeMedians = ref([]);
   const storeyPriceScatter = ref([]);
   const pricePerSqmByPlanningArea = ref([]);
   
-  const isDataLoaded = computed(() => chartData.value !== null);
+  const isDataLoaded = computed(() => rawChartData !== null);
   const isDataReady = computed(() => yearMedians.value.length > 0);
 
   async function loadData() {
@@ -54,7 +55,7 @@ export const useDataStore = defineStore('dataStore', () => {
         d3.csv("data/resale_prices_cleaned/HDBPriceWithSubzone_2023.csv"),
       ]);
 
-      chartData.value = data.flat();
+      rawChartData = data.flat();
 
       preprocessData();
     } catch (error) {
@@ -63,10 +64,10 @@ export const useDataStore = defineStore('dataStore', () => {
   }
 
   function preprocessData() {
-    if (!chartData.value) return;
+    if (!rawChartData) return;
 
-    const groupedByYear = d3.group(chartData.value, (d) => d.Year);
-    const groupedByArea = d3.group(chartData.value, (d) => d["Planning Area"]);
+    const groupedByYear = d3.group(rawChartData, (d) => d.Year);
+    const groupedByArea = d3.group(rawChartData, (d) => d["Planning Area"]);
 
     const processedYearMedians = [];
     const processedYearCounts = [];
@@ -148,6 +149,7 @@ export const useDataStore = defineStore('dataStore', () => {
   }
 
   return {
+    rawChartData,
     chartData,
     yearMedians,
     yearCounts,
