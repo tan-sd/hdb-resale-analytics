@@ -112,11 +112,15 @@ export const useDataStore = defineStore('dataStore', () => {
     });
 
     groupedByArea.forEach((entries, area) => {
-      const values = entries.map((d) => {
-        const price = parseFloat(d["Resale Price Adj 2024"]);
-        const sqm = parseFloat(d["Floor Area Sqm"]);
-        return sqm > 0 ? price / sqm : null;
-      }).filter((v) => !isNaN(v));
+      if (!area || area.trim() === "") return;
+
+      const values = entries
+        .map((d) => {
+          const price = parseFloat(d["Resale Price Adj 2024"]);
+          const sqm = parseFloat(d["Floor Area Sqm"]);
+          return sqm > 0 ? price / sqm : null;
+        })
+        .filter((v) => !isNaN(v));
     
       if (values.length > 0) {
         processedBoxplot.push({
