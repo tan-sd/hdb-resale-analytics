@@ -86,6 +86,12 @@
                         v-show="currentStepIndex === 3 || currentStepIndex === 4"
                         class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
                     />
+
+                    <BoxPlotElectoralBoundaries
+                        ref="boxPlotElectoralBoundariesChartRef"
+                        v-show="currentStepIndex === 6"
+                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                    />
                     </div>
                 </div>
 
@@ -112,6 +118,7 @@ import ScatterPlotStoreyGroup from './ScatterPlotStoreyGroup.vue';
 import LineChartStoreyGroup from './LineChartStoreyGroup.vue';
 import ScatterPlotFlatType from './ScatterPlotFlatType.vue';
 import BoxPlotPricePerSqm from './BoxPlotPricePerSqm.vue';
+import BoxPlotElectoralBoundaries from './BoxPlotElectoralBoundaries.vue';
 import { ref, computed, onMounted, watch, onBeforeUnmount, watchEffect } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -127,6 +134,7 @@ const storeyLineChartRef = ref(null);
 const flatTypeLineChartRef = ref(null);
 const flatTypeScatterChartRef = ref(null);
 const boxPlotPricePerSqmChartRef = ref(null);
+const boxPlotElectoralBoundariesChartRef = ref(null);
 const hasDrawnLineChart = ref(false);
 const isAfterSteps = ref(false);
 const isBeforeSteps = ref(true);
@@ -306,6 +314,7 @@ watch(currentStepIndex, (newIndex) => {
   const showFlatCharts = newIndex === 1;
   const showScatterFlat = newIndex === 2;
   const showBoxPlot = newIndex === 3 || newIndex === 4;
+  const showBoxPlotElectoral = newIndex === 6;
 
   gsap.to(storeyScatterChartRef.value?.$el, {
     opacity: showScatter ? 1 : 0,
@@ -368,6 +377,17 @@ watch(currentStepIndex, (newIndex) => {
 
             if (newIndex === 4 && typeof boxPlotPricePerSqmChartRef.value?.sortByMedianDescending === 'function') {
                 boxPlotPricePerSqmChartRef.value.sortByMedianDescending();
+            }
+        }
+    });
+
+    gsap.to(boxPlotElectoralBoundariesChartRef.value?.$el, {
+        opacity: showBoxPlotElectoral ? 1 : 0,
+        duration: 0.3,
+        ease: 'power2.out',
+        onStart: () => {
+            if (showBoxPlotElectoral && typeof boxPlotElectoralBoundariesChartRef.value?.resizeAndRedraw === 'function') {
+                boxPlotElectoralBoundariesChartRef.value.resizeAndRedraw();
             }
         }
     });
