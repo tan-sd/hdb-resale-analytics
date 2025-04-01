@@ -32,8 +32,8 @@
                                 <p
                                     v-for="(para, idx) in currentStep.description"
                                     :key="idx"
+                                    v-html = "para"
                                 >
-                                    {{ para }}
                                 </p>
                             </div>
 
@@ -144,8 +144,8 @@ const steps = [
         number: 1,
         title: "Storey Levels",
         description: [
-            "The graph shows a clear positive relationship between storey level and HDB resale prices: as floor height increases, so does the average price per square meter. Flats on lower floors (0–5 storeys) average just over $4,000 per sqm, while those on the highest floors (45–51 storeys) exceed $12,000. Notable price jumps occur between 20–25 and 25–30 storeys, and again between 30–35 and 35–40, suggesting that higher floors command a premium.",
-            "This pattern likely reflects buyer preferences for unblocked views, better ventilation, and greater privacy on higher floors (URA, 2020). Top-floor units may also include premium features or layouts. Over time, high-rise living has become more desirable, linked to lifestyle shifts and perceived prestige (HDB, 2021). However, price growth appears to taper off beyond the 45th storey, possibly indicating diminishing marginal value at extreme heights. Overall, the storey level serves as a strong proxy for both value and demand in the resale market.",
+            "The graph shows a clear positive relationship between <span class=\"font-semibold\">storey level</span> and HDB resale prices: as floor height increases, so does the average price per square meter. Flats on lower floors (0–5 storeys) average just over $4,000 per sqm, while those on the highest floors (45–51 storeys) exceed $12,000. Notable price jumps occur between 20–25 and 25–30 storeys, and again between 30–35 and 35–40, suggesting that <span class=\"font-semibold\">higher floors command a premium</span>.",
+            "This trend reflects buyer preferences for <span class=\"font-semibold\">better views</span>, ventilation, and privacy (URA, 2020). Top-floor units may include <span class=\"font-semibold\">premium features</span> or layouts. Over time, <span class=\"font-semibold\">high-rise living</span> has become more desirable due to lifestyle shifts and perceived prestige (HDB, 2021). However, price growth tapers off beyond the 45th storey, suggesting <span class=\"font-semibold\">diminishing value</span> at extreme heights. Overall, storey level acts as a strong proxy for market demand."
         ],
         years: [
             1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
@@ -154,6 +154,8 @@ const steps = [
             2023,
         ],
     },
+
+
     // {
     //     number: 1,
     //     title: "Storey Levels",
