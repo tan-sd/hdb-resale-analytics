@@ -145,8 +145,12 @@ const steps = [
         title: "Storey Levels",
         description: [
             "The graph shows a clear positive relationship between <span class=\"font-semibold\">storey level</span> and HDB resale prices: as floor height increases, so does the average price per square meter. Flats on lower floors (0–5 storeys) average just over $4,000 per sqm, while those on the highest floors (45–51 storeys) exceed $12,000. Notable price jumps occur between 20–25 and 25–30 storeys, and again between 30–35 and 35–40, suggesting that <span class=\"font-semibold\">higher floors command a premium</span>.",
-            "This trend reflects buyer preferences for <span class=\"font-semibold\">better views</span>, ventilation, and privacy (URA, 2020). Top-floor units may include <span class=\"font-semibold\">premium features</span> or layouts. Over time, <span class=\"font-semibold\">high-rise living</span> has become more desirable due to lifestyle shifts and perceived prestige (HDB, 2021). However, price growth tapers off beyond the 45th storey, suggesting <span class=\"font-semibold\">diminishing value</span> at extreme heights. Overall, storey level acts as a strong proxy for market demand."
+            
+            "This trend reflects buyer preferences for <span class=\"font-semibold\">better views</span>, ventilation, and privacy (URA, 2020). Top-floor units may include <span class=\"font-semibold\">premium features</span> or layouts. Over time, <span class=\"font-semibold\">high-rise living</span> has become more desirable due to lifestyle shifts and perceived prestige (HDB, 2021). However, price growth tapers off beyond the 45th storey, suggesting <span class=\"font-semibold\">diminishing value</span> at extreme heights. Overall, storey level acts as a strong proxy for market demand.",
+
+            "Note: The smaller number of transactions at higher floors may result in skewed price values, especially for upper storey bands."
         ],
+
         years: [
             1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
             2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
