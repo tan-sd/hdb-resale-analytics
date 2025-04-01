@@ -284,9 +284,9 @@ export default {
                         .style("display", "inline-block")
                         .html(
                         `Year: ${d.Year}<br>
-                            Transactions: <span class="tracking-wider">${new Intl.NumberFormat().format(
+                            Transactions: <span class="tracking-wider"><strong>${new Intl.NumberFormat().format(
                                 d.count
-                            )}</span>`
+                            )}</strong></span>`
                         );
                     
                     this.positionTooltip(event, tooltip);
