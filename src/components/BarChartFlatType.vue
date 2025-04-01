@@ -135,13 +135,6 @@
       .style('font-size', '10px');
   
     svg.append('text')
-      .attr('x', innerWidth / 2)
-      .attr('y', -margin.top / 2)
-      .attr('text-anchor', 'middle')
-      .attr('class', 'text-xs font-medium')
-      .text('Average Price by Flat Type');
-  
-    svg.append('text')
       .attr('transform', 'rotate(-90)')
       .attr('y', -margin.left + 15)
       .attr('x', -innerHeight / 2)

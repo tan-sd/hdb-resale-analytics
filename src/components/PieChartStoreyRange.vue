@@ -153,12 +153,6 @@
       .style('fill', 'none')
       .style('stroke', 'gray')
       .style('stroke-width', '1px');
-  
-    svg.append('text')
-      .attr('text-anchor', 'middle')
-      .attr('y', -height / 2 + margin.top)
-      .attr('class', 'text-xs font-medium')
-      .text('Distribution by Storey Range');
   };
   
   onMounted(() => {
