@@ -7,7 +7,13 @@
             <div class="w-full max-w-lg mx-auto">
                 <div
                     class="xl:sticky xl:top-64 fixed bottom-3 left-0 right-0 z-10 px-4 xl:px-0"
-                    :class="['transition-opacity duration-300', { 'opacity-0 pointer-events-none': !showBox, 'opacity-100': showBox }]"
+                    :class="[
+                        'transition-opacity duration-300',
+                        {
+                            'opacity-0 pointer-events-none': !showBox,
+                            'opacity-100': showBox,
+                        },
+                    ]"
                 >
                     <div
                         class="border rounded-lg backdrop-blur-[6.5px] p-6 space-y-6 bg-white relative overflow-hidden shadow-md"
@@ -55,7 +61,7 @@
                 class="flex-1 relative"
                 :style="{ height: `${steps.length * 115}vh` }"
             >
-                <div class="sticky top-12 w-full">
+                <div class="sticky top-5 w-full">
                     <div
                         class="flex flex-col gap-5 lg:gap-10 xl:gap-12 items-center"
                     >
@@ -144,23 +150,27 @@ onMounted(() => {
         }
     });
 
-    const afterStepsTrigger = document.querySelector('[data-section1="after-steps"]');
+    const afterStepsTrigger = document.querySelector(
+        '[data-section1="after-steps"]'
+    );
     if (afterStepsTrigger) {
         const trigger = ScrollTrigger.create({
             trigger: afterStepsTrigger,
-            start: 'top center',
-            end: 'bottom center',
+            start: "top center",
+            end: "bottom center",
             onEnter: () => {
-            isAfterSteps.value = true;
+                isAfterSteps.value = true;
             },
             onEnterBack: () => {
-            isAfterSteps.value = false;
-            }
+                isAfterSteps.value = false;
+            },
         });
         triggers.value.push(trigger);
     }
 
-    const beforeStepsTrigger = document.querySelector('[data-section1="before-steps"]');
+    const beforeStepsTrigger = document.querySelector(
+        '[data-section1="before-steps"]'
+    );
     if (beforeStepsTrigger) {
         const trigger = ScrollTrigger.create({
             trigger: beforeStepsTrigger,
@@ -171,10 +181,10 @@ onMounted(() => {
             },
             onEnterBack: () => {
                 isBeforeSteps.value = true;
-            }
+            },
         });
-    triggers.value.push(trigger);
-  }
+        triggers.value.push(trigger);
+    }
 
     ScrollTrigger.refresh();
 });
@@ -192,14 +202,25 @@ onBeforeUnmount(() => {
 
 const steps = [
     {
+        title: "1990–2023: Setting the Stage",
+        description: [
+            "Over the last three decades, Singapore’s HDB resale market has undergone dramatic transformation. From tight regulations in the early 1990s to rising demand in the 2000s and policy-driven cooling in the 2010s, each phase reflected broader shifts in demographics, economic conditions, and housing policy. Median resale prices climbed steadily, while transaction volumes fluctuated in response to these external forces.",
+            "This long-term evolution provides the foundation for understanding how key turning points—such as grant reforms, loan restrictions, and pandemic-related disruptions—shaped the market’s trajectory. The following sections explore these pivotal moments in greater detail, tracing how public housing affordability and buyer behavior evolved year by year.",
+        ],
+        years: [
+            1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
+            2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
+            2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022,
+            2023,
+        ],
+    },
+    {
         title: "1990–1993: Early Stagnation in a Restricted Market",
         description: [
             "In the early 1990s, the HDB resale market was still finding its footing. Regulations were tight, and opportunities for buyers were limited. There were no CPF housing grants for resale purchases, which meant first-time buyers had little financial help if they opted for the open market.",
             "Eligibility was equally stringent — only families with a valid family nucleus could buy resale flats, while singles were left out entirely. With access so restricted and few incentives in place, the market saw low demand and prices remained largely flat.",
         ],
-        years: [
-            1990, 1991, 1992, 1993
-        ],
+        years: [1990, 1991, 1992, 1993],
     },
     {
         title: "1994–1996: Policy Liberalisation and a Surge in Demand",
