@@ -38,8 +38,8 @@
                                         para, idx
                                     ) in currentStep.description"
                                     :key="idx"
+                                    v-html="para"
                                 >
-                                    {{ para }}
                                 </p>
                             </div>
 
@@ -200,76 +200,75 @@ onBeforeUnmount(() => {
     triggers.value = [];
 });
 
+// Full `steps` array with <strong> tags replaced by <span class="font-semibold">...</span>
+// Tailwind-compatible for bolding in your Vue template
+
 const steps = [
-    {
-        title: "1990–2023: Setting the Stage",
-        description: [
-            "Over the last three decades, Singapore’s HDB resale market has undergone dramatic transformation. From tight regulations in the early 1990s to rising demand in the 2000s and policy-driven cooling in the 2010s, each phase reflected broader shifts in demographics, economic conditions, and housing policy. Median resale prices climbed steadily, while transaction volumes fluctuated in response to these external forces.",
-            "This long-term evolution provides the foundation for understanding how key turning points—such as grant reforms, loan restrictions, and pandemic-related disruptions—shaped the market’s trajectory. The following sections explore these pivotal moments in greater detail, tracing how public housing affordability and buyer behavior evolved year by year.",
-        ],
-        years: [
-            1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
-            2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-            2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022,
-            2023,
-        ],
-    },
-    {
-        title: "1990–1993: Early Stagnation in a Restricted Market",
-        description: [
-            "In the early 1990s, the HDB resale market was still finding its footing. Regulations were tight, and opportunities for buyers were limited. There were no CPF housing grants for resale purchases, which meant first-time buyers had little financial help if they opted for the open market.",
-            "Eligibility was equally stringent — only families with a valid family nucleus could buy resale flats, while singles were left out entirely. With access so restricted and few incentives in place, the market saw low demand and prices remained largely flat.",
-        ],
-        years: [1990, 1991, 1992, 1993],
-    },
-    {
-        title: "1994–1996: Policy Liberalisation and a Surge in Demand",
-        description: [
-            "The market began to shift in 1994 with the introduction of the CPF Housing Grant. First-time buyers purchasing resale flats near their parents could now receive up to $30,000 in support, making resale flats far more affordable and competitive with BTO options.",
-            "In 1995, the government further widened access by allowing singles aged 35 and above to purchase resale flats. These key policy changes opened the floodgates for a broader pool of buyers, triggering a sharp surge in resale demand — and with it, a rapid increase in transaction volumes and prices.",
-        ],
-        years: [1994, 1995, 1996],
-    },
-    {
-        title: "1997–2006: Market Cooling through Supply and Usage Restrictions",
-        description: [
-            "After the rapid surge in the mid-90s, the government moved to cool the market and safeguard long-term affordability. In 1997, CPF usage was restricted for the purchase of older flats, reducing financing options for aging resale units. The Minimum Occupation Period (MOP) was also more strictly enforced, requiring flat owners to live in their homes for at least five years before they could sell — a move aimed at curbing speculative activity.",
-            "In the early 2000s, HDB also scaled back the launch of new BTO flats in response to oversupply concerns. These combined measures — tighter financing rules, stricter eligibility, and reduced supply — contributed to a prolonged period of declining prices and a relatively stagnant resale market.",
-        ],
-        years: [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006],
-    },
-    {
-        title: "2007–2012: Demand Revival Amid Supply Constraints",
-        description: [
-            "As population growth picked up and household formation accelerated, the HDB resale market began to regain momentum. New flat supply had not kept pace with rising demand, leading to long BTO waiting times and pushing many first-time buyers toward the more accessible resale market.",
-            "To improve affordability, the government enhanced support schemes such as the Additional CPF Housing Grant (AHG) and the Special CPF Housing Grant (SHG), particularly for lower- and middle-income households. With demand rising and new supply lagging behind, resale prices climbed steadily throughout this period.",
-        ],
-        years: [2007, 2008, 2009, 2010, 2011, 2012],
-    },
-    {
-        title: "2013–2018: Cooling Measures and Loan Restrictions Stabilise the Market",
-        description: [
-            "To curb rising prices and cool an overheating market, the government introduced several policy interventions. The Additional Buyer’s Stamp Duty (ABSD), first implemented in 2011, began to bite as it raised costs for PRs, foreigners, and second-home buyers.",
-            "In 2013, tighter loan rules followed: the Total Debt Servicing Ratio (TDSR) and Mortgage Servicing Ratio (MSR) reduced borrowing capacity. ABSD was raised again in 2018, further dampening investor demand. These measures collectively slowed demand and stabilised the market, leading to a prolonged period of flat resale prices.",
-        ],
-        years: [2013, 2014, 2015, 2016, 2017, 2018],
-    },
-    {
-        title: "2019–2021: Recovery Driven by Grant Reform and Pandemic Effects",
-        description: [
-            "The resale market rebounded in 2019, fuelled by new affordability measures. The Enhanced CPF Housing Grant (EHG) replaced previous schemes, offering up to $80,000 for eligible first-time buyers — applicable to both BTO and resale flats. At the same time, CPF usage rules were tightened for older flats, steering demand toward newer resale units.",
-            "When COVID-19 struck in 2020, BTO construction delays pushed more buyers to the resale market. The rise of remote work also spurred demand for larger or better-located homes. Combined, these factors triggered a sharp rise in resale prices.",
-        ],
-        years: [2019, 2020, 2021],
-    },
-    {
-        title: "2022–2023: Moderation Through Renewed Cooling Measures",
-        description: [
-            "As post-pandemic prices continued to climb, the government introduced fresh cooling measures to rein in demand and protect affordability. In December 2021 and September 2022, policies were rolled out to tighten stress-testing for HDB loan applicants and impose a 15-month wait-out period for private property owners before buying resale flats.",
-            "These moves targeted wealthier buyers and aimed to keep public housing accessible to genuine owner-occupiers. By 2023, resale prices remained elevated but had begun to stabilise, reflecting efforts to curb speculation without undermining home values.",
-        ],
-        years: [2022, 2023],
-    },
+  {
+    title: "1990–2023: Macro Overview",
+    description: [
+      "Prices remained stagnant in the early 1990s due to strict eligibility rules and the lack of housing grants. A turning point came in the mid-90s with the introduction of the CPF Housing Grant and expanded eligibility to singles, which triggered a surge in demand and prices.",
+      "To cool the market, the government tightened CPF usage, enforced the Minimum Occupation Period (MOP), and slowed BTO launches in the late 1990s and early 2000s, leading to a long price plateau. Prices rose again from the late 2000s due to grant enhancements and BTO supply lag.",
+      "A new wave of cooling measures from 2011 to 2018 — including ABSD, TDSR, and MSR — curbed demand and stabilized prices. In 2019, the Enhanced CPF Housing Grant (EHG) improved affordability, and when COVID-19 disrupted BTO supply, demand surged for resale flats, driving prices up through 2021."
+    ],
+    years: [1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023]
+  },
+  {
+    title: "1990–1993: Early Stagnation in a Restricted Market",
+    description: [
+      "In the early 1990s, the HDB resale market was still finding its footing. Regulations were tight, and opportunities for buyers were limited. There were <span class=\"font-semibold\">no CPF housing grants</span> for resale purchases, which meant <span class=\"font-semibold\">first-time buyers had little financial help</span> if they opted for the open market.",
+      "Eligibility was equally stringent — <span class=\"font-semibold\">only families with a valid family nucleus</span> could buy resale flats, while <span class=\"font-semibold\">singles were left out entirely</span>. With access so restricted and few incentives in place, the market saw <span class=\"font-semibold\">low demand and prices remained largely flat.</span>"
+    ],
+    years: [1990, 1991, 1992, 1993]
+  },
+  {
+    title: "1994–1996: Policy Liberalisation and a Surge in Demand",
+    description: [
+      "The market began to shift in 1994 with the introduction of the <span class=\"font-semibold\">CPF Housing Grant</span>. First-time buyers purchasing resale flats near their parents could now receive <span class=\"font-semibold\">up to $30,000</span> in support, making resale flats far more affordable and competitive with BTO options.",
+      "In 1995, the government further widened access by <span class=\"font-semibold\">allowing singles aged 35 and above</span> to purchase resale flats. These key policy changes opened the floodgates for a broader pool of buyers, triggering a <span class=\"font-semibold\">sharp surge in resale demand</span> — and with it, a <span class=\"font-semibold\">rapid increase in transaction volumes and prices.</span>"
+    ],
+    years: [1994, 1995, 1996]
+  },
+  {
+    title: "1997–2006: Market Cooling through Supply and Usage Restrictions",
+    description: [
+      "After the rapid surge in the mid-90s, the government moved to cool the market and safeguard long-term affordability. In 1997, <span class=\"font-semibold\">CPF usage was restricted</span> for the purchase of <span class=\"font-semibold\">older flats</span>, reducing financing options for aging resale units. The <span class=\"font-semibold\">Minimum Occupation Period (MOP)</span> was also more <span class=\"font-semibold\">strictly enforced</span>, requiring flat owners to live in their homes for at least <span class=\"font-semibold\">five years</span> before they could sell — a move aimed at curbing speculative activity.",
+      "In the early 2000s, HDB also <span class=\"font-semibold\">scaled back</span> the launch of new BTO flats in response to oversupply concerns. These combined measures — tighter financing rules, stricter eligibility, and reduced supply — contributed to a prolonged period of declining prices and a relatively stagnant resale market."
+    ],
+    years: [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006]
+  },
+  {
+    title: "2007–2012: Demand Revival Amid Supply Constraints",
+    description: [
+      "As population growth picked up and household formation accelerated, the HDB resale market began to regain momentum. New flat <span class=\"font-semibold\">supply had not kept pace with rising demand</span>, leading to long BTO waiting times and pushing many first-time buyers toward the <span class=\"font-semibold\">more accessible resale market.</span>",
+      "To improve affordability, the government enhanced support schemes such as the <span class=\"font-semibold\">Additional CPF Housing Grant (AHG)</span> and the <span class=\"font-semibold\">Special CPF Housing Grant (SHG)</span>, particularly for lower- and middle-income households. With demand rising and new supply lagging behind, resale prices climbed steadily throughout this period."
+    ],
+    years: [2007, 2008, 2009, 2010, 2011, 2012]
+  },
+  {
+    title: "2013–2018: Cooling Measures and Loan Restrictions Stabilise the Market",
+    description: [
+      "To curb rising prices and cool an overheating market, the government introduced several policy interventions. The <span class=\"font-semibold\">Additional Buyer’s Stamp Duty (ABSD)</span>, first implemented in 2011, began to bite as it raised costs for PRs, foreigners, and second-home buyers.",
+      "In 2013, tighter loan rules followed: the <span class=\"font-semibold\">Total Debt Servicing Ratio (TDSR)</span> and <span class=\"font-semibold\">Mortgage Servicing Ratio (MSR)</span> reduced borrowing capacity. ABSD was <span class=\"font-semibold\">raised again</span> in 2018, further dampening investor demand. These measures collectively slowed demand and stabilised the market, leading to a prolonged period of flat resale prices."
+    ],
+    years: [2013, 2014, 2015, 2016, 2017, 2018]
+  },
+  {
+    title: "2019–2021: Recovery Driven by Grant Reform and Pandemic Effects",
+    description: [
+      "The resale market <span class=\"font-semibold\">rebounded</span> in 2019, fuelled by new affordability measures. The <span class=\"font-semibold\">Enhanced CPF Housing Grant (EHG)</span> replaced previous schemes, offering <span class=\"font-semibold\">up to $80,000</span> for eligible first-time buyers — applicable to both BTO and resale flats. At the same time, CPF usage rules were tightened for older flats, steering demand toward newer resale units.",
+      "When <span class=\"font-semibold\">COVID-19</span> struck in 2020, BTO construction <span class=\"font-semibold\">delays</span> pushed more buyers to the resale market. The rise of remote work also spurred demand for larger or better-located homes. Combined, these factors triggered a <span class=\"font-semibold\">sharp rise</span> in resale prices."
+    ],
+    years: [2019, 2020, 2021]
+  },
+  {
+    title: "2022–2023: Moderation Through Renewed Cooling Measures",
+    description: [
+      "As post-pandemic prices continued to climb, the government introduced <span class=\"font-semibold\">fresh cooling measures</span> to rein in demand and protect affordability. In December 2021 and September 2022, policies were rolled out to <span class=\"font-semibold\">tighten stress-testing</span> for HDB loan applicants and impose a <span class=\"font-semibold\">15-month wait-out period</span> for private property owners before buying resale flats.",
+      "These moves <span class=\"font-semibold\">targeted wealthier buyers</span> and aimed to keep public housing accessible to genuine owner-occupiers. By 2023, resale prices remained elevated but had begun to stabilise, reflecting efforts to curb speculation without undermining home values."
+    ],
+    years: [2022, 2023]
+  }
 ];
 
 const currentStep = computed(() => steps[currentStepIndex.value]);
