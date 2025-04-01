@@ -200,12 +200,9 @@ onBeforeUnmount(() => {
     triggers.value = [];
 });
 
-// Full `steps` array with <strong> tags replaced by <span class="font-semibold">...</span>
-// Tailwind-compatible for bolding in your Vue template
-
 const steps = [
   {
-    title: "1990–2023: Macro Overview",
+    title: "1990–2023: Setting the Stage",
     description: [
       "Prices remained stagnant in the early 1990s due to strict eligibility rules and the lack of housing grants. A turning point came in the mid-90s with the introduction of the CPF Housing Grant and expanded eligibility to singles, which triggered a surge in demand and prices.",
       "To cool the market, the government tightened CPF usage, enforced the Minimum Occupation Period (MOP), and slowed BTO launches in the late 1990s and early 2000s, leading to a long price plateau. Prices rose again from the late 2000s due to grant enhancements and BTO supply lag.",
