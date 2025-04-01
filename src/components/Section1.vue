@@ -192,6 +192,20 @@ onBeforeUnmount(() => {
 
 const steps = [
     {
+        title: "1990–2023: Macro Overview",
+        description: [
+            "Prices remained stagnant in the early 1990s due to strict eligibility rules and the lack of housing grants. A turning point came in the mid-90s with the introduction of the CPF Housing Grant and expanded eligibility to singles, which triggered a surge in demand and prices.",
+            "To cool the market, the government tightened CPF usage, enforced the Minimum Occupation Period (MOP), and slowed BTO launches in the late 1990s and early 2000s, leading to a long price plateau. Prices rose again from the late 2000s due to grant enhancements and BTO supply lag.",
+            "A new wave of cooling measures from 2011 to 2018 — including ABSD, TDSR, and MSR — curbed demand and stabilized prices. In 2019, the Enhanced CPF Housing Grant (EHG) improved affordability, and when COVID-19 disrupted BTO supply, demand surged for resale flats, driving prices up through 2021.",
+        ],
+        years: [
+            1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999,
+            2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
+            2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 
+            2020, 2021, 2022, 2023
+        ],
+    },
+    {
         title: "1990–1993: Early Stagnation in a Restricted Market",
         description: [
             "In the early 1990s, the HDB resale market was still finding its footing. Regulations were tight, and opportunities for buyers were limited. There were no CPF housing grants for resale purchases, which meant first-time buyers had little financial help if they opted for the open market.",
