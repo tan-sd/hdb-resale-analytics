@@ -11,6 +11,7 @@ export const useDataStore = defineStore("dataStore", () => {
     const storeyPriceScatter = ref([]);
     const pricePerSqmByPlanningArea = ref([]);
     const ethnicDistribution = ref([]);
+    const affordabilityIndex = ref([]);
 
     const isDataLoaded = computed(() => rawChartData !== null);
     const isDataReady = computed(() => yearMedians.value.length > 0);
@@ -137,6 +138,57 @@ export const useDataStore = defineStore("dataStore", () => {
                 others: +d["others"],
             }));
 
+            const medianMonthlyIncome = {
+                2022: 10099,
+                2021: 9520,
+                2020: 9189,
+                2019: 9425,
+                2018: 9293,
+                2017: 9023,
+                2016: 8846,
+                2015: 8666,
+                2014: 8292,
+                2013: 7872,
+                2012: 7566,
+                2011: 7037,
+                2010: 6342,
+                2009: 6006,
+                2008: 6100,
+                2007: 5362,
+                2006: 4952,
+                2005: 4831,
+                2004: 4552,
+                2003: 4612,
+                2002: 4590,
+                2001: 4716,
+                2000: 4398,
+            };            
+            
+            const priceByYear = d3.group(rawChartData, d => +d.Year);
+            const processedAffordability = [];
+
+            for (const [year, records] of priceByYear.entries()) {
+                if (!medianMonthlyIncome[year]) continue;
+
+                const resalePrices = records
+                    .map(d => parseFloat(d["Resale Price"]))
+                    .filter(v => !isNaN(v));
+
+                if (resalePrices.length === 0) continue;
+
+                const medianPrice = d3.median(resalePrices);
+                const annualIncome = medianMonthlyIncome[year] * 12;
+                const index = medianPrice / annualIncome;
+
+                processedAffordability.push({
+                    Year: year,
+                    AffordabilityIndex: +index.toFixed(2),
+                });
+            }
+
+            processedAffordability.sort((a, b) => a.Year - b.Year);
+            affordabilityIndex.value = processedAffordability;
+
             preprocessData();
         } catch (error) {
             console.error("Error loading data:", error);
@@ -240,6 +292,7 @@ export const useDataStore = defineStore("dataStore", () => {
         yearFlatTypeMedians,
         pricePerSqmByPlanningArea,
         ethnicDistribution,
+        affordabilityIndex,
         // storeyPriceScatter,
         isDataLoaded,
         isDataReady,
