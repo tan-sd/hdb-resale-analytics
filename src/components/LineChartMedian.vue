@@ -284,13 +284,13 @@ export default {
                         .html(
                             `Year: ${
                                 d.Year
-                            }<br>Median Price: <span class="tracking-wider">$${new Intl.NumberFormat(
+                            }<br>Median Price: <span class="tracking-wider"><strong>$${new Intl.NumberFormat(
                                 undefined,
                                 {
                                     minimumFractionDigits: 0,
                                     maximumFractionDigits: 2,
                                 }
-                            ).format(d.median)}</span>`
+                            ).format(d.median)}</strong></span>`
                         );
                     
                     this.positionTooltip(event, tooltip);
