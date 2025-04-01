@@ -32,8 +32,8 @@
                                         para, idx
                                     ) in currentStep.description"
                                     :key="idx"
+                                    v-html="para"
                                 >
-                                {{  para }}
                                 </p>
                             </div>
 
