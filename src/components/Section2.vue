@@ -75,11 +75,11 @@
                         class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
                     />
 
-                    <!-- <ScatterPlotFlatType
+                    <ScatterPlotFlatType
                         ref="flatTypeScatterChartRef"
                         v-show="currentStepIndex === 2"
                         class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                    /> -->
+                    />
 
                     <BoxPlotPricePerSqm
                         ref="boxPlotPricePerSqmChartRef"
