@@ -140,14 +140,14 @@
                                 >
                                     <Card class="w-full h-full flex flex-col">
                                         <CardContent
-                                            class="flex-grow p-4 h-[250px]"
+                                            class="flex-grow p-4 h-[290px]"
                                         >
                                             <div
                                                 class="font-medium text-sm text-muted-foreground mb-1"
                                             >
                                                 Flat Type Distribution
                                             </div>
-                                            <FlatTypePieChart
+                                            <FlatTypeLineChartDashboard
                                                 :data="filteredData"
                                                 :area-name="
                                                     selectedAreaStats.areaName
@@ -159,7 +159,7 @@
 
                                     <Card class="w-full h-full flex flex-col">
                                         <CardContent
-                                            class="flex-grow p-4 h-[250px]"
+                                            class="flex-grow p-4 h-[290px]"
                                         >
                                             <div
                                                 class="font-medium text-sm text-muted-foreground mb-1"
@@ -178,7 +178,7 @@
 
                                     <Card class="w-full h-full flex flex-col">
                                         <CardContent
-                                            class="flex-grow p-4 h-[250px]"
+                                            class="flex-grow p-4 h-[290px]"
                                         >
                                             <div
                                                 class="font-medium text-sm text-muted-foreground mb-1"
@@ -200,26 +200,28 @@
                                 >
                                     <Card class="w-full h-full flex flex-col">
                                         <CardContent
-                                            class="flex-grow p-4 h-[250px]"
+                                            class="flex-grow p-4 h-[290px]"
                                         >
                                             <div
                                                 class="font-medium text-sm text-muted-foreground mb-1"
                                             >
-                                                Demographics Distribution
+                                                Demographics Distribution <span class="text-xs" v-if="usingFallbackYear"> (Using {{ fallbackYearValue }} Demographic Data)</span>
                                             </div>
-                                            <DemographicsPieChart
+                                            <DemographicsLineChartDashboard
+                                                ref="demographicsChart"
                                                 :data="filteredData"
                                                 :area-name="
                                                     selectedAreaStats.areaName
                                                 "
                                                 :year="selectedAreaStats.year"
+                                                @update:fallback-year="handleFallbackYear"
                                             />
                                         </CardContent>
                                     </Card>
 
                                     <Card class="w-full h-full flex flex-col">
                                         <CardContent
-                                            class="flex-grow p-4 h-[250px]"
+                                            class="flex-grow p-4 h-[290px]"
                                         >
                                             <div
                                                 class="font-medium text-sm text-muted-foreground mb-1"
@@ -231,7 +233,7 @@
 
                                     <Card class="w-full h-full flex flex-col">
                                         <CardContent
-                                            class="flex-grow p-4 h-[250px]"
+                                            class="flex-grow p-4 h-[290px]"
                                         >
                                             <div
                                                 class="font-medium text-sm text-muted-foreground mb-1"
@@ -254,12 +256,22 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import NumberFlow from "@number-flow/vue";
-import FlatTypePieChart from "./PieChartFlatType.vue";
+import FlatTypeLineChartDashboard from "./LineChartFlatTypeDashboard.vue";
 import StoreyRangePieChart from "./PieChartStoreyRange.vue";
 import PriceByFlatTypeChart from "./BarChartFlatType.vue";
-import DemographicsPieChart from "./PieChartDemographics.vue";
+import DemographicsLineChartDashboard from "./LineChartDemographicsDashboard.vue";
 import MapChart from "./MapChart.vue";
 import { ref, computed } from "vue";
+
+const usingFallbackYear = ref(false);
+const fallbackYearValue = ref(null);
+
+const demographicsChart = ref(null);
+
+const handleFallbackYear = (data) => {
+    usingFallbackYear.value = data.isFallback;
+    fallbackYearValue.value = data.year;
+};
 
 const selectedAreaStats = ref({
     areaName: "All Singapore",
