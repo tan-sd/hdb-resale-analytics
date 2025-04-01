@@ -144,8 +144,8 @@ const steps = [
         number: 1,
         title: "Storey Levels",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            "The graph shows a clear positive relationship between storey level and HDB resale prices: as floor height increases, so does the average price per square meter. Flats on lower floors (0–5 storeys) average just over $4,000 per sqm, while those on the highest floors (45–51 storeys) exceed $12,000. Notable price jumps occur between 20–25 and 25–30 storeys, and again between 30–35 and 35–40, suggesting that higher floors command a premium.",
+            "This pattern likely reflects buyer preferences for unblocked views, better ventilation, and greater privacy on higher floors (URA, 2020). Top-floor units may also include premium features or layouts. Over time, high-rise living has become more desirable, linked to lifestyle shifts and perceived prestige (HDB, 2021). However, price growth appears to taper off beyond the 45th storey, possibly indicating diminishing marginal value at extreme heights. Overall, the storey level serves as a strong proxy for both value and demand in the resale market.",
         ],
         years: [
             1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
