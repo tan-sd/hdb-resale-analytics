@@ -27,24 +27,6 @@
                         @update:modelValue="updateYear"
                     />
                 </div>
-                <Select v-model="selectedMode">
-                    <SelectTrigger
-                        class="px-4 py-2 rounded-md shadow-lg text-xs bg-white border-none"
-                    >
-                        <Layers :size="16" />
-                        <SelectValue class="p-2 font-medium" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                            <SelectItem class="text-xs" value="electoral"
-                                >Electoral Boundary</SelectItem
-                            >
-                            <SelectItem class="text-xs" value="planning"
-                                >Median Resale Price</SelectItem
-                            >
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
                 <Drawer>
                     <DrawerTrigger as-child>
                         <Button
@@ -290,6 +272,7 @@
 import * as d3 from "d3";
 import { ref, onMounted, watch, onUnmounted, nextTick, computed } from "vue";
 import * as turf from "@turf/turf";
+import { useDataStore } from "../stores/dataStore";
 import {
     Drawer,
     DrawerClose,
@@ -324,6 +307,8 @@ import {
 } from "@/components/ui/combobox";
 import { Funnel, ZoomOut, Layers, Calendar, Search, X } from "lucide-vue-next";
 
+const dataStore = useDataStore();
+
 const SCALE_FACTOR = 155;
 
 const width = ref(0);
@@ -336,7 +321,6 @@ const legend = ref(null);
 const selectedAreaInfo = ref(null);
 const selectedFeature = ref(null);
 const searchQuery = ref("");
-const hoveredAreaName = ref(null);
 const selectedArea = ref(null);
 const tooltipLocked = ref(false);
 
@@ -353,7 +337,6 @@ const showUniversities = ref(false);
 
 const selectedYear = ref(2023);
 const currentYear = ref(2023);
-const selectedMode = ref("electoral");
 const electoralBoundaries = ref({});
 const planningAreas = ref({});
 const electionResults = ref({});
@@ -367,7 +350,6 @@ const secondarySchools = ref(null);
 const juniorColleges = ref(null);
 const polytechnics = ref(null);
 const universities = ref(null);
-const resaleHDBs = ref(null);
 
 const emit = defineEmits(['areaSelected', 'resetSelection']);
 
@@ -394,10 +376,10 @@ let resizeObserver = null;
 let mapGroup = null;
 
 function emitAggregatedStats() {
-  if (!resaleHDBs.value) return;
+  if (!dataStore.chartData) return;
   
-  const filteredData = resaleHDBs.value.filter(
-    (d) => String(d.year) === String(selectedYear.value)
+  const filteredData = dataStore.chartData.filter(
+    (d) => String(d["Year"]) === String(selectedYear.value)
   );
   
   const totalUnits = filteredData.length;
@@ -424,8 +406,8 @@ function handleSelection(area) {
         selectedArea.value = area;
 
         const areaName = area.value;
-        const resaleHDBsData = resaleHDBs.value.filter(
-            (d) => d.planning_area === areaName && String(d.year) === String(selectedYear.value)
+        const resaleHDBsData = dataStore.chartData.filter(
+            (d) => d["Planning Area"] === areaName && String(d["Year"]) === String(selectedYear.value)
         );
 
         const totalUnits = resaleHDBsData.length;
@@ -522,21 +504,18 @@ const createZoom = () => {
         });
 };
 
-
-
 const createLegend = () => {
     const legendContainer = d3.select(legend.value);
     legendContainer.html("");
 
-    if (selectedMode.value === "planning") {
-        const resaleHDBsData = resaleHDBs.value.filter(
-            (d) => String(d.year) === String(selectedYear.value)
+        const resaleHDBsData = dataStore.chartData.filter(
+            (d) => String(d["Year"]) === String(selectedYear.value)
         );
 
         const medianPriceByPlanningArea = d3.rollup(
             resaleHDBsData,
-            (v) => d3.median(v, (d) => +d.resale_price),
-            (d) => d.planning_area
+            (v) => d3.median(v, (d) => +d["Resale Price"]),
+            (d) => d["Planning Area"]
         );
 
         const priceExtent = d3.extent(
@@ -624,19 +603,18 @@ const createLegend = () => {
             .attr("fill", "black")
             .text(`${formatPrice(maxPrice)}`);
     }
-};
 
 function drawHistogram(areaName) {
     const container = d3.select("#histogram");
     container.selectAll("*").remove();
 
-    const resaleData = resaleHDBs.value.filter(
+    const resaleData = dataStore.chartData.filter(
         (d) =>
-            d.planning_area === areaName &&
-            String(d.year) === String(selectedYear.value)
+            d["Planning Area"] === areaName &&
+            String(d["Year"]) === String(selectedYear.value)
     );
 
-    const prices = resaleData.map((d) => +d.resale_price);
+    const prices = resaleData.map((d) => +d["Resale Price"]);
     if (prices.length === 0) return;
 
     const width = 240;
@@ -722,7 +700,6 @@ const redrawMap = (forceReset = false) => {
         .attr("fill", "transparent")
         .lower()
         .on("click", () => {
-            if (selectedMode.value === "planning") {
                 selectedArea.value = null;
                 selectedAreaInfo.value = null;
                 searchQuery.value = "";
@@ -735,7 +712,6 @@ const redrawMap = (forceReset = false) => {
                     .attr("stroke-width", 0.5);
                 
                 emitAggregatedStats();
-            }
         });
 
     if (forceReset) {
@@ -772,14 +748,14 @@ const formattedAreaName = (area) =>
         .join(" ");
 
 const planningAreaNames = computed(() => {
-    if (!resaleHDBs.value || !planningAreas.value[2019]) return [];
+    if (!dataStore.chartData || !planningAreas.value[2019]) return [];
 
-    const resaleHDBsData = resaleHDBs.value.filter(
-        (d) => String(d.year) === String(selectedYear.value)
+    const resaleHDBsData = dataStore.chartData.filter(
+        (d) => String(d["Year"]) === String(selectedYear.value)
     );
 
     const availableAreaSet = new Set(
-        resaleHDBsData.map((d) => d.planning_area)
+        resaleHDBsData.map((d) => d["Planning Area"])
     );
 
     const features = planningAreas.value[2019]?.features || [];
@@ -839,12 +815,12 @@ function selectAreaFromList(areaName) {
 
     if (match) {
         zoomToBoundary(match);
-        const resaleData = resaleHDBs.value.filter(
+        const resaleData = dataStore.chartData.filter(
             (d) =>
-                d.planning_area === areaName &&
-                String(d.year) === String(selectedYear.value)
+                d["Planning Area"] === areaName &&
+                String(d["Year"]) === String(selectedYear.value)
         );
-        const medianPrice = d3.median(resaleData, (d) => +d.resale_price);
+        const medianPrice = d3.median(resaleData, (d) => +d["Resale Price"]);
 
         selectedAreaInfo.value = {
             name: areaName,
@@ -887,8 +863,8 @@ function selectAreaFromList(areaName) {
 
             // const buildingsInArea = resaleHDBs.value.filter(
             //     (d) =>
-            //         d.planning_area === areaName &&
-            //         String(d.year) === String(selectedYear.value)
+            //         d["Planning Area"] === areaName &&
+            //         String(d["Year"]) === String(selectedYear.value)
             // );
 
             // mapGroup.selectAll(".building-dot").remove();
@@ -915,198 +891,18 @@ const drawMapContent = () => {
 
     let selectedDataset;
 
-    if (selectedMode.value === "electoral") {
-        selectedDataset = electoralBoundaries.value[currentYear.value];
-    } else {
-        selectedDataset = planningAreas.value[2019];
-    }
+    selectedDataset = planningAreas.value[2019];
 
-    if (!selectedDataset || !selectedDataset.features) {
-        console.warn(
-            `No data for ${selectedMode.value} in ${currentYear.value}`
-        );
-        return;
-    }
-
-    if (selectedMode.value === "electoral") {
-        const electionYearResults = electionResults.value.filter(
-            (d) => d.year === String(currentYear.value)
-        );
-
-        const constituencyToParty = {};
-        electionYearResults.forEach((entry) => {
-            const { constituency, party, vote_count, vote_percentage } = entry;
-            const upperConstituency = constituency.toUpperCase();
-            if (!constituencyToParty[upperConstituency]) {
-                constituencyToParty[upperConstituency] = {
-                    party,
-                    vote_count,
-                    vote_percentage,
-                };
-            } else if (
-                parseFloat(entry.vote_percentage) >
-                parseFloat(
-                    constituencyToParty[upperConstituency].vote_percentage
-                )
-            ) {
-                constituencyToParty[upperConstituency] = {
-                    party,
-                    vote_count,
-                    vote_percentage,
-                };
-            }
-        });
-
-        selectedDataset.features.forEach((feature) => {
-            let constituencyName;
-
-            if (currentYear.value === 2020) {
-                constituencyName = feature.properties.Name.toUpperCase();
-            } else {
-                const description = feature.properties.Description;
-                const parser = new DOMParser();
-                const htmlDoc = parser.parseFromString(
-                    description,
-                    "text/html"
-                );
-                const edDescTd = Array.from(
-                    htmlDoc.querySelectorAll("td")
-                ).find((td) => {
-                    const prevTh = td.previousElementSibling;
-                    return prevTh && prevTh.textContent.trim() === "ED_DESC";
-                });
-
-                if (edDescTd) {
-                    constituencyName = edDescTd.textContent
-                        .trim()
-                        .replace(/\s*-\s*/g, "-");
-                } else {
-                    constituencyName = "UNKNOWN";
-                }
-            }
-
-            const winningParty = constituencyToParty[constituencyName]
-                ? constituencyToParty[constituencyName].party
-                : "Unknown";
-            const fillColor = partyColors[winningParty] || "grey";
-            feature.properties.party = winningParty;
-            feature.properties.color = fillColor;
-            feature.geometry = turf.rewind(feature.geometry, { reverse: true });
-        });
-
-        mapGroup
-            .selectAll("boundaries")
-            .data(selectedDataset.features)
-            .enter()
-            .append("path")
-            .attr("d", path)
-            .attr("fill", (d) => {
-                if (selectedMode.value === "electoral") {
-                    return d.properties.color;
-                }
-                return "lightblue";
-            })
-            .attr("stroke", "black")
-            .attr("stroke-width", 0.5)
-            .style("pointer-events", "visible")
-            .on("mouseover", function (event, d) {
-                d3.select(this)
-                    .attr("stroke-width", 1.5)
-                    .style("cursor", "pointer");
-
-                let areaName;
-
-                if (selectedMode.value === "electoral") {
-                    if (currentYear.value === 2020) {
-                        areaName = d.properties.Name || "Unknown Constituency";
-                    } else {
-                        const description = d.properties.Description;
-                        const parser = new DOMParser();
-                        const htmlDoc = parser.parseFromString(
-                            description,
-                            "text/html"
-                        );
-                        const edDescTd = Array.from(
-                            htmlDoc.querySelectorAll("td")
-                        ).find((td) => {
-                            const prevTh = td.previousElementSibling;
-                            return (
-                                prevTh &&
-                                prevTh.textContent.trim() === "ED_DESC"
-                            );
-                        });
-
-                        if (edDescTd) {
-                            areaName = edDescTd.textContent;
-                        } else {
-                            areaName = "UNKNOWN";
-                        }
-                    }
-                }
-
-                d3.select(tooltip.value)
-                    .style("visibility", "visible")
-                    .html(
-                        `<div id="constituency-name">${areaName
-                            .toLowerCase()
-                            .split(" ")
-                            .map(
-                                (word) =>
-                                    word.charAt(0).toUpperCase() + word.slice(1)
-                            )
-                            .join(" ")
-                            .replace(
-                                /\b(\w+)-(\w+)\b/g,
-                                (match, p1, p2) =>
-                                    `${p1}\-${p2
-                                        .charAt(0)
-                                        .toUpperCase()}${p2.slice(1)}`
-                            )} GRC</div>
-                        <div id="party">
-                            <img id="party-logo" src="/img/${
-                                d.properties.party
-                            }.png"/>
-                            ${d.properties.party}
-                        </div>
-                    `
-                    );
-            })
-            .on("mousemove", function (event) {
-                const [mouseX, mouseY] = d3.pointer(event, map.value);
-
-                d3.select(tooltip.value)
-                    .style("top", `${mouseY - 50}px`)
-                    .style("left", `${mouseX + 10}px`);
-            })
-            .on("mouseout", function () {
-                d3.select(this).attr("stroke-width", 0.5);
-                d3.select(tooltip.value).style("visibility", "hidden");
-            })
-            .on("click", function (event, d) {
-                zoomToBoundary(d);
-
-                selectedAreaInfo.value = {
-                    name: areaName,
-                    price: medianPrice || null,
-                };
-
-                nextTick(() => {
-                    drawHistogram(areaName);
-                });
-            });
-    }
-
-    if (selectedMode.value === "planning") {
         selectedDataset = planningAreas.value[2019];
 
-        const resaleHDBsData = resaleHDBs.value.filter(
-            (d) => String(d.year) === String(selectedYear.value)
+        const resaleHDBsData = dataStore.chartData.filter(
+            (d) => String(d["Year"]) === String(selectedYear.value)
         );
 
         const medianPriceByPlanningArea = d3.rollup(
             resaleHDBsData,
-            (v) => d3.median(v, (d) => +d.resale_price),
-            (d) => d.planning_area
+            (v) => d3.median(v, (d) => +d["Resale Price"]),
+            (d) => d["Planning Area"]
         );
 
         const priceExtent = d3.extent(
@@ -1291,10 +1087,10 @@ const drawMapContent = () => {
                     drawHistogram(areaName);
                 });
 
-                const resaleHDBsData = resaleHDBs.value.filter(
+                const resaleHDBsData = dataStore.chartData.filter(
                     (d) =>
-                        d.planning_area === areaName &&
-                        String(d.year) === String(selectedYear.value)
+                        d["Planning Area"] === areaName &&
+                        String(d["Year"]) === String(selectedYear.value)
                 );
 
                 const totalUnits = resaleHDBsData.length;
@@ -1313,8 +1109,7 @@ const drawMapContent = () => {
                     rawData: resaleHDBsData,
                 });
             });
-    }
-};
+    };
 
 const planningAreaOptions = computed(() =>
     planningAreaNames.value
@@ -1347,24 +1142,12 @@ const clearSearch = () => {
 const updateYear = (value) => {
     selectedYear.value = Array.isArray(value) ? value[0] : value;
 
-    if (selectedMode.value === "electoral") {
-        if (selectedYear.value < 2011) {
-            currentYear.value = 2006;
-        } else if (selectedYear.value < 2015) {
-            currentYear.value = 2011;
-        } else if (selectedYear.value < 2020) {
-            currentYear.value = 2015;
-        } else {
-            currentYear.value = 2020;
-        }
-    } else {
         if (selectedYear.value < 2019) {
             currentYear.value = 2019;
         } else {
             currentYear.value = 2019;
         }
-    }
-};
+    };
 
 const planningAreaFeatureMap = computed(() => {
     const map = new Map();
@@ -1442,21 +1225,6 @@ const loadData = async () => {
     };
 };
 
-async function loadResaleDataForYear(year) {
-    const url = `/data/resale_prices_cleaned/HDBPriceWithSubzone_${year}.csv`;
-    try {
-        resaleHDBs.value = await d3.csv(url, (d) => ({
-            ...d,
-            planning_area: d["Planning Area"],
-            resale_price: +d["Resale Price"],
-            year: +d["Year"],
-        }));
-    } catch (err) {
-        console.error(`Failed to load resale data for ${year}:`, err);
-        resaleHDBs.value = [];
-    }
-}
-
 const resetZoom = () => {
     if (!map.value || !zoomInstance.value) return;
 
@@ -1484,7 +1252,7 @@ onMounted(async () => {
 
     updateDimensions();
 
-    await loadResaleDataForYear(selectedYear.value);
+    createLegend();
 
     emitAggregatedStats();
 });
@@ -1977,14 +1745,10 @@ watch(
     { deep: true }
 );
 
-watch([selectedYear, selectedMode], async () => {
+watch([selectedYear], async () => {
     console.log(`Updating map for year: ${selectedYear.value}`);
 
-    await loadResaleDataForYear(selectedYear.value);
-
-    if (selectedMode.value === "planning") {
-        currentYear.value = selectedYear.value;
-    }
+    currentYear.value = selectedYear.value;
 
     redrawMap();
     createLegend();
@@ -1993,9 +1757,9 @@ watch([selectedYear, selectedMode], async () => {
         emitAggregatedStats();
     } else {
         const areaName = selectedArea.value.value;
-        const resaleHDBsData = resaleHDBs.value.filter(
-        (d) => d.planning_area === areaName && 
-        String(d.year) === String(selectedYear.value)
+        const resaleHDBsData = dataStore.chartData.filter(
+        (d) => d["Planning Area"] === areaName && 
+        String(d["Year"]) === String(selectedYear.value)
         );
         
         const totalUnits = resaleHDBsData.length;
