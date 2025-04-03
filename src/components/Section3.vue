@@ -87,6 +87,12 @@
                         class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
                     />
 
+                    <LineChartHSD
+                        ref="lineChartHSDRef"
+                        v-show="currentStepIndex === 5"
+                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                    />
+
                     <BoxPlotElectoralBoundaries
                         ref="boxPlotElectoralBoundariesChartRef"
                         v-show="currentStepIndex === 6"
@@ -119,6 +125,7 @@ import ScatterPlotStoreyGroup from './ScatterPlotStoreyGroup.vue';
 import LineChartStoreyGroup from './LineChartStoreyGroup.vue';
 import ScatterPlotFlatType from './ScatterPlotFlatType.vue';
 import BoxPlotPricePerSqm from './BoxPlotPricePerSqm.vue';
+import LineChartHSD from './LineChartHSD.vue';
 import BoxPlotElectoralBoundaries from './BoxPlotElectoralBoundaries.vue';
 import { ref, computed, onMounted, watch, onBeforeUnmount, watchEffect } from 'vue';
 import { gsap } from 'gsap';
@@ -135,6 +142,7 @@ const storeyLineChartRef = ref(null);
 const flatTypeLineChartRef = ref(null);
 const flatTypeScatterChartRef = ref(null);
 const boxPlotPricePerSqmChartRef = ref(null);
+const lineChartHSDRef = ref(null);
 const boxPlotElectoralBoundariesChartRef = ref(null);
 const hasDrawnLineChart = ref(false);
 const isAfterSteps = ref(false);
@@ -240,8 +248,8 @@ const steps = [
         number: 4,
         title: "Amenities & Accessibility",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            "This chart illustrates how proximity to primary schools—shaped by Singapore’s Home-School Distance (HSD) policy—significantly influences HDB resale prices. Under the HSD framework, children living within 1km of a school are given priority during the Primary 1 admission exercise, with those living within 2km receiving second-tier priority.",
+            "As a result, homes closer to popular schools are in higher demand, which translates into higher resale values. The chart shows that since the 2009 awareness spike and further policy refinements in 2013 and 2022, the price gap between tiers has widened. This reflects growing competition among parents for limited school places, making HSD a critical factor for young families and a driver of long-term property value.",
         ],
         years: [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006],
     },
@@ -337,6 +345,7 @@ watch(currentStepIndex, (newIndex) => {
   const showFlatCharts = newIndex === 1;
   const showScatterFlat = newIndex === 2;
   const showBoxPlot = newIndex === 3 || newIndex === 4;
+  const showHSD = newIndex === 5;
   const showBoxPlotElectoral = newIndex === 6;
 
   gsap.to(storeyScatterChartRef.value?.$el, {
@@ -400,6 +409,17 @@ watch(currentStepIndex, (newIndex) => {
 
             if (newIndex === 4 && typeof boxPlotPricePerSqmChartRef.value?.sortByMedianDescending === 'function') {
                 boxPlotPricePerSqmChartRef.value.sortByMedianDescending();
+            }
+        }
+    });
+
+    gsap.to(lineChartHSDRef.value?.$el, {
+        opacity: showHSD ? 1 : 0,
+        duration: 0.3,
+        ease: 'power2.out',
+        onStart: () => {
+            if (showHSD && typeof lineChartHSDRef.value?.resizeAndRedraw === 'function') {
+            lineChartHSDRef.value.resizeAndRedraw();
             }
         }
     });
