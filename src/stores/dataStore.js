@@ -12,6 +12,7 @@ export const useDataStore = defineStore("dataStore", () => {
     const pricePerSqmByPlanningArea = ref([]);
     const ethnicDistribution = ref([]);
     const affordabilityIndex = ref([]);
+    const hsdResaleTrend = ref([]);
 
     const isDataLoaded = computed(() => rawChartData !== null);
     const isDataReady = computed(() => yearMedians.value.length > 0);
@@ -207,6 +208,17 @@ export const useDataStore = defineStore("dataStore", () => {
         const processedStoreyPriceScatter = [];
         const processedBoxplot = [];
 
+        const tierClassifier = (distance) => {
+            const d = parseFloat(distance);
+            if (isNaN(d)) return null;
+            if (d <= 1000) return "Within 1km";
+            if (d <= 2000) return "Within 2km";
+            return "More than 2km";
+        };
+        const hsdMap = new Map()
+
+
+
         groupedByYear.forEach((values, year) => {
             const median = d3.median(values, (d) =>
                 parseFloat(d["Resale Price"])
@@ -267,6 +279,34 @@ export const useDataStore = defineStore("dataStore", () => {
             }
         });
 
+        // HSD Trend: Median resale price per sqm by distance tier
+        const processedHsdTrend = [];
+        rawChartData.forEach((d) => {
+            const year = +d.Year;
+            const dist = d["Closest Pri Sch Dist"];
+            const tier = tierClassifier(dist);
+            const price = parseFloat(d["Resale Price"]);
+
+            if (!tier || isNaN(year) || isNaN(price)) return;
+            const key = `${year}|${tier}`;
+            if (!hsdMap.has(key)) hsdMap.set(key, []);
+            hsdMap.get(key).push(price);
+        });
+
+        hsdMap.forEach((values, key) => {
+            const [year, tier] = key.split("|");
+            const medianValue = d3.median(values);
+            processedHsdTrend.push({
+                year: +year,
+                tier,
+                value: +medianValue.toFixed(2),
+            });
+        });
+
+        processedHsdTrend.sort((a, b) => a.year - b.year);
+        hsdResaleTrend.value = processedHsdTrend;
+
+
         processedYearMedians.sort((a, b) => a.Year - b.Year);
         processedYearFlatTypeMedians.sort((a, b) => a.Year - b.Year);
 
@@ -275,6 +315,7 @@ export const useDataStore = defineStore("dataStore", () => {
         yearFlatTypeMedians.value = processedYearFlatTypeMedians;
         // storeyPriceScatter.value = processedStoreyPriceScatter;
         pricePerSqmByPlanningArea.value = processedBoxplot;
+
     }
 
     function ensureDataLoaded() {
@@ -294,6 +335,7 @@ export const useDataStore = defineStore("dataStore", () => {
         ethnicDistribution,
         affordabilityIndex,
         // storeyPriceScatter,
+        hsdResaleTrend,
         isDataLoaded,
         isDataReady,
         loadData,
