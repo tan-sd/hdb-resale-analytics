@@ -202,8 +202,9 @@ const steps = [
         number: 2,
         title: "Flat Types & Sizes",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            "The graph shows that across all flat types, median HDB resale prices have generally increased from 1990 to 2023, with larger flats like <span class=\"font-semibold\">Executive</span> and <span class=\"font-semibold\">Multi-Generation</span> consistently commanding higher prices. After a sharp rise in the early 1990s, prices dipped post-1997 due to the Asian Financial Crisis, then recovered around 2007. From 2013 onward, prices plateaued due to cooling measures such as the <span class=\"font-semibold\">MSR</span> and <span class=\"font-semibold\">TDSR</span> (HDB, 2013: https://www.hdb.gov.sg/cs/infoweb/residential/buying-a-flat/resale/resale-checklist/loan-and-financing).",
+
+            "From 2020, prices surged — especially for <span class=\"font-semibold\">Multi-Generation</span> flats. This spike likely reflects increased demand for <span class=\"font-semibold\">larger homes</span> during COVID-19, as families sought space for work, caregiving, and co-living. A study by IPS highlights that the pandemic renewed appreciation for <span class=\"font-semibold\">intergenerational support</span> and <span class=\"font-semibold\">living together</span> (IPS, 2021: https://lkyspp.nus.edu.sg/ips/research/perspectives/details/the-pandemic-has-renewed-our-appreciation-of-family)."
         ],
         years: [1990, 1991, 1992, 1993, 1994],
     },
@@ -211,8 +212,13 @@ const steps = [
         number: 3,
         title: "Price per sqm by Planning Area",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+        "The boxplots show the <span class=\"font-semibold\">price per sqm</span> of HDB resale flats across different planning areas in Singapore. In the unsorted version, areas are listed alphabetically, while the sorted version helps visualize clear price gradients. Areas like <span class=\"font-semibold\">Downtown Core</span>, <span class=\"font-semibold\">Outram</span>, and <span class=\"font-semibold\">Punggol</span> exhibit the highest median prices, while <span class=\"font-semibold\">Lim Chu Kang</span> lies at the lowest end.",
+
+        "These pricing differences are primarily driven by <span class=\"font-semibold\">location desirability</span> and <span class=\"font-semibold\">accessibility</span>. Flats located in or near the city center — like Downtown Core or Outram — command higher prices due to proximity to commercial districts, MRT stations, and lifestyle amenities (URA, 2020: https://www.ura.gov.sg/Corporate/Guidelines/Urban-Design/Planning-for-Liveability). Newer towns such as Punggol also attract premium prices due to integrated town planning, waterfront developments, and Smart Town infrastructure (HDB, 2022: https://www.hdb.gov.sg/cs/infoweb/about-us/our-role/smart-and-sustainable-town).",
+
+        "Meanwhile, areas with lower prices — like <span class=\"font-semibold\">Sembawang</span>, <span class=\"font-semibold\">Jurong West</span>, or <span class=\"font-semibold\">Lim Chu Kang</span> — tend to be further from the city center, have fewer transport connections, or are less developed in terms of amenities. In some cases, prices are lower due to an older flat stock or lower buyer demand (HDB, 2024: https://www.hdb.gov.sg/cs/infoweb/residential/living-in-an-hdb-flat/hdb-town-overview).",
+
+        "Smaller planning areas or those with fewer residential blocks, such as <span class=\"font-semibold\">Lim Chu Kang</span>, may also show skewed data due to a <span class=\"font-semibold\">limited number of transactions</span>. Outliers from a few unique sales — such as larger flats or rare units — can cause <span class=\"font-semibold\">disproportionate price variations</span> in these regions."
         ],
         years: [1994, 1995, 1996],
     },
@@ -220,8 +226,13 @@ const steps = [
         number: 3,
         title: "Price per sqm by Planning Area",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+        "The boxplots show the <span class=\"font-semibold\">price per sqm</span> of HDB resale flats across different planning areas in Singapore. In the unsorted version, areas are listed alphabetically, while the sorted version helps visualize clear price gradients. Areas like <span class=\"font-semibold\">Downtown Core</span>, <span class=\"font-semibold\">Outram</span>, and <span class=\"font-semibold\">Punggol</span> exhibit the highest median prices, while <span class=\"font-semibold\">Lim Chu Kang</span> lies at the lowest end.",
+
+        "These pricing differences are primarily driven by <span class=\"font-semibold\">location desirability</span> and <span class=\"font-semibold\">accessibility</span>. Flats located in or near the city center — like Downtown Core or Outram — command higher prices due to proximity to commercial districts, MRT stations, and lifestyle amenities (URA, 2020: https://www.ura.gov.sg/Corporate/Guidelines/Urban-Design/Planning-for-Liveability). Newer towns such as Punggol also attract premium prices due to integrated town planning, waterfront developments, and Smart Town infrastructure (HDB, 2022: https://www.hdb.gov.sg/cs/infoweb/about-us/our-role/smart-and-sustainable-town).",
+
+        "Meanwhile, areas with lower prices — like <span class=\"font-semibold\">Sembawang</span>, <span class=\"font-semibold\">Jurong West</span>, or <span class=\"font-semibold\">Lim Chu Kang</span> — tend to be further from the city center, have fewer transport connections, or are less developed in terms of amenities. In some cases, prices are lower due to an older flat stock or lower buyer demand (HDB, 2024: https://www.hdb.gov.sg/cs/infoweb/residential/living-in-an-hdb-flat/hdb-town-overview).",
+
+        "Smaller planning areas or those with fewer residential blocks, such as <span class=\"font-semibold\">Lim Chu Kang</span>, may also show skewed data due to a <span class=\"font-semibold\">limited number of transactions</span>. Outliers from a few unique sales — such as larger flats or rare units — can cause <span class=\"font-semibold\">disproportionate price variations</span> in these regions."
         ],
         years: [1994, 1995, 1996],
     },
@@ -238,8 +249,13 @@ const steps = [
         number: 5,
         title: "Electoral Boundaries",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            "The chart shows <span class=\"font-semibold\">resale prices (2024 adjusted)</span> of HDB flats within 500 meters of political boundaries between <span class=\"font-semibold\">PAP</span>, <span class=\"font-semibold\">WP</span>, and <span class=\"font-semibold\">SDA</span> constituencies across five electoral periods. Overall, <span class=\"font-semibold\">PAP-adjacent areas</span> consistently show higher median resale prices compared to WP or SDA areas from 2006 to 2023.",
+
+            "This may reflect historical differences in town development. PAP wards tend to include more centrally located or mature estates with better infrastructure, amenities, and transport access — all factors known to increase HDB resale value (URA, 2020: https://www.ura.gov.sg/Corporate/Guidelines/Urban-Design/Planning-for-Liveability).",
+
+            "However, WP areas have shown a <span class=\"font-semibold\">gradual closing of the gap</span> in recent periods, especially post-2011 when WP gained Aljunied GRC. Government-funded programmes like the Home Improvement Programme (HIP) and Neighbourhood Renewal Programme (NRP) have been extended to opposition wards, ensuring equitable upgrades (MND, 2020: https://www.mnd.gov.sg/newsroom/parliament-matters/q-as/view/upgrading-programmes-in-opposition-wards).",
+
+            "The narrowing price gap from 2015 onward may also reflect the <span class=\"font-semibold\">growing acceptance and confidence in opposition-led wards</span> among buyers. Still, resale price differences are likely influenced by a combination of political history, estate maturity, flat types, and regional demand — rather than party alignment alone (HDB, 2023: https://www.hdb.gov.sg/cs/infoweb/about-us/news-and-publications/research-and-analysis)."
         ],
         years: [2007, 2008, 2009, 2010, 2011, 2012, 2013],
     },
