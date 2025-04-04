@@ -1,5 +1,4 @@
 <script setup>
-import MapChart from "../components/MapChart.vue";
 import Title from "../components/Title.vue";
 import Dashboard from "@/components/Dashboard.vue";
 import Section1 from "../components/Section1.vue";
