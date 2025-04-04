@@ -161,7 +161,13 @@
                                     class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
                                 />
                             </div>
-                        </div>
+                        
+                    <LineChartLeaseRemaining
+                        ref="LineChartLeaseRemainingRef"
+                        v-show="currentStepIndex === 7"
+                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                    />
+                    </div>
                     </div>
 
                     <div class="absolute inset-0 pointer-events-none">
@@ -189,6 +195,7 @@ import ScatterPlotFlatType from "./ScatterPlotFlatType.vue";
 import BoxPlotPricePerSqm from "./BoxPlotPricePerSqm.vue";
 import LineChartHSD from "./LineChartHSD.vue";
 import BoxPlotElectoralBoundaries from "./BoxPlotElectoralBoundaries.vue";
+import LineChartLeaseRemaining from './LineChartLeaseRemaining.vue';
 import {
     ref,
     computed,
@@ -211,6 +218,7 @@ const flatTypeScatterChartRef = ref(null);
 const boxPlotPricePerSqmChartRef = ref(null);
 const lineChartHSDRef = ref(null);
 const boxPlotElectoralBoundariesChartRef = ref(null);
+const LineChartLeaseRemainingRef = ref(null);
 const isAfterSteps = ref(false);
 const isBeforeSteps = ref(true);
 const descScrollRef = ref(null);
@@ -238,8 +246,9 @@ const steps = [
         number: 2,
         title: "Flat Types & Sizes",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+        "The graph shows that across all flat types, median HDB resale prices have generally increased from 1990 to 2023, with larger flats like <span class=\"font-semibold\">Executive</span> and <span class=\"font-semibold\">Multi-Generation</span> consistently commanding higher prices. After a sharp rise in the early 1990s, prices dipped post-1997 due to the Asian Financial Crisis, then recovered around 2007. From 2013 onward, prices plateaued due to cooling measures such as the <span class=\"font-semibold\">MSR</span> and <span class=\"font-semibold\">TDSR</span>.",
+
+        "From 2020, prices surged — especially for <span class=\"font-semibold\">Multi-Generation</span> flats. This spike likely reflects increased demand for <span class=\"font-semibold\">larger homes</span> during COVID-19, as families sought space for work, caregiving, and co-living. A study by IPS highlights that the pandemic renewed appreciation for <span class=\"font-semibold\">intergenerational support</span> and <span class=\"font-semibold\">living together</span>."
         ],
         years: [1990, 1991, 1992, 1993, 1994],
     },
@@ -247,8 +256,9 @@ const steps = [
         number: 2,
         title: "Flat Types & Sizes",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+        "The graph shows that across all flat types, median HDB resale prices have generally increased from 1990 to 2023, with larger flats like <span class=\"font-semibold\">Executive</span> and <span class=\"font-semibold\">Multi-Generation</span> consistently commanding higher prices. After a sharp rise in the early 1990s, prices dipped post-1997 due to the Asian Financial Crisis, then recovered around 2007. From 2013 onward, prices plateaued due to cooling measures such as the <span class=\"font-semibold\">MSR</span> and <span class=\"font-semibold\">TDSR</span>.",
+
+        "From 2020, prices surged — especially for <span class=\"font-semibold\">Multi-Generation</span> flats. This spike likely reflects increased demand for <span class=\"font-semibold\">larger homes</span> during COVID-19, as families sought space for work, caregiving, and co-living. A study by IPS highlights that the pandemic renewed appreciation for <span class=\"font-semibold\">intergenerational support</span> and <span class=\"font-semibold\">living together</span>."
         ],
         years: [2020, 2021, 2022, 2023],
     },
@@ -268,9 +278,9 @@ const steps = [
         description: [
             'The boxplots show the <span class="font-semibold">price per sqm</span> of HDB resale flats across different planning areas in Singapore. In the unsorted version, areas are listed alphabetically, while the sorted version helps visualize clear price gradients. Areas like <span class="font-semibold">Downtown Core</span>, <span class="font-semibold">Outram</span>, and <span class="font-semibold">Punggol</span> exhibit the highest median prices, while <span class="font-semibold">Lim Chu Kang</span> lies at the lowest end.',
 
-            'These pricing differences are primarily driven by <span class="font-semibold">location desirability</span> and <span class="font-semibold">accessibility</span>. Flats located in or near the city center — like Downtown Core or Outram — command higher prices due to proximity to commercial districts, MRT stations, and lifestyle amenities (URA, 2020: https://www.ura.gov.sg/Corporate/Guidelines/Urban-Design/Planning-for-Liveability). Newer towns such as Punggol also attract premium prices due to integrated town planning, waterfront developments, and Smart Town infrastructure.',
+            'These pricing differences are primarily driven by <span class="font-semibold">location desirability</span> and <span class="font-semibold">accessibility</span>. Flats located in or near the city center — like Downtown Core or Outram — command higher prices due to proximity to commercial districts, MRT stations, and lifestyle amenities. Newer towns such as Punggol also attract premium prices due to integrated town planning, waterfront developments, and Smart Town infrastructure.',
 
-            'Meanwhile, areas with lower prices — like <span class="font-semibold">Sembawang</span>, <span class="font-semibold">Jurong West</span>, or <span class="font-semibold">Lim Chu Kang</span> — tend to be further from the city center, have fewer transport connections, or are less developed in terms of amenities. In some cases, prices are lower due to an older flat stock or lower buyer demand (HDB, 2024: https://www.hdb.gov.sg/cs/infoweb/residential/living-in-an-hdb-flat/hdb-town-overview).',
+            'Meanwhile, areas with lower prices — like <span class="font-semibold">Sembawang</span>, <span class="font-semibold">Jurong West</span>, or <span class="font-semibold">Lim Chu Kang</span> — tend to be further from the city center, have fewer transport connections, or are less developed in terms of amenities. In some cases, prices are lower due to an older flat stock or lower buyer demand.',
 
             'Smaller planning areas or those with fewer residential blocks, such as <span class="font-semibold">Lim Chu Kang</span>, may also show skewed data due to a <span class="font-semibold">limited number of transactions</span>. Outliers from a few unique sales — such as larger flats or rare units — can cause <span class="font-semibold">disproportionate price variations</span> in these regions.',
         ],
@@ -282,7 +292,7 @@ const steps = [
         description: [
             'The boxplots show the <span class="font-semibold">price per sqm</span> of HDB resale flats across different planning areas in Singapore. In the unsorted version, areas are listed alphabetically, while the sorted version helps visualize clear price gradients. Areas like <span class="font-semibold">Downtown Core</span>, <span class="font-semibold">Outram</span>, and <span class="font-semibold">Punggol</span> exhibit the highest median prices, while <span class="font-semibold">Lim Chu Kang</span> lies at the lowest end.',
 
-            'These pricing differences are primarily driven by <span class="font-semibold">location desirability</span> and <span class="font-semibold">accessibility</span>. Flats located in or near the city center — like Downtown Core or Outram — command higher prices due to proximity to commercial districts, MRT stations, and lifestyle amenities (URA, 2020: https://www.ura.gov.sg/Corporate/Guidelines/Urban-Design/Planning-for-Liveability). Newer towns such as Punggol also attract premium prices due to integrated town planning, waterfront developments, and Smart Town infrastructure.',
+            'These pricing differences are primarily driven by <span class="font-semibold">location desirability</span> and <span class="font-semibold">accessibility</span>. Flats located in or near the city center — like Downtown Core or Outram — command higher prices due to proximity to commercial districts, MRT stations, and lifestyle amenities. Newer towns such as Punggol also attract premium prices due to integrated town planning, waterfront developments, and Smart Town infrastructure.',
 
             'Meanwhile, areas with lower prices — like <span class="font-semibold">Sembawang</span>, <span class="font-semibold">Jurong West</span>, or <span class="font-semibold">Lim Chu Kang</span> — tend to be further from the city center, have fewer transport connections, or are less developed in terms of amenities. In some cases, prices are lower due to an older flat stock or lower buyer demand.',
 
@@ -294,10 +304,10 @@ const steps = [
         number: 4,
         title: "Amenities & Accessibility",
         description: [
-            "This chart illustrates how proximity to primary schools—shaped by Singapore’s Home-School Distance (HSD) policy—significantly influences HDB resale prices. Under the HSD framework, children living within 1km of a school are given priority during the Primary 1 admission exercise, with those living within 2km receiving second-tier priority.",
-            "As a result, homes closer to popular schools are in higher demand, which translates into higher resale values. The chart shows that since the 2009 awareness spike and further policy refinements in 2013 and 2022, the price gap between tiers has widened. This reflects growing competition among parents for limited school places, making HSD a critical factor for young families and a driver of long-term property value.",
+            "This chart illustrates how proximity to primary schools—shaped by Singapore’s <span class=\"font-semibold\">Home-School Distance (HSD) policy</span>—significantly influences <span class=\"font-semibold\">HDB resale prices</span>. Under the HSD framework, children living <span class=\"font-semibold\">within 1km</span> of a school are given priority during the <span class=\"font-semibold\">Primary 1 admission exercise</span>, with those living <span class=\"font-semibold\">within 2km</span> receiving second-tier priority.",
+            "As a result, homes closer to <span class=\"font-semibold\">popular schools</span> are in higher demand, which translates into <span class=\"font-semibold\">higher resale values</span>. The chart shows that since the <span class=\"font-semibold\">2009 awareness spike</span> and further policy refinements in <span class=\"font-semibold\">2014</span> and <span class=\"font-semibold\">2021</span>, the <span class=\"font-semibold\">price gap between tiers has widened</span>. This reflects growing competition among parents for <span class=\"font-semibold\">limited school places</span>, making HSD a critical factor for <span class=\"font-semibold\">young families</span> and a driver of <span class=\"font-semibold\">long-term property value</span>.",
         ],
-        years: [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006],
+        years: [1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006],
     },
     {
         number: 5,
@@ -311,7 +321,28 @@ const steps = [
 
             'The narrowing price gap from 2015 onward may also reflect the <span class="font-semibold">growing acceptance and confidence in opposition-led wards</span> among buyers. Still, resale price differences are likely influenced by a combination of political history, estate maturity, flat types, and regional demand — rather than party alignment alone.',
         ],
-        years: [2007, 2008, 2009, 2010, 2011, 2012, 2013],
+        years: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013],
+    },
+    {
+        number: 6,
+        title: "Years Remaining on Lease",
+        description: [
+            "Resale prices generally <span class=\"font-semibold\">decline as lease years decrease</span>, especially when flats fall below <span class=\"font-semibold\">60 years remaining</span>. This is due to CPF and loan eligibility <span class=\"font-semibold\"><a href=\"https://dollarsandsense.sg/5-things-need-know-buying-older-hdb-lease-less-50-years/\" target=\"_blank\" style=\"color: blue; text-decoration: underline;\">restrictions</a></span>, which limit financing options and reduce buyer demand for older flats.",
+            
+            "However, flats with <span class=\"font-semibold\">65–80 years remaining</span> sometimes defy this trend. Factors such as <span class=\"font-semibold\">desirable locations</span>, <span class=\"font-semibold\">modern amenities</span>, and appeal to <span class=\"font-semibold\">elderly buyers</span> seeking convenience over lease length can <span class=\"font-semibold\">sustain or even increase resale prices</span> despite shorter leases."
+        ],
+        years: [
+            1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023
+        ],
+    },
+    {
+        number: 7,
+        title: "Demographics (Age)",
+        description: [
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed."
+        ],
+        years: [2007, 2008, 2009, 2010, 2011, 2012, 2013], // edit this
     },
 ];
 
@@ -399,6 +430,7 @@ watch(currentStepIndex, (newIndex) => {
     const showBoxPlot = newIndex === 4 || newIndex === 5;
     const showHSD = newIndex === 6;
     const showBoxPlotElectoral = newIndex === 7;
+  const showLease = newIndex === 7;
 
     gsap.to(storeyScatterChartRef.value?.$el, {
         opacity: showScatter ? 1 : 0,
@@ -516,6 +548,28 @@ watch(currentStepIndex, (newIndex) => {
     watch(currentStepIndex, () => {
         if (descScrollRef.value) {
             descScrollRef.value.scrollTop = 0;
+        }
+    });
+
+    gsap.to(LineChartLeaseRemainingRef.value?.$el, {
+        opacity: showLease ? 1 : 0,
+        duration: 0.3,
+        ease: 'power2.out',
+        onStart: () => {
+            if (showLease && typeof LineChartLeaseRemainingRef.value?.resizeAndRedraw === 'function') {
+                LineChartLeaseRemainingRef.value.resizeAndRedraw();
+            }
+        }
+    });
+
+    gsap.to(LineChartLeaseRemainingRef.value?.$el, {
+        opacity: showLease ? 1 : 0,
+        duration: 0.3,
+        ease: 'power2.out',
+        onStart: () => {
+            if (showLease && typeof LineChartLeaseRemainingRef.value?.resizeAndRedraw === 'function') {
+                LineChartLeaseRemainingRef.value.resizeAndRedraw();
+            }
         }
     });
 });

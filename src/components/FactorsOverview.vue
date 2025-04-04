@@ -44,17 +44,17 @@
               </div>
           </div>
       </div>
-  </section>
-</template>
-
-<script setup>
-const factors = [
-  "Storey Levels",
-  "Flat Types & Sizes",
-  "Price per sqm by Planning Area",
-  "Amenities & Accessibility",
-  "Electoral Boundaries",
-  "Lease Remaining",
-  "Demographics",
-];
-</script>
+    </section>
+  </template>
+  
+  <script setup>
+  const factors = [
+    "Storey Levels",
+    "Flat Types & Sizes",
+    "Price per sqm by Planning Area",
+    "Amenities & Accessibility",
+    "Electoral Boundaries",
+    "Years Remaining on Lease",
+    "Demographics (Age)"
+  ];
+  </script>  

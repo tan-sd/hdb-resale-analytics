@@ -40,6 +40,8 @@ export const useDataStore = defineStore("dataStore", () => {
     const ethnicDistribution = ref([]);
     const affordabilityIndex = ref([]);
     const hsdResaleTrend = ref([]);
+    const borderFlats = ref([]);
+    const leaseTrend = ref([]);
 
     async function loadData() {
         if (isDataLoaded.value) return;
@@ -49,6 +51,27 @@ export const useDataStore = defineStore("dataStore", () => {
                 "data/population_demographics/ethnic_distribution.csv",
                 d3.autoType
             );
+
+            const borderFlatsData = await d3.csv(
+                "data/resale_prices_cleaned/BorderFlats.csv"
+            );
+
+            const groupedData = d3.group(
+                borderFlatsData,
+                (d) => d.Period,
+                (d) => d.Zone
+            );
+            borderFlats.value = Array.from(groupedData, ([period, zones]) => {
+                return Array.from(zones, ([zone, records]) => {
+                    return {
+                        period,
+                        zone,
+                        values: records.map((r) =>
+                            parseFloat(r["Resale Price Adj 2024"])
+                        ),
+                    };
+                });
+            }).flat();
 
             ethnicDistribution.value = ethnicData.map((d) => ({
                 planningArea: d["Planning Area"].toUpperCase(),
@@ -85,7 +108,7 @@ export const useDataStore = defineStore("dataStore", () => {
 
         const processedAffordability = [];
         const groupedByYear = d3.group(rawChartData, (d) => d.Year);
-        
+
         for (const [year, records] of groupedByYear.entries()) {
             if (!medianMonthlyIncome[year]) continue;
 
@@ -148,7 +171,7 @@ export const useDataStore = defineStore("dataStore", () => {
                     FlatType: flatType,
                     median: flatMedian,
                 });
-            })
+            });
         });
 
         groupedByArea.forEach((entries, area) => {
@@ -194,6 +217,25 @@ export const useDataStore = defineStore("dataStore", () => {
             });
         });
 
+        const groupedByYearsRemaining = d3.group(
+            rawChartData,
+            (d) => +d["Years Remaining"]
+        );
+
+        const processedLeaseTrend = Array.from(
+            groupedByYearsRemaining,
+            ([yearsRemaining, records]) => {
+                const medianPrice = d3.median(records, (d) =>
+                    parseFloat(d["Resale Price Adj 2024"])
+                );
+                return {
+                    "Years Remaining": yearsRemaining,
+                    "Resale Price Adj 2024": medianPrice,
+                };
+            }
+        ).sort((a, b) => b["Years Remaining"] - a["Years Remaining"]);
+
+        leaseTrend.value = processedLeaseTrend;
         processedHsdTrend.sort((a, b) => a.year - b.year);
         hsdResaleTrend.value = processedHsdTrend;
 
@@ -223,6 +265,8 @@ export const useDataStore = defineStore("dataStore", () => {
         ethnicDistribution,
         affordabilityIndex,
         hsdResaleTrend,
+        borderFlats,
+        leaseTrend,
         isDataLoaded,
         loadData,
         preprocessData,
