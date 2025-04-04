@@ -278,14 +278,15 @@ const steps = [
     },
     {
         number: 6,
-        title: "Years Reamining on Lease",
+        title: "Years Remaining on Lease",
         description: [
-            "Flats with nearly full leases (close to <span class=\"font-semibold\">99 years remaining</span>) command the <span class=\"font-semibold\">highest resale prices</span>, reflecting the premium for <span class=\"font-semibold\">newer flats</span> like recently <span class=\"font-semibold\">MOP-ed (Minimum Occupation Period) BTO flats</span>. These flats are highly sought after due to their <span class=\"font-semibold\">modern amenities</span> and <span class=\"font-semibold\">long lease durations</span>.",
-            "Flats with shorter leases (less than <span class=\"font-semibold\">50 years remaining</span>) face reduced demand due to <span class=\"font-semibold\">CPF and Loan Eligibility Restrictions</span>, which limit financing options and raise concerns about lease expiry.",
-            "The <span class=\"font-semibold\">Lease Decay Effect</span> describes how a flat’s resale value <span class=\"font-semibold\">gradually declines</span> as its remaining lease decreases, especially beyond key thresholds."
+            "Resale prices generally <span class=\"font-semibold\">decline as lease years decrease</span>, especially when flats fall below <span class=\"font-semibold\">60 years remaining</span>. This is due to CPF and loan eligibility <span class=\"font-semibold\"><a href=\"https://dollarsandsense.sg/5-things-need-know-buying-older-hdb-lease-less-50-years/\" target=\"_blank\" style=\"color: blue; text-decoration: underline;\">restrictions</a></span>, which limit financing options and reduce buyer demand for older flats.",
+            
+            "However, flats with <span class=\"font-semibold\">65–80 years remaining</span> sometimes defy this trend. Factors such as <span class=\"font-semibold\">desirable locations</span>, <span class=\"font-semibold\">modern amenities</span>, and appeal to <span class=\"font-semibold\">elderly buyers</span> seeking convenience over lease length can <span class=\"font-semibold\">sustain or even increase resale prices</span> despite shorter leases."
         ],
         years: [
-            1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
+            1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023
+        ],
     },
     {
         number: 7,
