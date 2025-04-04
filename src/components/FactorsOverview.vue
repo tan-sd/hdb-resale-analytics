@@ -43,5 +43,7 @@
     "Price per sqm by Planning Area",
     "Amenities & Accessibility",
     "Electoral Boundaries",
+    "Years Remaining on Lease",
+    "Demographics (Age)"
   ];
   </script>  

@@ -98,6 +98,12 @@
                         v-show="currentStepIndex === 6"
                         class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
                     />
+                    
+                    <LineChartLeaseRemaining
+                        ref="LineChartLeaseRemainingRef"
+                        v-show="currentStepIndex === 7"
+                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                    />
                     </div>
                 </div>
 
@@ -127,6 +133,7 @@ import ScatterPlotFlatType from './ScatterPlotFlatType.vue';
 import BoxPlotPricePerSqm from './BoxPlotPricePerSqm.vue';
 import LineChartHSD from './LineChartHSD.vue';
 import BoxPlotElectoralBoundaries from './BoxPlotElectoralBoundaries.vue';
+import LineChartLeaseRemaining from './LineChartLeaseRemaining.vue';
 import { ref, computed, onMounted, watch, onBeforeUnmount, watchEffect } from 'vue';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -144,6 +151,7 @@ const flatTypeScatterChartRef = ref(null);
 const boxPlotPricePerSqmChartRef = ref(null);
 const lineChartHSDRef = ref(null);
 const boxPlotElectoralBoundariesChartRef = ref(null);
+const LineChartLeaseRemainingRef = ref(null);
 const hasDrawnLineChart = ref(false);
 const isAfterSteps = ref(false);
 const isBeforeSteps = ref(true);
@@ -249,10 +257,10 @@ const steps = [
         number: 4,
         title: "Amenities & Accessibility",
         description: [
-            "This chart illustrates how proximity to primary schools—shaped by Singapore’s Home-School Distance (HSD) policy—significantly influences HDB resale prices. Under the HSD framework, children living within 1km of a school are given priority during the Primary 1 admission exercise, with those living within 2km receiving second-tier priority.",
-            "As a result, homes closer to popular schools are in higher demand, which translates into higher resale values. The chart shows that since the 2009 awareness spike and further policy refinements in 2013 and 2022, the price gap between tiers has widened. This reflects growing competition among parents for limited school places, making HSD a critical factor for young families and a driver of long-term property value.",
+            "This chart illustrates how proximity to primary schools—shaped by Singapore’s <span class=\"font-semibold\">Home-School Distance (HSD) policy</span>—significantly influences <span class=\"font-semibold\">HDB resale prices</span>. Under the HSD framework, children living <span class=\"font-semibold\">within 1km</span> of a school are given priority during the <span class=\"font-semibold\">Primary 1 admission exercise</span>, with those living <span class=\"font-semibold\">within 2km</span> receiving second-tier priority.",
+            "As a result, homes closer to <span class=\"font-semibold\">popular schools</span> are in higher demand, which translates into <span class=\"font-semibold\">higher resale values</span>. The chart shows that since the <span class=\"font-semibold\">2009 awareness spike</span> and further policy refinements in <span class=\"font-semibold\">2013</span> and <span class=\"font-semibold\">2022</span>, the <span class=\"font-semibold\">price gap between tiers has widened</span>. This reflects growing competition among parents for <span class=\"font-semibold\">limited school places</span>, making HSD a critical factor for <span class=\"font-semibold\">young families</span> and a driver of <span class=\"font-semibold\">long-term property value</span>.",
         ],
-        years: [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006],
+        years: [1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006],
     },
     {
         number: 5,
@@ -266,25 +274,27 @@ const steps = [
 
             "The narrowing price gap from 2015 onward may also reflect the <span class=\"font-semibold\">growing acceptance and confidence in opposition-led wards</span> among buyers. Still, resale price differences are likely influenced by a combination of political history, estate maturity, flat types, and regional demand — rather than party alignment alone."
         ],
-        years: [2007, 2008, 2009, 2010, 2011, 2012, 2013],
+        years: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013],
     },
     {
         number: 6,
-        title: "Lease Remaining",
+        title: "Years Reamining on Lease",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed."
+            "Flats with nearly full leases (close to <span class=\"font-semibold\">99 years remaining</span>) command the <span class=\"font-semibold\">highest resale prices</span>, reflecting the premium for <span class=\"font-semibold\">newer flats</span> like recently <span class=\"font-semibold\">MOP-ed (Minimum Occupation Period) BTO flats</span>. These flats are highly sought after due to their <span class=\"font-semibold\">modern amenities</span> and <span class=\"font-semibold\">long lease durations</span>.",
+            "Flats with shorter leases (less than <span class=\"font-semibold\">50 years remaining</span>) face reduced demand due to <span class=\"font-semibold\">CPF and Loan Eligibility Restrictions</span>, which limit financing options and raise concerns about lease expiry.",
+            "The <span class=\"font-semibold\">Lease Decay Effect</span> describes how a flat’s resale value <span class=\"font-semibold\">gradually declines</span> as its remaining lease decreases, especially beyond key thresholds."
         ],
-        years: [2007, 2008, 2009, 2010, 2011, 2012, 2013],
+        years: [
+            1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023],
     },
     {
         number: 7,
-        title: "Demographics",
+        title: "Demographics (Age)",
         description: [
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed."
         ],
-        years: [2007, 2008, 2009, 2010, 2011, 2012, 2013],
+        years: [2007, 2008, 2009, 2010, 2011, 2012, 2013], // edit this
     },
 ];
 
@@ -366,6 +376,7 @@ watch(currentStepIndex, (newIndex) => {
   const showBoxPlot = newIndex === 3 || newIndex === 4;
   const showHSD = newIndex === 5;
   const showBoxPlotElectoral = newIndex === 6;
+  const showLease = newIndex === 7;
 
   gsap.to(storeyScatterChartRef.value?.$el, {
     opacity: showScatter ? 1 : 0,
@@ -450,6 +461,17 @@ watch(currentStepIndex, (newIndex) => {
         onStart: () => {
             if (showBoxPlotElectoral && typeof boxPlotElectoralBoundariesChartRef.value?.resizeAndRedraw === 'function') {
                 boxPlotElectoralBoundariesChartRef.value.resizeAndRedraw();
+            }
+        }
+    });
+
+    gsap.to(LineChartLeaseRemainingRef.value?.$el, {
+        opacity: showLease ? 1 : 0,
+        duration: 0.3,
+        ease: 'power2.out',
+        onStart: () => {
+            if (showLease && typeof LineChartLeaseRemainingRef.value?.resizeAndRedraw === 'function') {
+                LineChartLeaseRemainingRef.value.resizeAndRedraw();
             }
         }
     });

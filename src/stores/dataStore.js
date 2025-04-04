@@ -14,6 +14,7 @@ export const useDataStore = defineStore("dataStore", () => {
     const affordabilityIndex = ref([]);
     const hsdResaleTrend = ref([]);
     const borderFlats = ref([]);
+    const leaseTrend = ref([]);
 
     const isDataLoaded = computed(() => rawChartData !== null);
     const isDataReady = computed(() => yearMedians.value.length > 0);
@@ -319,10 +320,20 @@ export const useDataStore = defineStore("dataStore", () => {
             });
         });
 
+        const groupedByYearsRemaining = d3.group(rawChartData, (d) => +d["Years Remaining"]);
 
+        const processedLeaseTrend = Array.from(groupedByYearsRemaining, ([yearsRemaining, records]) => {
+        const medianPrice = d3.median(records, (d) => parseFloat(d["Resale Price Adj 2024"]));
+            return {
+                "Years Remaining": yearsRemaining,
+                "Resale Price Adj 2024": medianPrice,
+            };
+        }).sort((a, b) => b["Years Remaining"] - a["Years Remaining"]);
+
+
+        leaseTrend.value = processedLeaseTrend;
         processedHsdTrend.sort((a, b) => a.year - b.year);
         hsdResaleTrend.value = processedHsdTrend;
-
 
         processedYearMedians.sort((a, b) => a.Year - b.Year);
         processedYearFlatTypeMedians.sort((a, b) => a.Year - b.Year);
@@ -354,6 +365,7 @@ export const useDataStore = defineStore("dataStore", () => {
         // storeyPriceScatter,
         hsdResaleTrend,
         borderFlats,
+        leaseTrend,
         isDataLoaded,
         isDataReady,
         loadData,

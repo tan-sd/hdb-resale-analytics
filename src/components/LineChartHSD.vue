@@ -1,14 +1,14 @@
 <template>
     <div class="chart-container w-full max-w-[1500px] min-h-[600px] flex flex-col items-center justify-center px-4">
-      <h3 class="text-sm mb-1 text-center tracking-wide font-semibold">
-        Distance to Primary School with HDB Resale Price Trend
-      </h3>
-      <div id="box-plot" ref="chartWrapper" class="w-full relative">
-        <svg ref="svg" class="w-full h-full"></svg>
-      </div>
+        <h3 class="text-sm mb-1 text-center tracking-wide font-semibold">
+            Distance to Primary School with HDB Resale Price Trend
+        </h3>
+        <div id="box-plot" ref="chartWrapper" class="w-full relative">
+            <svg ref="svg" class="w-full h-full"></svg>
+        </div>
     </div>
 </template>
-  
+
 <script setup>
     import * as d3 from "d3";
     import { onMounted, watch, ref, nextTick } from "vue";

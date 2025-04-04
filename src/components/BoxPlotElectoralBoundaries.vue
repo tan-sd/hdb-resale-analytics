@@ -29,7 +29,7 @@ export default {
 
     const resizeAndRedraw = () => {
       setDimensions();
-      drawChart(borderFlats.value || []);
+      drawChart(borderFlats || []);
     };
 
     const setDimensions = () => {
@@ -113,7 +113,7 @@ export default {
       };
 
       const legend = svgEl.append("g")
-        .attr("transform", `translate(${width.value - 120}, ${margin.top})`);
+        .attr("transform", `translate(${width.value - margin.right - 100}, ${margin.top})`); // Top-right corner
 
       const legendEntries = Object.entries(legendColors);
 
@@ -122,7 +122,7 @@ export default {
         .enter()
         .append("rect")
         .attr("x", 0)
-        .attr("y", (_, i) => i * 20)
+        .attr("y", (_, i) => i * 20) // Space out the legend items vertically
         .attr("width", 12)
         .attr("height", 12)
         .attr("fill", ([_, color]) => color);
@@ -131,8 +131,8 @@ export default {
         .data(legendEntries)
         .enter()
         .append("text")
-        .attr("x", 18)
-        .attr("y", (_, i) => i * 20 + 10)
+        .attr("x", 18) // Position text to the right of the color box
+        .attr("y", (_, i) => i * 20 + 10) // Align text with the color box
         .text(([zone]) => zone)
         .style("font-size", "11px")
         .attr("alignment-baseline", "middle");
@@ -196,7 +196,7 @@ export default {
 
       window.addEventListener("resize", () => {
         setDimensions();
-        drawChart(borderFlats.value || []);
+        drawChart(borderFlats || []);
       });
 
       watch(
@@ -205,7 +205,7 @@ export default {
           if (ready) {
             requestAnimationFrame(() => {
               setDimensions();
-              drawChart(borderFlats.value || []);
+              drawChart(borderFlats || []);
             });
           }
         },
