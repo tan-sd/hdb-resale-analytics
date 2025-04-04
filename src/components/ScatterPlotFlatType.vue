@@ -260,7 +260,7 @@ export default {
             window.addEventListener("resize", handleResize);
 
             watch(
-                () => dataStore.isDataReady,
+                () => dataStore.isDataLoaded,
                 async (ready) => {
                     if (ready) {
                         await nextTick();

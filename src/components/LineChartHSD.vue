@@ -164,11 +164,11 @@
         .enter()
         .append("text")
         .attr("x", d => {
-            console.log("Label x position:", x(+d[0])); // Debug x position
+            // console.log("Label x position:", x(+d[0])); // Debug x position
             return x(+d[0]);
         })
         .attr("y", d => {
-            console.log("Label y position:", milestoneYOffsets[d[0]] ?? -5); // Debug y position
+            // console.log("Label y position:", milestoneYOffsets[d[0]] ?? -5); // Debug y position
             return milestoneYOffsets[d[0]] ?? -5;
         })
         .attr("text-anchor", "middle")

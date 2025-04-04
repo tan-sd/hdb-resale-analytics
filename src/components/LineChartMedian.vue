@@ -1,17 +1,17 @@
 <template>
     <div
-        class="chart-container relative flex flex-col items-center justify-center"
+        class="chart-container w-full h-full flex flex-col items-center justify-center"
     >
         <h3 class="text-sm mb-1 text-center tracking-wide font-semibold">
             Median HDB Resale Price per Year
         </h3>
-        <div id="line-chart-median" ref="chartContainer">
+        <div id="line-chart-median" ref="chartContainer" class="w-full h-full flex items-center justify-center">
             <svg
                 :viewBox="`0 0 ${width + margin.left + margin.right} ${
                     height + margin.top + margin.bottom
                 }`"
                 preserveAspectRatio="xMidYMid meet"
-                class="w-full h-auto"
+                class="w-full h-full"
             >
                 <g
                     class="chart-group"
@@ -64,17 +64,12 @@ export default {
             margin: { top: 20, right: 30, bottom: 40, left: 70 },
             width: 0,
             height: 0,
-            data: [],
             dotSelection: [],
         };
     },
     computed: {
-        chartData() {
-            const store = useDataStore();
-            return store.yearMedians || [];
-        },
-        isDataLoader() {
-            return this.chartData.length > 0;
+        yearMedians() {
+            return useDataStore().yearMedians;
         },
     },
     mounted() {
@@ -84,7 +79,7 @@ export default {
         const dataStore = useDataStore();
 
         watch(
-            () => dataStore.isDataReady,
+            () => dataStore.isDataLoaded,
             (isReady) => {
                 if (isReady) {
                     this.createChart();
@@ -153,7 +148,7 @@ export default {
             tooltipElement.style.left = `${left}px`;
         },
         createChart() {
-            const yearMedians = this.chartData;
+            const yearMedians = this.yearMedians;
 
             if (!yearMedians.length) {
                 console.error("No data available to render the chart.");

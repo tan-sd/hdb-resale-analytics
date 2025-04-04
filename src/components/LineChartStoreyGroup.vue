@@ -212,7 +212,7 @@
         window.addEventListener("resize", setDimensions);
   
         watch(
-          () => dataStore.isDataReady,
+          () => dataStore.isDataLoaded,
           (ready) => {
             if (ready && !hasDrawn.value) {
                 const raw = dataStore.chartData;

@@ -1,17 +1,17 @@
 <template>
     <div
-        class="chart-container relative flex flex-col items-center justify-center"
+        class="chart-container w-full h-full flex flex-col items-center justify-center"
     >
-        <p class="text-sm mb-1 text-center tracking-wide font-semibold">
+        <h3 class="text-sm mb-1 text-center tracking-wide font-semibold">
             HDB Resale Transactions per Year
-        </p>
-        <div id="line-chart-transaction" ref="chartContainer">
+        </h3>
+        <div id="line-chart-transaction" ref="chartContainer" class="w-full h-full flex items-center justify-center">
             <svg
                 :viewBox="`0 0 ${width + margin.left + margin.right} ${
                     height + margin.top + margin.bottom
                 }`"
                 preserveAspectRatio="xMidYMid meet"
-                class="w-full h-auto"
+                class="w-full h-full"
             >
                 <g
                     class="chart-group"
@@ -68,12 +68,8 @@ export default {
         };
     },
     computed: {
-        chartData() {
-            const store = useDataStore();
-            return store.yearCounts || [];
-        },
-        isDataLoader() {
-            return this.chartData.length > 0;
+        yearCounts() {
+            return useDataStore().yearCounts;
         },
     },
     mounted() {
@@ -83,7 +79,7 @@ export default {
         const dataStore = useDataStore();
 
         watch(
-            () => dataStore.isDataReady,
+            () => dataStore.isDataLoaded,
             (isReady) => {
                 if (isReady) {
                     this.createChart();
@@ -120,39 +116,39 @@ export default {
         },
         positionTooltip(event, tooltipElement) {
             if (!tooltipElement) return;
-            
+
             const chartRect = this.$refs.chartContainer.getBoundingClientRect();
             const tooltipRect = tooltipElement.getBoundingClientRect();
-            
+
             const relativeX = event.clientX - chartRect.left;
             const relativeY = event.clientY - chartRect.top;
-            
+
             let top, left;
-            
+
             const preferredTop = relativeY - tooltipRect.height + 20;
             const preferredLeft = relativeX + 5;
-            
+
             if (preferredTop < 0) {
                 top = relativeY + 20;
             } else {
                 top = preferredTop;
             }
-            
+
             if (preferredLeft + tooltipRect.width > chartRect.width) {
                 left = relativeX - tooltipRect.width - 5;
-                
+
                 if (left < 0) {
-                    left = Math.max(0, relativeX - (tooltipRect.width / 2));
+                    left = Math.max(0, relativeX - tooltipRect.width / 2);
                 }
             } else {
                 left = preferredLeft;
             }
-            
+
             tooltipElement.style.top = `${top}px`;
             tooltipElement.style.left = `${left}px`;
         },
         createChart() {
-            const yearCounts = this.chartData;
+            const yearCounts = this.yearCounts;
 
             if (!yearCounts.length) {
                 console.error("No data available to render the chart.");
@@ -283,14 +279,14 @@ export default {
                     d3.select(tooltip)
                         .style("display", "inline-block")
                         .html(
-                        `Year: ${d.Year}<br>
+                            `Year: ${d.Year}<br>
                             Transactions: <span class="tracking-wider"><strong>${new Intl.NumberFormat().format(
                                 d.count
                             )}</strong></span>`
                         );
-                    
+
                     this.positionTooltip(event, tooltip);
-                    
+
                     d3.select(event.target).attr("r", 6);
                 })
                 .on("mousemove", (event) => {
