@@ -99,7 +99,7 @@
             { year: 50, label: "CPF and Loan Eligibility Restrictions" },
             { year: 99, label: "Newer Flats Premium" },
         ];
-        referenceYears.forEach((ref, index) => {
+        referenceYears.forEach((ref) => {
             // Add dotted line
             g.append("line")
                 .attr("x1", x(ref.year))
@@ -113,7 +113,7 @@
             // Add label
             g.append("text")
                 .attr("x", x(ref.year) + 5) // Slightly offset from the line
-                .attr("y", 20 + index * 15) // Stagger labels vertically
+                .attr("y", 20) // Fixed vertical position for all labels
                 .style("fill", "#555") // Dark gray color
                 .style("font-size", "10px")
                 .text(ref.label);

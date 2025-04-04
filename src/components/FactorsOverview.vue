@@ -12,7 +12,7 @@
             But beyond time and policy, how do factors like location, layout, and accessibility relate to a flat's value?
           </p>
           <p class="text-base sm:text-lg leading-relaxed text-gray-700">
-            Let's explore <span class="font-semibold">five potential influences</span> on resale prices—some with strong correlations, others surprising in their absence.
+            Let's explore <span class="font-semibold">seven potential influences</span> on resale prices—some with strong correlations, others surprising in their absence.
           </p>
         </div>
 
