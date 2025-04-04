@@ -1,7 +1,6 @@
 <script setup>
 import { onMounted } from 'vue'
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterView } from 'vue-router'
 import { useDataStore } from './stores/dataStore';
 import GlobalLoader from './components/GlobalLoader.vue';
 
