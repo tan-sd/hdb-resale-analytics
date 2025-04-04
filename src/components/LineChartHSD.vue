@@ -18,7 +18,7 @@
     const chartWrapper = ref(null);
     const width = ref(800);
     const height = ref(500);
-    const margin = { top: 50, right: 90, bottom: 90, left: 70 };
+    const margin = { top: 50, right: 120, bottom: 90, left: 70 };
     const store = useDataStore();
 
     function setDimensions() {
@@ -120,13 +120,19 @@
         .text("Median Resale Price");
 
     const milestoneYears = {
-        2009:"2009: HSD awareness spike", 
-        2013:"2013: Balloting Update", 
-        2022:"2022: HSD tightened"
-
+        2009: "2009: Oversubscription Rules",
+        2014: "2014: Introduced Data Mapping System",
+        2021: "2021: Launch SLB Scheme"
     };
     const milestones = Object.entries(milestoneYears);
 
+    const milestoneYOffsets = {
+        2009: -10,
+        2014: -25,
+        2021: -10
+    };
+
+    // Add milestone lines
     chart.selectAll(".milestone-line")
         .data(milestones)
         .enter()
@@ -140,18 +146,31 @@
         .attr("stroke-width", 1)
         .attr("stroke-dasharray", "4 2");
 
-    const milestoneYOffsets = {
-        2009: -5,
-        2013: -20, // Shift higher
-        2022: -5
-    };
+    // Add background rectangles for labels (optional)
+    chart.selectAll(".milestone-label-bg")
+        .data(milestones)
+        .enter()
+        .append("rect")
+        .attr("x", d => x(+d[0]) - 50)
+        .attr("y", d => (milestoneYOffsets[d[0]] ?? -5) - 10)
+        .attr("width", 100)
+        .attr("height", 15)
+        .style("fill", "white")
+        .style("opacity", 0.8);
 
+    // Add milestone labels
     chart.selectAll(".milestone-label")
         .data(milestones)
         .enter()
         .append("text")
-        .attr("x", d => x(+d[0]))
-        .attr("y", d => milestoneYOffsets[d[0]] ?? -5)
+        .attr("x", d => {
+            console.log("Label x position:", x(+d[0])); // Debug x position
+            return x(+d[0]);
+        })
+        .attr("y", d => {
+            console.log("Label y position:", milestoneYOffsets[d[0]] ?? -5); // Debug y position
+            return milestoneYOffsets[d[0]] ?? -5;
+        })
         .attr("text-anchor", "middle")
         .style("fill", "#555")
         .style("font-size", "10px")
