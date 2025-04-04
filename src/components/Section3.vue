@@ -161,13 +161,17 @@
                                     class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
                                 />
                             </div>
-                        
-                    <LineChartLeaseRemaining
-                        ref="LineChartLeaseRemainingRef"
-                        v-show="currentStepIndex === 7"
-                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                    />
-                    </div>
+
+                            <div
+                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
+                            >
+                                <LineChartLeaseRemaining
+                                    ref="LineChartLeaseRemainingRef"
+                                    v-show="currentStepIndex === 8"
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                                />
+                            </div>
+                        </div>
                     </div>
 
                     <div class="absolute inset-0 pointer-events-none">
@@ -195,7 +199,7 @@ import ScatterPlotFlatType from "./ScatterPlotFlatType.vue";
 import BoxPlotPricePerSqm from "./BoxPlotPricePerSqm.vue";
 import LineChartHSD from "./LineChartHSD.vue";
 import BoxPlotElectoralBoundaries from "./BoxPlotElectoralBoundaries.vue";
-import LineChartLeaseRemaining from './LineChartLeaseRemaining.vue';
+import LineChartLeaseRemaining from "./LineChartLeaseRemaining.vue";
 import {
     ref,
     computed,
@@ -246,9 +250,9 @@ const steps = [
         number: 2,
         title: "Flat Types & Sizes",
         description: [
-        "The graph shows that across all flat types, median HDB resale prices have generally increased from 1990 to 2023, with larger flats like <span class=\"font-semibold\">Executive</span> and <span class=\"font-semibold\">Multi-Generation</span> consistently commanding higher prices. After a sharp rise in the early 1990s, prices dipped post-1997 due to the Asian Financial Crisis, then recovered around 2007. From 2013 onward, prices plateaued due to cooling measures such as the <span class=\"font-semibold\">MSR</span> and <span class=\"font-semibold\">TDSR</span>.",
+            'The graph shows that across all flat types, median HDB resale prices have generally increased from 1990 to 2023, with larger flats like <span class="font-semibold">Executive</span> and <span class="font-semibold">Multi-Generation</span> consistently commanding higher prices. After a sharp rise in the early 1990s, prices dipped post-1997 due to the Asian Financial Crisis, then recovered around 2007. From 2013 onward, prices plateaued due to cooling measures such as the <span class="font-semibold">MSR</span> and <span class="font-semibold">TDSR</span>.',
 
-        "From 2020, prices surged — especially for <span class=\"font-semibold\">Multi-Generation</span> flats. This spike likely reflects increased demand for <span class=\"font-semibold\">larger homes</span> during COVID-19, as families sought space for work, caregiving, and co-living. A study by IPS highlights that the pandemic renewed appreciation for <span class=\"font-semibold\">intergenerational support</span> and <span class=\"font-semibold\">living together</span>."
+            'From 2020, prices surged — especially for <span class="font-semibold">Multi-Generation</span> flats. This spike likely reflects increased demand for <span class="font-semibold">larger homes</span> during COVID-19, as families sought space for work, caregiving, and co-living. A study by IPS highlights that the pandemic renewed appreciation for <span class="font-semibold">intergenerational support</span> and <span class="font-semibold">living together</span>.',
         ],
         years: [1990, 1991, 1992, 1993, 1994],
     },
@@ -256,9 +260,9 @@ const steps = [
         number: 2,
         title: "Flat Types & Sizes",
         description: [
-        "The graph shows that across all flat types, median HDB resale prices have generally increased from 1990 to 2023, with larger flats like <span class=\"font-semibold\">Executive</span> and <span class=\"font-semibold\">Multi-Generation</span> consistently commanding higher prices. After a sharp rise in the early 1990s, prices dipped post-1997 due to the Asian Financial Crisis, then recovered around 2007. From 2013 onward, prices plateaued due to cooling measures such as the <span class=\"font-semibold\">MSR</span> and <span class=\"font-semibold\">TDSR</span>.",
+            'The graph shows that across all flat types, median HDB resale prices have generally increased from 1990 to 2023, with larger flats like <span class="font-semibold">Executive</span> and <span class="font-semibold">Multi-Generation</span> consistently commanding higher prices. After a sharp rise in the early 1990s, prices dipped post-1997 due to the Asian Financial Crisis, then recovered around 2007. From 2013 onward, prices plateaued due to cooling measures such as the <span class="font-semibold">MSR</span> and <span class="font-semibold">TDSR</span>.',
 
-        "From 2020, prices surged — especially for <span class=\"font-semibold\">Multi-Generation</span> flats. This spike likely reflects increased demand for <span class=\"font-semibold\">larger homes</span> during COVID-19, as families sought space for work, caregiving, and co-living. A study by IPS highlights that the pandemic renewed appreciation for <span class=\"font-semibold\">intergenerational support</span> and <span class=\"font-semibold\">living together</span>."
+            'From 2020, prices surged — especially for <span class="font-semibold">Multi-Generation</span> flats. This spike likely reflects increased demand for <span class="font-semibold">larger homes</span> during COVID-19, as families sought space for work, caregiving, and co-living. A study by IPS highlights that the pandemic renewed appreciation for <span class="font-semibold">intergenerational support</span> and <span class="font-semibold">living together</span>.',
         ],
         years: [2020, 2021, 2022, 2023],
     },
@@ -304,10 +308,13 @@ const steps = [
         number: 4,
         title: "Amenities & Accessibility",
         description: [
-            "This chart illustrates how proximity to primary schools—shaped by Singapore’s <span class=\"font-semibold\">Home-School Distance (HSD) policy</span>—significantly influences <span class=\"font-semibold\">HDB resale prices</span>. Under the HSD framework, children living <span class=\"font-semibold\">within 1km</span> of a school are given priority during the <span class=\"font-semibold\">Primary 1 admission exercise</span>, with those living <span class=\"font-semibold\">within 2km</span> receiving second-tier priority.",
-            "As a result, homes closer to <span class=\"font-semibold\">popular schools</span> are in higher demand, which translates into <span class=\"font-semibold\">higher resale values</span>. The chart shows that since the <span class=\"font-semibold\">2009 awareness spike</span> and further policy refinements in <span class=\"font-semibold\">2014</span> and <span class=\"font-semibold\">2021</span>, the <span class=\"font-semibold\">price gap between tiers has widened</span>. This reflects growing competition among parents for <span class=\"font-semibold\">limited school places</span>, making HSD a critical factor for <span class=\"font-semibold\">young families</span> and a driver of <span class=\"font-semibold\">long-term property value</span>.",
+            'This chart illustrates how proximity to primary schools—shaped by Singapore’s <span class="font-semibold">Home-School Distance (HSD) policy</span>—significantly influences <span class="font-semibold">HDB resale prices</span>. Under the HSD framework, children living <span class="font-semibold">within 1km</span> of a school are given priority during the <span class="font-semibold">Primary 1 admission exercise</span>, with those living <span class="font-semibold">within 2km</span> receiving second-tier priority.',
+            'As a result, homes closer to <span class="font-semibold">popular schools</span> are in higher demand, which translates into <span class="font-semibold">higher resale values</span>. The chart shows that since the <span class="font-semibold">2009 awareness spike</span> and further policy refinements in <span class="font-semibold">2014</span> and <span class="font-semibold">2021</span>, the <span class="font-semibold">price gap between tiers has widened</span>. This reflects growing competition among parents for <span class="font-semibold">limited school places</span>, making HSD a critical factor for <span class="font-semibold">young families</span> and a driver of <span class="font-semibold">long-term property value</span>.',
         ],
-        years: [1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006],
+        years: [
+            1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
+            2001, 2002, 2003, 2004, 2005, 2006,
+        ],
     },
     {
         number: 5,
@@ -327,12 +334,15 @@ const steps = [
         number: 6,
         title: "Years Remaining on Lease",
         description: [
-            "Resale prices generally <span class=\"font-semibold\">decline as lease years decrease</span>, especially when flats fall below <span class=\"font-semibold\">60 years remaining</span>. This is due to CPF and loan eligibility <span class=\"font-semibold\"><a href=\"https://dollarsandsense.sg/5-things-need-know-buying-older-hdb-lease-less-50-years/\" target=\"_blank\" style=\"color: blue; text-decoration: underline;\">restrictions</a></span>, which limit financing options and reduce buyer demand for older flats.",
-            
-            "However, flats with <span class=\"font-semibold\">65–80 years remaining</span> sometimes defy this trend. Factors such as <span class=\"font-semibold\">desirable locations</span>, <span class=\"font-semibold\">modern amenities</span>, and appeal to <span class=\"font-semibold\">elderly buyers</span> seeking convenience over lease length can <span class=\"font-semibold\">sustain or even increase resale prices</span> despite shorter leases."
+            'Resale prices generally <span class="font-semibold">decline as lease years decrease</span>, especially when flats fall below <span class="font-semibold">60 years remaining</span>. This is due to CPF and loan eligibility <span class="font-semibold"><a href="https://dollarsandsense.sg/5-things-need-know-buying-older-hdb-lease-less-50-years/" target="_blank" style="color: blue; text-decoration: underline;">restrictions</a></span>, which limit financing options and reduce buyer demand for older flats.',
+
+            'However, flats with <span class="font-semibold">65–80 years remaining</span> sometimes defy this trend. Factors such as <span class="font-semibold">desirable locations</span>, <span class="font-semibold">modern amenities</span>, and appeal to <span class="font-semibold">elderly buyers</span> seeking convenience over lease length can <span class="font-semibold">sustain or even increase resale prices</span> despite shorter leases.',
         ],
         years: [
-            1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023
+            1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
+            2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
+            2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022,
+            2023,
         ],
     },
     {
@@ -340,7 +350,7 @@ const steps = [
         title: "Demographics (Age)",
         description: [
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed."
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
         ],
         years: [2007, 2008, 2009, 2010, 2011, 2012, 2013], // edit this
     },
@@ -430,7 +440,7 @@ watch(currentStepIndex, (newIndex) => {
     const showBoxPlot = newIndex === 4 || newIndex === 5;
     const showHSD = newIndex === 6;
     const showBoxPlotElectoral = newIndex === 7;
-  const showLease = newIndex === 7;
+    const showLease = newIndex === 8;
 
     gsap.to(storeyScatterChartRef.value?.$el, {
         opacity: showScatter ? 1 : 0,
@@ -554,23 +564,31 @@ watch(currentStepIndex, (newIndex) => {
     gsap.to(LineChartLeaseRemainingRef.value?.$el, {
         opacity: showLease ? 1 : 0,
         duration: 0.3,
-        ease: 'power2.out',
+        ease: "power2.out",
         onStart: () => {
-            if (showLease && typeof LineChartLeaseRemainingRef.value?.resizeAndRedraw === 'function') {
+            if (
+                showLease &&
+                typeof LineChartLeaseRemainingRef.value?.resizeAndRedraw ===
+                    "function"
+            ) {
                 LineChartLeaseRemainingRef.value.resizeAndRedraw();
             }
-        }
+        },
     });
 
     gsap.to(LineChartLeaseRemainingRef.value?.$el, {
         opacity: showLease ? 1 : 0,
         duration: 0.3,
-        ease: 'power2.out',
+        ease: "power2.out",
         onStart: () => {
-            if (showLease && typeof LineChartLeaseRemainingRef.value?.resizeAndRedraw === 'function') {
+            if (
+                showLease &&
+                typeof LineChartLeaseRemainingRef.value?.resizeAndRedraw ===
+                    "function"
+            ) {
                 LineChartLeaseRemainingRef.value.resizeAndRedraw();
             }
-        }
+        },
     });
 });
 </script>
