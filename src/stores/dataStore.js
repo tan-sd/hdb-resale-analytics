@@ -13,6 +13,7 @@ export const useDataStore = defineStore("dataStore", () => {
     const ethnicDistribution = ref([]);
     const affordabilityIndex = ref([]);
     const hsdResaleTrend = ref([]);
+    const borderFlats = ref([]);
 
     const isDataLoaded = computed(() => rawChartData !== null);
     const isDataReady = computed(() => yearMedians.value.length > 0);
@@ -23,6 +24,9 @@ export const useDataStore = defineStore("dataStore", () => {
         try {
             const ethnicData = await d3.csv(
                 "data/population_demographics/ethnic_distribution.csv"
+            );
+            const borderFlatsData = await d3.csv(
+                "data/resale_prices_cleaned/BorderFlats.csv"
             );
             const data = await Promise.all([
                 d3.csv(
@@ -138,6 +142,18 @@ export const useDataStore = defineStore("dataStore", () => {
                 indian: +d["indian"],
                 others: +d["others"],
             }));
+
+            // BorderFlats
+            const groupedData = d3.group(borderFlatsData, d => d.Period, d => d.Zone);
+            borderFlats.value = Array.from(groupedData, ([period, zones]) => {
+                return Array.from(zones, ([zone, records]) => {
+                return {
+                    period,
+                    zone,
+                    values: records.map(r => parseFloat(r["Resale Price Adj 2024"])),
+                };
+                });
+            }).flat();
 
             const medianMonthlyIncome = {
                 2022: 10099,
@@ -303,6 +319,7 @@ export const useDataStore = defineStore("dataStore", () => {
             });
         });
 
+
         processedHsdTrend.sort((a, b) => a.year - b.year);
         hsdResaleTrend.value = processedHsdTrend;
 
@@ -336,6 +353,7 @@ export const useDataStore = defineStore("dataStore", () => {
         affordabilityIndex,
         // storeyPriceScatter,
         hsdResaleTrend,
+        borderFlats,
         isDataLoaded,
         isDataReady,
         loadData,
