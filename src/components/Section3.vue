@@ -1,117 +1,181 @@
 <template>
-    <section class="w-full min-h-screen py-20 bg-white">
+    <section class="pt-40 w-full min-h-screen py-20 bg-white">
         <div data-section3="before-steps" class="h-[1vh]"></div>
-        <div
-            class="w-full px-6 mx-auto grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12"
-        >
-            <div class="w-full max-w-lg mx-auto">
-                <div
-                    class="xl:sticky xl:top-64 fixed bottom-3 left-0 right-0 z-10 px-4 xl:px-0"
-                    :class="['transition-opacity duration-300', { 'opacity-0 pointer-events-none': !showBox, 'opacity-100': showBox }]"
-                >
+        <div class="relative">
+            <div
+                class="w-full px-6 mx-auto grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12 min-h-screen"
+            >
+                <div class="w-full max-w-lg mx-auto">
                     <div
-                        class="border rounded-lg backdrop-blur-[6.5px] p-6 space-y-6 bg-white relative overflow-hidden shadow-md"
+                        class="lg:sticky lg:top-1/2 lg:transform lg:-translate-y-1/2 fixed lg:static bottom-4 left-1/2 -translate-x-1/2 lg:translate-x-0 z-20"
+                        :class="[
+                            'transition-opacity duration-300',
+                            {
+                                'opacity-0 pointer-events-none': !showBox,
+                                'opacity-100': showBox,
+                            },
+                        ]"
                     >
-                        <h2
-                            class="text-sm sm:text-base font-bold uppercase tracking-tight mb-3 section-title"
+                        <div
+                            class="border rounded-t-xl lg:rounded-lg backdrop-blur-[6.5px] p-6 space-y-6 bg-white relative overflow-hidden shadow-md w-[calc(100vw-2rem)] sm:w-[calc(100vw-3rem)] lg:w-auto h-[30vh] lg:h-auto"
                         >
-                            Factors
-                        </h2>
-
-                        <div class="space-y-3">
-                            <p class="flex items-center gap-2 uppercase text-xs md:text-sm font-semibold tracking-wide">
-                                <span
-                                    class="text-white font-bold w-7 h-7 flex items-center justify-center rounded-full text-sm"
-                                    style="background-color: hsl(353 75% 53%)"
-                                >
-                                    {{ currentStep.number }}
-                                </span>
-                                {{ currentStep.title }}
-                            </p>
-                            <div class="space-y-4 text-xs md:text-sm leading-relaxed">
-                                <p
-                                    v-for="(para, idx) in currentStep.description"
-                                    :key="idx"
-                                    v-html = "para"
-                                >
-                                </p>
-                            </div>
-
-                            <div
-                                class="absolute bottom-0 left-0 w-full h-2 overflow-hidden rounded-b-[calc(1rem-1px)] bg-gray-200"
+                            <h2
+                                class="text-sm sm:text-base font-bold uppercase tracking-tight mb-3 section-title"
                             >
-                                <div
-                                    class="h-full"
-                                    style="background-color: hsl(353 75% 53%)"
-                                    :style="{ width: progress + '%' }"
-                                ></div>
+                                Factors
+                            </h2>
+                            <div
+                                ref="descScrollRef"
+                                class="overflow-y-auto h-full pr-1 lg:pb-0 pb-10"
+                            >
+                                <div class="space-y-3">
+                                    <p
+                                        class="flex items-center gap-2 uppercase text-xs md:text-sm font-semibold tracking-wide"
+                                    >
+                                        <span
+                                            class="text-white font-bold w-7 h-7 flex items-center justify-center rounded-full text-sm"
+                                            style="
+                                                background-color: hsl(
+                                                    353 75% 53%
+                                                );
+                                            "
+                                        >
+                                            {{ currentStep.number }}
+                                        </span>
+                                        {{ currentStep.title }}
+                                    </p>
+                                    <div
+                                        class="space-y-4 text-xs md:text-sm leading-relaxed"
+                                    >
+                                        <p
+                                            v-for="(
+                                                para, idx
+                                            ) in currentStep.description"
+                                            :key="idx"
+                                            v-html="para"
+                                        ></p>
+                                    </div>
+
+                                    <div
+                                        class="absolute bottom-0 left-0 w-full h-2 overflow-hidden rounded-b-[calc(1rem-1px)] bg-gray-200"
+                                    >
+                                        <div
+                                            class="h-full"
+                                            style="
+                                                background-color: hsl(
+                                                    353 75% 53%
+                                                );
+                                            "
+                                            :style="{ width: progress + '%' }"
+                                        ></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div
-            class="flex-1 relative"
-            :style="{ height: `${steps.length * 115}vh` }"
-            >
-                <div class="sticky top-12 xl:top-28 w-full flex justify-center">
-                    <div class="relative w-full h-[500px] max-w-[1000px]">
-                    <ScatterPlotStoreyGroup
-                        ref="storeyScatterChartRef"
-                        v-show="currentStepIndex === 0"
-                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-100"
-                    />
-
-                    <!-- <LineChartStoreyGroup
-                        ref="storeyLineChartRef"
-                        v-show="currentStepIndex === 1 || currentStepIndex === 2"
-                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                    /> -->
-
-                    <LineChartFlatType
-                        ref="flatTypeLineChartRef"
-                        v-show="currentStepIndex === 1"
-                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                    />
-
-                    <ScatterPlotFlatType
-                        ref="flatTypeScatterChartRef"
-                        v-show="currentStepIndex === 2"
-                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                    />
-
-                    <BoxPlotPricePerSqm
-                        ref="boxPlotPricePerSqmChartRef"
-                        v-show="currentStepIndex === 3 || currentStepIndex === 4"
-                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                    />
-
-                    <LineChartHSD
-                        ref="lineChartHSDRef"
-                        v-show="currentStepIndex === 5"
-                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                    />
-
-                    <BoxPlotElectoralBoundaries
-                        ref="boxPlotElectoralBoundariesChartRef"
-                        v-show="currentStepIndex === 6"
-                        class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                    />
-                    </div>
-                </div>
-
-                <div class="absolute inset-0 pointer-events-none">
-                    <div class="space-y-[1vh]">
+                <div
+                    class="flex-1 relative"
+                    :style="{ height: `${steps.length * 115}vh` }"
+                >
                     <div
-                        v-for="(step, index) in steps"
-                        :key="index"
-                        :data-section3="index"
-                        class="h-[99vh]"
-                    ></div>
+                        class="sticky top-0 w-full h-screen flex items-start justify-center lg:items-center"
+                    >
+                        <div
+                            class="flex flex-col gap-5 lg:gap-10 xl:gap-12 items-center w-full max-w-3xl px-4"
+                        >
+                            <div
+                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
+                            >
+                                <ScatterPlotStoreyGroup
+                                    ref="storeyScatterChartRef"
+                                    v-show="currentStepIndex === 0"
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-100"
+                                />
+                            </div>
+
+                            <div
+                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
+                            >
+                                <LineChartFlatType
+                                    ref="flatTypeLineChartRef"
+                                    v-show="
+                                        currentStepIndex === 1 ||
+                                        currentStepIndex === 2
+                                    "
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                                    :highlightYears="
+                                        currentStepIndex === 2
+                                            ? [2020, 2021, 2022, 2023]
+                                            : []
+                                    "
+                                    :highlightedFlatTypes="
+                                        currentStepIndex === 2
+                                            ? ['EXECUTIVE', 'MULTI-GENERATION']
+                                            : []
+                                    "
+                                    :shouldHighlight="currentStepIndex === 2"
+                                />
+                            </div>
+
+                            <div
+                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
+                            >
+                                <ScatterPlotFlatType
+                                    ref="flatTypeScatterChartRef"
+                                    v-show="currentStepIndex === 3"
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                                />
+                            </div>
+
+                            <div
+                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
+                            >
+                                <BoxPlotPricePerSqm
+                                    ref="boxPlotPricePerSqmChartRef"
+                                    v-show="
+                                        currentStepIndex === 4 ||
+                                        currentStepIndex === 5
+                                    "
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                                />
+                            </div>
+
+                            <div
+                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
+                            >
+                                <LineChartHSD
+                                    ref="lineChartHSDRef"
+                                    v-show="currentStepIndex === 6"
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                                />
+                            </div>
+
+                            <div
+                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
+                            >
+                                <BoxPlotElectoralBoundaries
+                                    ref="boxPlotElectoralBoundariesChartRef"
+                                    v-show="currentStepIndex === 7"
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                                />
+                            </div>
+                        </div>
                     </div>
 
-                    <div data-section3="after-steps" class="h-[1vh]"></div>
+                    <div class="absolute inset-0 pointer-events-none">
+                        <div class="space-y-[1vh]">
+                            <div
+                                v-for="(step, index) in steps"
+                                :key="index"
+                                :data-section3="index"
+                                class="h-[99vh]"
+                            ></div>
+                        </div>
+
+                        <div data-section3="after-steps" class="h-[1vh]"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -119,45 +183,48 @@
 </template>
 
 <script setup>
-import LineChartFlatType from './LineChartFlatType.vue';
-import LineChartMedianIncomeAndMedianResale from './LineChartMedianIncomeAndMedianResale.vue';
-import ScatterPlotStoreyGroup from './ScatterPlotStoreyGroup.vue';
-import LineChartStoreyGroup from './LineChartStoreyGroup.vue';
-import ScatterPlotFlatType from './ScatterPlotFlatType.vue';
-import BoxPlotPricePerSqm from './BoxPlotPricePerSqm.vue';
-import LineChartHSD from './LineChartHSD.vue';
-import BoxPlotElectoralBoundaries from './BoxPlotElectoralBoundaries.vue';
-import { ref, computed, onMounted, watch, onBeforeUnmount, watchEffect } from 'vue';
-import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import LineChartFlatType from "./LineChartFlatType.vue";
+import ScatterPlotStoreyGroup from "./ScatterPlotStoreyGroup.vue";
+import ScatterPlotFlatType from "./ScatterPlotFlatType.vue";
+import BoxPlotPricePerSqm from "./BoxPlotPricePerSqm.vue";
+import LineChartHSD from "./LineChartHSD.vue";
+import BoxPlotElectoralBoundaries from "./BoxPlotElectoralBoundaries.vue";
+import {
+    ref,
+    computed,
+    onMounted,
+    watch,
+    onBeforeUnmount,
+    watchEffect,
+} from "vue";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const currentStepIndex = ref(0);
 const progress = ref(0);
 const triggers = ref([]);
 const showBox = ref(true);
-const isPastLastSection = ref(false);
 const storeyScatterChartRef = ref(null);
-const storeyLineChartRef = ref(null);
 const flatTypeLineChartRef = ref(null);
 const flatTypeScatterChartRef = ref(null);
 const boxPlotPricePerSqmChartRef = ref(null);
 const lineChartHSDRef = ref(null);
 const boxPlotElectoralBoundariesChartRef = ref(null);
-const hasDrawnLineChart = ref(false);
 const isAfterSteps = ref(false);
 const isBeforeSteps = ref(true);
+const descScrollRef = ref(null);
 
 const steps = [
     {
         number: 1,
         title: "Storey Levels",
         description: [
-            "The graph shows a clear positive relationship between <span class=\"font-semibold\">storey level</span> and HDB resale prices: as floor height increases, so does the average price per square meter. Flats on lower floors (0–5 storeys) average just over $4,000 per sqm, while those on the highest floors (45–51 storeys) exceed $12,000. Notable price jumps occur between 20–25 and 25–30 storeys, and again between 30–35 and 35–40, suggesting that <span class=\"font-semibold\">higher floors command a premium</span>.",
-            
-            "This trend reflects buyer preferences for <span class=\"font-semibold\">better views</span>, ventilation, and privacy (URA, 2020). Top-floor units may include <span class=\"font-semibold\">premium features</span> or layouts. Over time, <span class=\"font-semibold\">high-rise living</span> has become more desirable due to lifestyle shifts and perceived prestige (HDB, 2021). However, price growth tapers off beyond the 45th storey, suggesting <span class=\"font-semibold\">diminishing value</span> at extreme heights. Overall, storey level acts as a strong proxy for market demand.",
+            'The graph shows a clear positive relationship between <span class="font-semibold">storey level</span> and HDB resale prices: as floor height increases, so does the average price per square meter. Flats on lower floors (0–5 storeys) average just over $4,000 per sqm, while those on the highest floors (45–51 storeys) exceed $12,000. Notable price jumps occur between 20–25 and 25–30 storeys, and again between 30–35 and 35–40, suggesting that <span class="font-semibold">higher floors command a premium</span>.',
 
-            "Note: The smaller number of transactions at higher floors may result in skewed price values, especially for upper storey bands."
+            'This trend reflects buyer preferences for <span class="font-semibold">better views</span>, ventilation, and privacy (URA, 2020). Top-floor units may include <span class="font-semibold">premium features</span> or layouts. Over time, <span class="font-semibold">high-rise living</span> has become more desirable due to lifestyle shifts and perceived prestige (HDB, 2021). However, price growth tapers off beyond the 45th storey, suggesting <span class="font-semibold">diminishing value</span> at extreme heights. Overall, storey level acts as a strong proxy for market demand.',
+
+            "Note: The smaller number of transactions at higher floors may result in skewed price values, especially for upper storey bands.",
         ],
 
         years: [
@@ -167,36 +234,6 @@ const steps = [
             2023,
         ],
     },
-
-
-    // {
-    //     number: 1,
-    //     title: "Storey Levels",
-    //     description: [
-    //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-    //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
-    //     ],
-    //     years: [
-    //         1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
-    //         2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    //         2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022,
-    //         2023,
-    //     ],
-    // },
-    // {
-    //     number: 1,
-    //     title: "Storey Levels",
-    //     description: [
-    //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-    //         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
-    //     ],
-    //     years: [
-    //         1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
-    //         2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
-    //         2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022,
-    //         2023,
-    //     ],
-    // },
     {
         number: 2,
         title: "Flat Types & Sizes",
@@ -210,9 +247,18 @@ const steps = [
         number: 2,
         title: "Flat Types & Sizes",
         description: [
-            "The graph shows that across all flat types, median HDB resale prices have generally increased from 1990 to 2023, with larger flats like <span class=\"font-semibold\">Executive</span> and <span class=\"font-semibold\">Multi-Generation</span> consistently commanding higher prices. After a sharp rise in the early 1990s, prices dipped post-1997 due to the Asian Financial Crisis, then recovered around 2007. From 2013 onward, prices plateaued due to cooling measures such as the <span class=\"font-semibold\">MSR</span> and <span class=\"font-semibold\">TDSR</span>.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+        ],
+        years: [2020, 2021, 2022, 2023],
+    },
+    {
+        number: 2,
+        title: "Flat Types & Sizes",
+        description: [
+            'The graph shows that across all flat types, median HDB resale prices have generally increased from 1990 to 2023, with larger flats like <span class="font-semibold">Executive</span> and <span class="font-semibold">Multi-Generation</span> consistently commanding higher prices. After a sharp rise in the early 1990s, prices dipped post-1997 due to the Asian Financial Crisis, then recovered around 2007. From 2013 onward, prices plateaued due to cooling measures such as the <span class="font-semibold">MSR</span> and <span class="font-semibold">TDSR</span>.',
 
-            "From 2020, prices surged — especially for <span class=\"font-semibold\">Multi-Generation</span> flats. This spike likely reflects increased demand for <span class=\"font-semibold\">larger homes</span> during COVID-19, as families sought space for work, caregiving, and co-living. A study by IPS highlights that the pandemic renewed appreciation for <span class=\"font-semibold\">intergenerational support</span> and <span class=\"font-semibold\">living together</span>."
+            'From 2020, prices surged — especially for <span class="font-semibold">Multi-Generation</span> flats. This spike likely reflects increased demand for <span class="font-semibold">larger homes</span> during COVID-19, as families sought space for work, caregiving, and co-living. A study by IPS highlights that the pandemic renewed appreciation for <span class="font-semibold">intergenerational support</span> and <span class="font-semibold">living together</span>.',
         ],
         years: [1990, 1991, 1992, 1993, 1994],
     },
@@ -220,13 +266,13 @@ const steps = [
         number: 3,
         title: "Price per sqm by Planning Area",
         description: [
-        "The boxplots show the <span class=\"font-semibold\">price per sqm</span> of HDB resale flats across different planning areas in Singapore. In the unsorted version, areas are listed alphabetically, while the sorted version helps visualize clear price gradients. Areas like <span class=\"font-semibold\">Downtown Core</span>, <span class=\"font-semibold\">Outram</span>, and <span class=\"font-semibold\">Punggol</span> exhibit the highest median prices, while <span class=\"font-semibold\">Lim Chu Kang</span> lies at the lowest end.",
+            'The boxplots show the <span class="font-semibold">price per sqm</span> of HDB resale flats across different planning areas in Singapore. In the unsorted version, areas are listed alphabetically, while the sorted version helps visualize clear price gradients. Areas like <span class="font-semibold">Downtown Core</span>, <span class="font-semibold">Outram</span>, and <span class="font-semibold">Punggol</span> exhibit the highest median prices, while <span class="font-semibold">Lim Chu Kang</span> lies at the lowest end.',
 
-        "These pricing differences are primarily driven by <span class=\"font-semibold\">location desirability</span> and <span class=\"font-semibold\">accessibility</span>. Flats located in or near the city center — like Downtown Core or Outram — command higher prices due to proximity to commercial districts, MRT stations, and lifestyle amenities (URA, 2020: https://www.ura.gov.sg/Corporate/Guidelines/Urban-Design/Planning-for-Liveability). Newer towns such as Punggol also attract premium prices due to integrated town planning, waterfront developments, and Smart Town infrastructure.",
+            'These pricing differences are primarily driven by <span class="font-semibold">location desirability</span> and <span class="font-semibold">accessibility</span>. Flats located in or near the city center — like Downtown Core or Outram — command higher prices due to proximity to commercial districts, MRT stations, and lifestyle amenities (URA, 2020: https://www.ura.gov.sg/Corporate/Guidelines/Urban-Design/Planning-for-Liveability). Newer towns such as Punggol also attract premium prices due to integrated town planning, waterfront developments, and Smart Town infrastructure.',
 
-        "Meanwhile, areas with lower prices — like <span class=\"font-semibold\">Sembawang</span>, <span class=\"font-semibold\">Jurong West</span>, or <span class=\"font-semibold\">Lim Chu Kang</span> — tend to be further from the city center, have fewer transport connections, or are less developed in terms of amenities. In some cases, prices are lower due to an older flat stock or lower buyer demand (HDB, 2024: https://www.hdb.gov.sg/cs/infoweb/residential/living-in-an-hdb-flat/hdb-town-overview).",
+            'Meanwhile, areas with lower prices — like <span class="font-semibold">Sembawang</span>, <span class="font-semibold">Jurong West</span>, or <span class="font-semibold">Lim Chu Kang</span> — tend to be further from the city center, have fewer transport connections, or are less developed in terms of amenities. In some cases, prices are lower due to an older flat stock or lower buyer demand (HDB, 2024: https://www.hdb.gov.sg/cs/infoweb/residential/living-in-an-hdb-flat/hdb-town-overview).',
 
-        "Smaller planning areas or those with fewer residential blocks, such as <span class=\"font-semibold\">Lim Chu Kang</span>, may also show skewed data due to a <span class=\"font-semibold\">limited number of transactions</span>. Outliers from a few unique sales — such as larger flats or rare units — can cause <span class=\"font-semibold\">disproportionate price variations</span> in these regions."
+            'Smaller planning areas or those with fewer residential blocks, such as <span class="font-semibold">Lim Chu Kang</span>, may also show skewed data due to a <span class="font-semibold">limited number of transactions</span>. Outliers from a few unique sales — such as larger flats or rare units — can cause <span class="font-semibold">disproportionate price variations</span> in these regions.',
         ],
         years: [1994, 1995, 1996],
     },
@@ -234,13 +280,13 @@ const steps = [
         number: 3,
         title: "Price per sqm by Planning Area",
         description: [
-        "The boxplots show the <span class=\"font-semibold\">price per sqm</span> of HDB resale flats across different planning areas in Singapore. In the unsorted version, areas are listed alphabetically, while the sorted version helps visualize clear price gradients. Areas like <span class=\"font-semibold\">Downtown Core</span>, <span class=\"font-semibold\">Outram</span>, and <span class=\"font-semibold\">Punggol</span> exhibit the highest median prices, while <span class=\"font-semibold\">Lim Chu Kang</span> lies at the lowest end.",
+            'The boxplots show the <span class="font-semibold">price per sqm</span> of HDB resale flats across different planning areas in Singapore. In the unsorted version, areas are listed alphabetically, while the sorted version helps visualize clear price gradients. Areas like <span class="font-semibold">Downtown Core</span>, <span class="font-semibold">Outram</span>, and <span class="font-semibold">Punggol</span> exhibit the highest median prices, while <span class="font-semibold">Lim Chu Kang</span> lies at the lowest end.',
 
-        "These pricing differences are primarily driven by <span class=\"font-semibold\">location desirability</span> and <span class=\"font-semibold\">accessibility</span>. Flats located in or near the city center — like Downtown Core or Outram — command higher prices due to proximity to commercial districts, MRT stations, and lifestyle amenities (URA, 2020: https://www.ura.gov.sg/Corporate/Guidelines/Urban-Design/Planning-for-Liveability). Newer towns such as Punggol also attract premium prices due to integrated town planning, waterfront developments, and Smart Town infrastructure.",
+            'These pricing differences are primarily driven by <span class="font-semibold">location desirability</span> and <span class="font-semibold">accessibility</span>. Flats located in or near the city center — like Downtown Core or Outram — command higher prices due to proximity to commercial districts, MRT stations, and lifestyle amenities (URA, 2020: https://www.ura.gov.sg/Corporate/Guidelines/Urban-Design/Planning-for-Liveability). Newer towns such as Punggol also attract premium prices due to integrated town planning, waterfront developments, and Smart Town infrastructure.',
 
-        "Meanwhile, areas with lower prices — like <span class=\"font-semibold\">Sembawang</span>, <span class=\"font-semibold\">Jurong West</span>, or <span class=\"font-semibold\">Lim Chu Kang</span> — tend to be further from the city center, have fewer transport connections, or are less developed in terms of amenities. In some cases, prices are lower due to an older flat stock or lower buyer demand.",
+            'Meanwhile, areas with lower prices — like <span class="font-semibold">Sembawang</span>, <span class="font-semibold">Jurong West</span>, or <span class="font-semibold">Lim Chu Kang</span> — tend to be further from the city center, have fewer transport connections, or are less developed in terms of amenities. In some cases, prices are lower due to an older flat stock or lower buyer demand.',
 
-        "Smaller planning areas or those with fewer residential blocks, such as <span class=\"font-semibold\">Lim Chu Kang</span>, may also show skewed data due to a <span class=\"font-semibold\">limited number of transactions</span>. Outliers from a few unique sales — such as larger flats or rare units — can cause <span class=\"font-semibold\">disproportionate price variations</span> in these regions."
+            'Smaller planning areas or those with fewer residential blocks, such as <span class="font-semibold">Lim Chu Kang</span>, may also show skewed data due to a <span class="font-semibold">limited number of transactions</span>. Outliers from a few unique sales — such as larger flats or rare units — can cause <span class="font-semibold">disproportionate price variations</span> in these regions.',
         ],
         years: [1994, 1995, 1996],
     },
@@ -257,13 +303,13 @@ const steps = [
         number: 5,
         title: "Electoral Boundaries",
         description: [
-            "The chart shows <span class=\"font-semibold\">resale prices (2024 adjusted)</span> of HDB flats within 500 meters of political boundaries between <span class=\"font-semibold\">PAP</span>, <span class=\"font-semibold\">WP</span>, and <span class=\"font-semibold\">SDA</span> constituencies across five electoral periods. Overall, <span class=\"font-semibold\">PAP-adjacent areas</span> consistently show higher median resale prices compared to WP or SDA areas from 2006 to 2023.",
+            'The chart shows <span class="font-semibold">resale prices (2024 adjusted)</span> of HDB flats within 500 meters of political boundaries between <span class="font-semibold">PAP</span>, <span class="font-semibold">WP</span>, and <span class="font-semibold">SDA</span> constituencies across five electoral periods. Overall, <span class="font-semibold">PAP-adjacent areas</span> consistently show higher median resale prices compared to WP or SDA areas from 2006 to 2023.',
 
             "This may reflect historical differences in town development. PAP wards tend to include more centrally located or mature estates with better infrastructure, amenities, and transport access — all factors known to increase HDB resale value (URA, 2020: https://www.ura.gov.sg/Corporate/Guidelines/Urban-Design/Planning-for-Liveability).",
 
-            "However, WP areas have shown a <span class=\"font-semibold\">gradual closing of the gap</span> in recent periods, especially post-2011 when WP gained Aljunied GRC. Government-funded programmes like the Home Improvement Programme (HIP) and Neighbourhood Renewal Programme (NRP) have been extended to opposition wards, ensuring equitable upgrades.",
+            'However, WP areas have shown a <span class="font-semibold">gradual closing of the gap</span> in recent periods, especially post-2011 when WP gained Aljunied GRC. Government-funded programmes like the Home Improvement Programme (HIP) and Neighbourhood Renewal Programme (NRP) have been extended to opposition wards, ensuring equitable upgrades.',
 
-            "The narrowing price gap from 2015 onward may also reflect the <span class=\"font-semibold\">growing acceptance and confidence in opposition-led wards</span> among buyers. Still, resale price differences are likely influenced by a combination of political history, estate maturity, flat types, and regional demand — rather than party alignment alone."
+            'The narrowing price gap from 2015 onward may also reflect the <span class="font-semibold">growing acceptance and confidence in opposition-led wards</span> among buyers. Still, resale price differences are likely influenced by a combination of political history, estate maturity, flat types, and regional demand — rather than party alignment alone.',
         ],
         years: [2007, 2008, 2009, 2010, 2011, 2012, 2013],
     },
@@ -272,62 +318,68 @@ const steps = [
 const currentStep = computed(() => steps[currentStepIndex.value]);
 
 onMounted(() => {
-  steps.forEach((step, index) => {
-    const triggerElement = document.querySelector(`[data-section3="${index}"]`);
+    steps.forEach((step, index) => {
+        const triggerElement = document.querySelector(
+            `[data-section3="${index}"]`
+        );
 
-    if (triggerElement) {
-      const trigger = ScrollTrigger.create({
-        trigger: triggerElement,
-        start: "top center",
-        end: "bottom center",
-        onEnter: () => {
-          currentStepIndex.value = index;
-        },
-        onEnterBack: () => {
-          currentStepIndex.value = index;
-        },
-        onUpdate: (self) => {
-          progress.value = Math.round(self.progress * 100);
+        if (triggerElement) {
+            const trigger = ScrollTrigger.create({
+                trigger: triggerElement,
+                start: "top center",
+                end: "bottom center",
+                onEnter: () => {
+                    currentStepIndex.value = index;
+                },
+                onEnterBack: () => {
+                    currentStepIndex.value = index;
+                },
+                onUpdate: (self) => {
+                    progress.value = Math.round(self.progress * 100);
+                },
+            });
+
+            triggers.value.push(trigger);
         }
-      });
+    });
 
-      triggers.value.push(trigger);
+    const afterStepsTrigger = document.querySelector(
+        '[data-section3="after-steps"]'
+    );
+    if (afterStepsTrigger) {
+        const trigger = ScrollTrigger.create({
+            trigger: afterStepsTrigger,
+            start: "top center",
+            end: "bottom center",
+            onEnter: () => {
+                isAfterSteps.value = true;
+            },
+            onEnterBack: () => {
+                isAfterSteps.value = false;
+            },
+        });
+        triggers.value.push(trigger);
     }
-  });
 
-  const afterStepsTrigger = document.querySelector('[data-section3="after-steps"]');
-  if (afterStepsTrigger) {
-    const trigger = ScrollTrigger.create({
-      trigger: afterStepsTrigger,
-      start: "top center",
-      end: "bottom center",
-      onEnter: () => {
-        isAfterSteps.value = true;
-      },
-      onEnterBack: () => {
-        isAfterSteps.value = false;
-      }
-    });
-    triggers.value.push(trigger);
-  }
-  
-  const beforeStepsTrigger = document.querySelector('[data-section3="before-steps"]');
-  if (beforeStepsTrigger) {
-    const trigger = ScrollTrigger.create({
-        trigger: beforeStepsTrigger,
-        start: "top center",
-        end: "bottom center",
-        onEnter: () => {
-            isBeforeSteps.value = false;
-        },
-        onEnterBack: () => {
-            isBeforeSteps.value = true;
-        }
-    });
-    triggers.value.push(trigger);
-  }
+    const beforeStepsTrigger = document.querySelector(
+        '[data-section3="before-steps"]'
+    );
+    if (beforeStepsTrigger) {
+        const trigger = ScrollTrigger.create({
+            trigger: beforeStepsTrigger,
+            start: "top center",
+            end: "bottom center",
+            onEnter: () => {
+                isBeforeSteps.value = false;
+            },
+            onEnterBack: () => {
+                isBeforeSteps.value = true;
+            },
+        });
+        triggers.value.push(trigger);
+    }
 
-  ScrollTrigger.refresh();
+    ScrollTrigger.refresh();
 });
 
 watchEffect(() => {
@@ -340,98 +392,130 @@ onBeforeUnmount(() => {
 });
 
 watch(currentStepIndex, (newIndex) => {
-  const showScatter = newIndex === 0;
-//   const showLineChart = newIndex === 1 || newIndex === 2;
-  const showFlatCharts = newIndex === 1;
-  const showScatterFlat = newIndex === 2;
-  const showBoxPlot = newIndex === 3 || newIndex === 4;
-  const showHSD = newIndex === 5;
-  const showBoxPlotElectoral = newIndex === 6;
+    const showScatter = newIndex === 0;
+    //   const showLineChart = newIndex === 1 || newIndex === 2;
+    const showFlatCharts = newIndex === 1 || newIndex === 2;
+    const showScatterFlat = newIndex === 3;
+    const showBoxPlot = newIndex === 4 || newIndex === 5;
+    const showHSD = newIndex === 6;
+    const showBoxPlotElectoral = newIndex === 7;
 
-  gsap.to(storeyScatterChartRef.value?.$el, {
-    opacity: showScatter ? 1 : 0,
-    duration: 0.3,
-    ease: 'power2.out',
-  });
+    gsap.to(storeyScatterChartRef.value?.$el, {
+        opacity: showScatter ? 1 : 0,
+        duration: 0.3,
+        ease: "power2.out",
+    });
 
-//   gsap.to(storeyLineChartRef.value?.$el, {
-//     opacity: showLineChart ? 1 : 0,
-//     duration: 0.3,
-//     ease: 'power2.out',
-//     onStart: () => {
-//       if (showLineChart && !hasDrawnLineChart.value && typeof storeyLineChartRef.value?.resizeAndRedraw === 'function') {
-//         storeyLineChartRef.value.resizeAndRedraw();
-//         hasDrawnLineChart.value = true;
-//       }
+    //   gsap.to(storeyLineChartRef.value?.$el, {
+    //     opacity: showLineChart ? 1 : 0,
+    //     duration: 0.3,
+    //     ease: 'power2.out',
+    //     onStart: () => {
+    //       if (showLineChart && !hasDrawnLineChart.value && typeof storeyLineChartRef.value?.resizeAndRedraw === 'function') {
+    //         storeyLineChartRef.value.resizeAndRedraw();
+    //         hasDrawnLineChart.value = true;
+    //       }
 
-//       if (newIndex === 2) {
-//         storeyLineChartRef.value?.highlightLines(["Very Low", "High"]);
-//       } else {
-//         storeyLineChartRef.value?.highlightLines([]);
-//       }
-//     }
-//   });
+    //       if (newIndex === 2) {
+    //         storeyLineChartRef.value?.highlightLines(["Very Low", "High"]);
+    //       } else {
+    //         storeyLineChartRef.value?.highlightLines([]);
+    //       }
+    //     }
+    //   });
 
-  gsap.to(flatTypeLineChartRef.value?.$el, {
-    opacity: showFlatCharts ? 1 : 0,
-    duration: 0.3,
-    ease: 'power2.out',
-    onStart: () => {
-      if (typeof flatTypeLineChartRef.value?.resizeAndRedraw === 'function') {
-        flatTypeLineChartRef.value.resizeAndRedraw();
-      }
-    }
-  });
-
-  gsap.to(flatTypeScatterChartRef.value?.$el, {
-    opacity: showScatterFlat ? 1 : 0,
-    duration: 0.3,
-    ease: 'power2.out',
-    onStart: () => {
-        if (showScatterFlat && typeof flatTypeScatterChartRef.value?.handleResize === 'function') {
-            flatTypeScatterChartRef.value.handleResize();
+    gsap.to(flatTypeLineChartRef.value?.$el, {
+        opacity: showFlatCharts ? 1 : 0,
+        duration: 0.3,
+        ease: "power2.out",
+        onStart: () => {
+            if (
+                typeof flatTypeLineChartRef.value?.resizeAndRedraw ===
+                "function"
+            ) {
+                flatTypeLineChartRef.value.resizeAndRedraw();
             }
-        }
+        },
+    });
+
+    gsap.to(flatTypeScatterChartRef.value?.$el, {
+        opacity: showScatterFlat ? 1 : 0,
+        duration: 0.3,
+        ease: "power2.out",
+        onStart: () => {
+            if (
+                showScatterFlat &&
+                typeof flatTypeScatterChartRef.value?.handleResize ===
+                    "function"
+            ) {
+                flatTypeScatterChartRef.value.handleResize();
+            }
+        },
     });
 
     gsap.to(boxPlotPricePerSqmChartRef.value?.$el, {
         opacity: showBoxPlot ? 1 : 0,
         duration: 0.3,
-        ease: 'power2.out',
+        ease: "power2.out",
         onStart: () => {
-            if (showBoxPlot && typeof boxPlotPricePerSqmChartRef.value?.handleResize === 'function') {
+            if (
+                showBoxPlot &&
+                typeof boxPlotPricePerSqmChartRef.value?.handleResize ===
+                    "function"
+            ) {
                 boxPlotPricePerSqmChartRef.value.resizeAndRedraw();
             }
 
-            if (newIndex === 3 && typeof boxPlotPricePerSqmChartRef.value?.sortToOriginalOrder === 'function') {
+            if (
+                newIndex === 4 &&
+                typeof boxPlotPricePerSqmChartRef.value?.sortToOriginalOrder ===
+                    "function"
+            ) {
                 boxPlotPricePerSqmChartRef.value.sortToOriginalOrder();
             }
 
-            if (newIndex === 4 && typeof boxPlotPricePerSqmChartRef.value?.sortByMedianDescending === 'function') {
+            if (
+                newIndex === 5 &&
+                typeof boxPlotPricePerSqmChartRef.value
+                    ?.sortByMedianDescending === "function"
+            ) {
                 boxPlotPricePerSqmChartRef.value.sortByMedianDescending();
             }
-        }
+        },
     });
 
     gsap.to(lineChartHSDRef.value?.$el, {
         opacity: showHSD ? 1 : 0,
         duration: 0.3,
-        ease: 'power2.out',
+        ease: "power2.out",
         onStart: () => {
-            if (showHSD && typeof lineChartHSDRef.value?.resizeAndRedraw === 'function') {
-            lineChartHSDRef.value.resizeAndRedraw();
+            if (
+                showHSD &&
+                typeof lineChartHSDRef.value?.resizeAndRedraw === "function"
+            ) {
+                lineChartHSDRef.value.resizeAndRedraw();
             }
-        }
+        },
     });
 
     gsap.to(boxPlotElectoralBoundariesChartRef.value?.$el, {
         opacity: showBoxPlotElectoral ? 1 : 0,
         duration: 0.3,
-        ease: 'power2.out',
+        ease: "power2.out",
         onStart: () => {
-            if (showBoxPlotElectoral && typeof boxPlotElectoralBoundariesChartRef.value?.resizeAndRedraw === 'function') {
+            if (
+                showBoxPlotElectoral &&
+                typeof boxPlotElectoralBoundariesChartRef.value
+                    ?.resizeAndRedraw === "function"
+            ) {
                 boxPlotElectoralBoundariesChartRef.value.resizeAndRedraw();
             }
+        },
+    });
+
+    watch(currentStepIndex, () => {
+        if (descScrollRef.value) {
+            descScrollRef.value.scrollTop = 0;
         }
     });
 });
