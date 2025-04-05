@@ -56,7 +56,7 @@
         const x = d3
             .scaleLinear()
             .domain(d3.extent(data, (d) => d["Years Remaining"]))
-            .range([width.value, 0]);
+            .range([0,width.value]);
 
         const y = d3
             .scaleLinear()
