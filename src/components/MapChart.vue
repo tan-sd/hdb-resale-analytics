@@ -13,19 +13,38 @@
                 class="absolute top-4 right-4 flex items-end gap-2 flex-col z-10"
             >
                 <div
-                    class="w-full flex flex-col items-start px-4 py-2 rounded-md shadow-lg text-xs bg-white border-none"
+                    class="w-full flex flex-row gap-12 px-4 py-2 rounded-md shadow-lg text-xs bg-white border-none"
                 >
                     <div class="text-xs font-medium flex items-center gap-2">
-                        <Calendar :size="16" /> Year {{ selectedYear }}
+                        <Calendar :size="16" /> Year {{ selectedYear }} 
                     </div>
-                    <Slider
+                    <div class="flex flex-row gap-2">
+                        <Button
+                            variant="outline"
+                            :disabled="selectedYear <= 1990"
+                            class="p-2 rounded-md"
+                            @click="changeYear('left')"
+                        >
+                            <ChevronLeft />
+                        </Button>
+                        
+                        <Button
+                            variant="outline"
+                            :disabled="selectedYear >= 2023"
+                            class="p-2 rounded-md"
+                            @click="changeYear('right')"
+                        >
+                            <ChevronRight/>
+                        </Button>
+                    </div>
+                    <!-- <Slider
                         :model-value="[selectedYear]"
                         :min="1990"
                         :max="2023"
                         :step="1"
                         class="w-full mt-2 mb-2"
                         @update:modelValue="updateYear"
-                    />
+                    /> -->
                 </div>
                 <Drawer>
                     <DrawerTrigger as-child>
@@ -259,6 +278,14 @@
                         </div>
                     </div>
                 </div>
+                <div v-if="selectedAreaInfo?.name" class="mt-2 text-xs">
+                    <span class="font-medium">Ruling Party:</span>
+                    {{ planningAreaFeatureMap.get(selectedAreaInfo.name)?.properties?.rulingParty ?? 'N/A' }}
+                    <img
+                        :src="'img/' + planningAreaFeatureMap.get(selectedAreaInfo.name)?.properties?.rulingParty + '.png'"
+                        class="w-5 h-auto inline-block align-middle ml-1"
+                        />
+                </div>
                 <div
                     id="histogram"
                     :class="selectedAreaInfo ? 'mt-4' : ''"
@@ -305,7 +332,7 @@ import {
     ComboboxItemIndicator,
     ComboboxList,
 } from "@/components/ui/combobox";
-import { Funnel, ZoomOut, Layers, Calendar, Search, X } from "lucide-vue-next";
+import { Funnel, ZoomOut, Layers, Calendar, Search, X, ChevronLeft, ChevronRight } from "lucide-vue-next";
 
 const dataStore = useDataStore();
 
@@ -335,6 +362,8 @@ const showJuniorColleges = ref(false);
 const showPolytechnics = ref(false);
 const showUniversities = ref(false);
 
+const minYear = 1990;
+const maxYear = 2023;
 const selectedYear = ref(2023);
 const currentYear = ref(2023);
 const electoralBoundaries = ref({});
@@ -350,6 +379,7 @@ const secondarySchools = ref(null);
 const juniorColleges = ref(null);
 const polytechnics = ref(null);
 const universities = ref(null);
+const rulingPartyByEDYear = {};
 
 const emit = defineEmits(['areaSelected', 'resetSelection']);
 
@@ -366,6 +396,14 @@ const partyColors = {
     SDA: "#FFC107",
     INDP: "#A3B0C1",
     NSP: "#F39C12",
+};
+
+const changeYear = (direction) => {
+  if (direction === 'left' && selectedYear.value > minYear) {
+    selectedYear.value--;
+  } else if (direction === 'right' && selectedYear.value < maxYear) {
+    selectedYear.value++;
+  }
 };
 
 const selectedAreaName = computed(() => selectedAreaInfo.value?.name ?? null);
@@ -806,6 +844,7 @@ function selectAreaFromList(areaName) {
             f.properties.Description,
             "text/html"
         );
+
         const cell = Array.from(htmlDoc.querySelectorAll("td")).find((td) => {
             const prevTh = td.previousElementSibling;
             return prevTh && prevTh.textContent.trim() === "PLN_AREA_N";
@@ -1109,6 +1148,21 @@ const drawMapContent = () => {
                     rawData: resaleHDBsData,
                 });
             });
+        planningAreas.value[2019].features.forEach((paFeature) => {
+            const paCenter = turf.center(paFeature);
+            const edFeatures = electoralBoundaries.value[2020].features;
+
+            for (const edFeature of edFeatures) {
+                if (turf.booleanPointInPolygon(paCenter, edFeature)) {
+                    const constituency = edFeature.properties.ED_DESC || edFeature.properties.Name;
+                    const key = `2020_${constituency}`;
+                    const ruling = rulingPartyByEDYear[key]?.party || "UNKNOWN";
+
+                    paFeature.properties.rulingParty = ruling;
+                    break;
+                }
+            }
+        });
     };
 
 const planningAreaOptions = computed(() =>
@@ -1176,6 +1230,19 @@ const loadData = async () => {
     electionResults.value = await d3.csv(
         "/data/election_result/ParliamentaryGeneralElectionResultsbyCandidate.csv"
     );
+
+    electionResults.value.forEach(row => {
+        const year = row["year"];
+        const ed = row["constituency"].toUpperCase();
+        const party = row["party"];
+        const votes = +row["vote_count"] || 0;
+
+        const key = `${year}_${ed}`;
+        if (!rulingPartyByEDYear[key] || votes > rulingPartyByEDYear[key].votes) {
+            rulingPartyByEDYear[key] = { party, votes };
+        }
+    });
+
     hawkerCentres.value = await d3.json(
         "/data/point_of_interest/HawkerCentresGEOJSON.geojson"
     );
@@ -1778,6 +1845,40 @@ watch([selectedYear], async () => {
         rawData: resaleHDBsData,
         });
     }
+});
+
+watch(selectedYear, async () => {
+  console.log(`Updating map for year: ${selectedYear.value}`);
+  
+  currentYear.value = selectedYear.value;
+
+  redrawMap();
+  createLegend();
+
+  if (!selectedArea.value) {
+    emitAggregatedStats();
+  } else {
+    const areaName = selectedArea.value.value;
+    const resaleHDBsData = dataStore.chartData.filter(
+      (d) => d["Planning Area"] === areaName && String(d["Year"]) === String(selectedYear.value)
+    );
+    
+    const totalUnits = resaleHDBsData.length;
+    const totalPrice = d3.sum(resaleHDBsData, d => +d["Resale Price"]);
+    
+    const pricePerSqm = d3.median(resaleHDBsData, d => {
+      return +d["Resale Price"] / +d["Floor Area Sqm"];
+    });
+    
+    emit('areaSelected', {
+      areaName,
+      totalUnits,
+      totalPrice,
+      pricePerSqm,
+      year: selectedYear.value,
+      rawData: resaleHDBsData,
+    });
+  }
 });
 
 watch(selectedArea, (newArea) => {
