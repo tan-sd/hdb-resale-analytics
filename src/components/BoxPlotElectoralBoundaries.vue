@@ -1,8 +1,5 @@
 <template>
   <div class="chart-container w-full max-w-[1500px] min-h-[600px] flex flex-col items-center justify-center px-4">
-    <!-- <h3 class="text-sm mb-1 text-center tracking-wide font-semibold">
-      Resale Prices (2024 Adj) Within 500m of WP/SDA–PAP Boundaries
-    </h3> -->
     <div id="box-plot" ref="chartWrapper" class="w-full relative">
       <svg ref="svg" class="w-full h-full"></svg>
     </div>
@@ -21,7 +18,7 @@ export default {
     const chartWrapper = ref(null);
     const width = ref(800);
     const height = ref(500);
-    const margin = { top: 50, right: 30, bottom: 90, left: 70 };
+    const margin = { top: 50, right: 30, bottom: 90, left: 85 };
 
     // Access the dataStore
     const dataStore = useDataStore();
@@ -118,7 +115,7 @@ export default {
       svgEl.append("text")
         .attr("text-anchor", "middle")
         .attr("x", margin.left + width.value / 2)
-        .attr("y", totalHeight - 25)
+        .attr("y", totalHeight - 35)
         .style("fill", "#4b5563")
         .style("font-size", "12px")
         .style("font-weight", "500")
