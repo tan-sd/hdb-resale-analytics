@@ -3,31 +3,6 @@ import { defineStore } from "pinia";
 import * as d3 from "d3";
 
 let rawChartData = null;
-const medianMonthlyIncome = {
-    2022: 10099,
-    2021: 9520,
-    2020: 9189,
-    2019: 9425,
-    2018: 9293,
-    2017: 9023,
-    2016: 8846,
-    2015: 8666,
-    2014: 8292,
-    2013: 7872,
-    2012: 7566,
-    2011: 7037,
-    2010: 6342,
-    2009: 6006,
-    2008: 6100,
-    2007: 5362,
-    2006: 4952,
-    2005: 4831,
-    2004: 4552,
-    2003: 4612,
-    2002: 4590,
-    2001: 4716,
-    2000: 4398,
-};
 
 export const useDataStore = defineStore("dataStore", () => {
     const chartData = computed(() => rawChartData ?? []);
@@ -42,6 +17,32 @@ export const useDataStore = defineStore("dataStore", () => {
     const hsdResaleTrend = ref([]);
     const borderFlats = ref([]);
     const leaseTrend = ref([]);
+
+    const medianMonthlyIncome = {
+        2022: 10099,
+        2021: 9520,
+        2020: 9189,
+        2019: 9425,
+        2018: 9293,
+        2017: 9023,
+        2016: 8846,
+        2015: 8666,
+        2014: 8292,
+        2013: 7872,
+        2012: 7566,
+        2011: 7037,
+        2010: 6342,
+        2009: 6006,
+        2008: 6100,
+        2007: 5362,
+        2006: 4952,
+        2005: 4831,
+        2004: 4552,
+        2003: 4612,
+        2002: 4590,
+        2001: 4716,
+        2000: 4398,
+    };
 
     async function loadData() {
         if (isDataLoaded.value) return;
@@ -268,6 +269,7 @@ export const useDataStore = defineStore("dataStore", () => {
         borderFlats,
         leaseTrend,
         isDataLoaded,
+        medianMonthlyIncome,
         loadData,
         preprocessData,
         ensureDataLoaded,
