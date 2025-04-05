@@ -82,9 +82,6 @@
                     <div
                         class="sticky top-0 w-full h-screen flex items-start justify-center lg:items-center"
                     >
-                        <div
-                            class="flex flex-col gap-5 lg:gap-10 xl:gap-12 items-center w-full max-w-3xl px-4"
-                        >
                             <div
                                 class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
                             >
@@ -96,7 +93,7 @@
                             </div>
 
                             <div
-                                class="w-full flex justify-center mt-6 lg:mt-0"
+                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
                             >
                                 <LineChartFlatType
                                     ref="flatTypeLineChartRef"
@@ -181,7 +178,6 @@
                                     class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
                                 />
                             </div>
-                        </div>
                     </div>
 
                     <div class="absolute inset-0 pointer-events-none">
