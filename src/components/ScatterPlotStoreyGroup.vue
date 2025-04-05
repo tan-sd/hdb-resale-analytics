@@ -2,9 +2,6 @@
     <div
         class="chart-container w-full h-full flex flex-col items-center justify-center"
     >
-        <!-- <h3 class="text-sm mb-1 text-center tracking-wide font-semibold">
-            HDB Price per Sqm by Storey Group
-        </h3> -->
         <div id="line-chart" ref="chartWrapper" class="w-full h-full flex items-center justify-center">
             <canvas ref="canvas" class="w-full h-full"></canvas>
             <svg
