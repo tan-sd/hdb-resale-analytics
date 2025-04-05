@@ -238,7 +238,9 @@
   <style scoped>
   .chart-container {
     width: 100%;
-    height: auto;
+    height: 100%;
+    padding: 30px;
+    box-sizing: border-box;
   }
 
   #box-plot {

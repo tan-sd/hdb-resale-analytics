@@ -1,6 +1,6 @@
 <template>
     <div class="chart-container w-full max-w-[1500px] min-h-[600px] flex flex-col items-center justify-center px-4">
-        <h3 class="text-sm mb-1 text-center tracking-wide font-semibold">
+        <h3 class="text-sm text-center tracking-wide font-semibold">
         Median Resale Price (2024 Adj) vs Years Remaining on Lease
         </h3>
         <div id="line-chart" ref="chartWrapper" class="w-full relative">
@@ -21,7 +21,7 @@
         const chartWrapper = ref(null);
         const width = ref(800);
         const height = ref(500);
-        const margin = { top: 40, right: 70, bottom: 90, left: 70 };
+        const margin = { top: 40, right: 70, bottom: 90, left: 80 };
 
         // Access the dataStore
         const dataStore = useDataStore();
@@ -124,7 +124,7 @@
             .append("text")
             .attr("text-anchor", "middle")
             .attr("x", margin.left + width.value / 2)
-            .attr("y", totalHeight - 10)
+            .attr("y", totalHeight - 40)
             .style("fill", "#4b5563")
             .style("font-size", "12px")
             .style("font-weight", "500")
@@ -135,7 +135,7 @@
             .attr("text-anchor", "middle")
             .attr("transform", "rotate(-90)")
             .attr("x", -margin.top - height.value / 2)
-            .attr("y", 15)
+            .attr("y", 10)
             .style("fill", "#4b5563")
             .style("font-size", "12px")
             .style("font-weight", "500")

@@ -96,7 +96,7 @@
                             </div>
 
                             <div
-                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
+                                class="w-full flex justify-center mt-6 lg:mt-0"
                             >
                                 <LineChartFlatType
                                     ref="flatTypeLineChartRef"
