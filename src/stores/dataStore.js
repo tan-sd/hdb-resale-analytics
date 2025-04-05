@@ -17,6 +17,7 @@ export const useDataStore = defineStore("dataStore", () => {
     const hsdResaleTrend = ref([]);
     const borderFlats = ref([]);
     const leaseTrend = ref([]);
+    const ageAndDwellingTypeData = ref([]);
 
     const medianMonthlyIncome = {
         2022: 10099,
@@ -57,6 +58,11 @@ export const useDataStore = defineStore("dataStore", () => {
                 "data/resale_prices_cleaned/BorderFlats.csv"
             );
 
+            ageAndDwellingTypeData.value = await d3.csv(
+                "data/population_demographics/age_and_dwelling_type.csv",
+                d3.autoType
+            )
+
             const groupedData = d3.group(
                 borderFlatsData,
                 (d) => d.Period,
@@ -73,7 +79,7 @@ export const useDataStore = defineStore("dataStore", () => {
                     };
                 });
             }).flat();
-
+            
             ethnicDistribution.value = ethnicData.map((d) => ({
                 planningArea: d["Planning Area"].toUpperCase(),
                 year: +d["Year"],
@@ -268,6 +274,7 @@ export const useDataStore = defineStore("dataStore", () => {
         hsdResaleTrend,
         borderFlats,
         leaseTrend,
+        ageAndDwellingTypeData,
         isDataLoaded,
         medianMonthlyIncome,
         loadData,

@@ -171,6 +171,16 @@
                                     class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
                                 />
                             </div>
+
+                            <div
+                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
+                            >
+                                <LineChartAgeAndDwelling
+                                    ref="LineChartAgeAndDwellingRef"
+                                    v-show="currentStepIndex === 9"
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                                />
+                            </div>
                         </div>
                     </div>
 
@@ -200,6 +210,7 @@ import BoxPlotPricePerSqm from "./BoxPlotPricePerSqm.vue";
 import LineChartHSD from "./LineChartHSD.vue";
 import BoxPlotElectoralBoundaries from "./BoxPlotElectoralBoundaries.vue";
 import LineChartLeaseRemaining from "./LineChartLeaseRemaining.vue";
+import LineChartAgeAndDwelling from "./LineChartAgeAndDwelling.vue"
 import {
     ref,
     computed,
@@ -223,6 +234,7 @@ const boxPlotPricePerSqmChartRef = ref(null);
 const lineChartHSDRef = ref(null);
 const boxPlotElectoralBoundariesChartRef = ref(null);
 const LineChartLeaseRemainingRef = ref(null);
+const LineChartAgeAndDwellingRef = ref(null);
 const isAfterSteps = ref(false);
 const isBeforeSteps = ref(true);
 const descScrollRef = ref(null);
@@ -342,10 +354,15 @@ const steps = [
         number: 7,
         title: "Demographics (Age)",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            "This chart highlights the population distribution of HDB 1- and 2-room flats across different age groups from 2000 to 2024. The data reveals a significant increase in the population of <span class='font-semibold'>Seniors (60+ Years)</span>, reflecting Singapore's aging population and the growing demand for smaller, more manageable flats among elderly residents.",
+            "In contrast, the <span class='font-semibold'>Children (0–14 Years)</span> and <span class='font-semibold'>Youth (15–24 Years)</span> groups show relatively stable trends, indicating a shift towards smaller family sizes and declining birth rates. Meanwhile, the <span class='font-semibold'>Adults (25–59 Years)</span> group remains the largest, with a steady increase in population, likely driven by working-age individuals and families seeking affordable housing options.",
+            "These demographic shifts may influence <span class='font-semibold'>resale prices</span> and <span class='font-semibold'>buyer preferences</span>. The rising senior population could sustain demand for smaller flats, while younger families may prioritize flats in areas with <span class='font-semibold'>proximity to schools</span> and <span class='font-semibold'>amenities</span>. Understanding these trends is crucial for predicting future market dynamics and planning housing policies."
         ],
-        years: [2007, 2008, 2009, 2010, 2011, 2012, 2013], // edit this
+        years: [
+            2000,2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011,
+            2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022,
+            2023, 2024,
+        ],
     },
 ];
 
@@ -434,6 +451,7 @@ watch(currentStepIndex, (newIndex) => {
     const showHSD = newIndex === 6;
     const showBoxPlotElectoral = newIndex === 7;
     const showLease = newIndex === 8;
+    const showAgeAndDwelling = newIndex === 9;
 
     gsap.to(storeyScatterChartRef.value?.$el, {
         opacity: showScatter ? 1 : 0,
@@ -569,17 +587,17 @@ watch(currentStepIndex, (newIndex) => {
         },
     });
 
-    gsap.to(LineChartLeaseRemainingRef.value?.$el, {
-        opacity: showLease ? 1 : 0,
+    gsap.to(LineChartAgeAndDwellingRef.value?.$el, {
+        opacity: showAgeAndDwelling ? 1 : 0,
         duration: 0.3,
         ease: "power2.out",
         onStart: () => {
             if (
                 showLease &&
-                typeof LineChartLeaseRemainingRef.value?.resizeAndRedraw ===
+                typeof LineChartAgeAndDwellingRef.value?.resizeAndRedraw ===
                     "function"
             ) {
-                LineChartLeaseRemainingRef.value.resizeAndRedraw();
+                LineChartAgeAndDwellingRef.value.resizeAndRedraw();
             }
         },
     });
