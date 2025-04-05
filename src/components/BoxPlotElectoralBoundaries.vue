@@ -21,7 +21,7 @@ export default {
     const chartWrapper = ref(null);
     const width = ref(800);
     const height = ref(500);
-    const margin = { top: 20, right: 30, bottom: 90, left: 90 };
+    const margin = { top: 50, right: 30, bottom: 90, left: 70 };
 
     // Access the dataStore
     const dataStore = useDataStore();
