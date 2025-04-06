@@ -25,9 +25,9 @@
       default: 'All Singapore'
     },
     year: {
-      type: Number,
+      type: String,
       default: 2023
-    }
+    },
   });
   
   const chartContainer = ref(null);

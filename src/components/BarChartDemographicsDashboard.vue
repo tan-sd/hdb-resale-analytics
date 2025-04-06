@@ -31,7 +31,7 @@ const props = defineProps({
         default: "All Singapore",
     },
     year: {
-        type: Number,
+        type: String,
         default: 2023,
     },
 });
