@@ -21,7 +21,7 @@
         const chartWrapper = ref(null);
         const width = ref(800);
         const height = ref(500);
-        const margin = { top: 40, right: 70, bottom: 90, left: 80 };
+        const margin = { top: 40, right: 80, bottom: 90, left: 80 };
 
         // Access the dataStore
         const dataStore = useDataStore();
@@ -56,7 +56,7 @@
         const x = d3
             .scaleLinear()
             .domain(d3.extent(data, (d) => d["Years Remaining"]))
-            .range([0,width.value]);
+            .range([width.value, 0]);
 
         const y = d3
             .scaleLinear()
@@ -89,8 +89,7 @@
         g.append("path")
             .datum(data)
             .attr("fill", "none")
-            .attr("stroke", "#60a5fa")
-
+            .attr("stroke", "#4682b4")
             .attr("stroke-width", 2)
             .attr("d", line);
 
