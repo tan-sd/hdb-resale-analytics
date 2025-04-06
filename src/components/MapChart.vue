@@ -567,8 +567,8 @@ const updateDimensions = () => {
 };
 
 const createProjection = () => {
-    const offsetY = -35;
-    const offsetX = 40;
+    const offsetY = -10;
+    const offsetX = -30;
 
     return d3
         .geoMercator()
@@ -2033,7 +2033,7 @@ function zoomToBoundary(boundary) {
     const centerX = (bounds[0][0] + bounds[1][0]) / 2;
     const centerY = (bounds[0][1] + bounds[1][1]) / 2;
     const scale = 0.5 / Math.max(dx / width.value, dy / height.value);
-    const translateX = width.value / 2 - scale * centerX;
+    const translateX = width.value * 0.75 - scale * centerX;
     const translateY = height.value / 2 - scale * centerY;
 
     const svg = d3.select(map.value);
