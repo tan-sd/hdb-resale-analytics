@@ -2,72 +2,49 @@
     <section class="pt-40 w-full min-h-screen py-20 bg-white">
         <div data-section3="before-steps" class="h-[1vh]"></div>
         <div class="relative">
-            <div
-                class="w-full px-6 mx-auto grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12 min-h-screen"
-            >
+            <div class="w-full px-6 mx-auto grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12 min-h-screen">
                 <div class="w-full max-w-lg mx-auto">
-                    <div
-                        class="lg:sticky lg:top-1/2 lg:transform lg:-translate-y-1/2 fixed lg:static bottom-4 left-1/2 -translate-x-1/2 lg:translate-x-0 z-20"
+                    <div class="lg:sticky lg:top-1/2 lg:transform lg:-translate-y-1/2 fixed lg:static bottom-4 left-1/2 -translate-x-1/2 lg:translate-x-0 z-20"
                         :class="[
                             'transition-opacity duration-300',
                             {
                                 'opacity-0 pointer-events-none': !showBox,
                                 'opacity-100': showBox,
                             },
-                        ]"
-                    >
+                        ]">
                         <div
-                            class="border rounded-t-xl lg:rounded-lg backdrop-blur-[6.5px] p-6 space-y-6 bg-white relative overflow-hidden shadow-md w-[calc(100vw-2rem)] sm:w-[calc(100vw-3rem)] lg:w-auto h-[30vh] lg:h-auto"
-                        >
-                            <h2
-                                class="text-sm sm:text-base font-bold uppercase tracking-tight mb-3 section-title"
-                            >
+                            class="border rounded-t-xl lg:rounded-lg backdrop-blur-[6.5px] p-6 space-y-6 bg-white relative overflow-hidden shadow-md w-[calc(100vw-2rem)] sm:w-[calc(100vw-3rem)] lg:w-auto h-[30vh] lg:h-auto">
+                            <h2 class="text-sm sm:text-base font-bold uppercase tracking-tight mb-3 section-title">
                                 Factors
                             </h2>
-                            <div
-                                ref="descScrollRef"
-                                class="overflow-y-auto h-full pr-1 lg:pb-0 pb-10"
-                            >
+                            <div ref="descScrollRef" class="overflow-y-auto h-full pr-1 lg:pb-0 pb-10">
                                 <div class="space-y-3">
                                     <p
-                                        class="flex items-center gap-2 uppercase text-xs md:text-sm font-semibold tracking-wide"
-                                    >
+                                        class="flex items-center gap-2 uppercase text-xs md:text-sm font-semibold tracking-wide">
                                         <span
                                             class="text-white font-bold w-7 h-7 flex items-center justify-center rounded-full text-sm"
                                             style="
                                                 background-color: hsl(
                                                     353 75% 53%
                                                 );
-                                            "
-                                        >
+                                            ">
                                             {{ currentStep.number }}
                                         </span>
                                         {{ currentStep.title }}
                                     </p>
-                                    <div
-                                        class="space-y-4 text-xs md:text-sm leading-relaxed"
-                                    >
-                                        <p
-                                            v-for="(
-                                                para, idx
-                                            ) in currentStep.description"
-                                            :key="idx"
-                                            v-html="para"
-                                        ></p>
+                                    <div class="space-y-4 text-xs md:text-sm leading-relaxed">
+                                        <p v-for="(
+para, idx
+                                            ) in currentStep.description" :key="idx" v-html="para"></p>
                                     </div>
 
                                     <div
-                                        class="absolute bottom-0 left-0 w-full h-2 overflow-hidden rounded-b-[calc(1rem-1px)] bg-gray-200"
-                                    >
-                                        <div
-                                            class="h-full"
-                                            style="
+                                        class="absolute bottom-0 left-0 w-full h-2 overflow-hidden rounded-b-[calc(1rem-1px)] bg-gray-200">
+                                        <div class="h-full" style="
                                                 background-color: hsl(
                                                     353 75% 53%
                                                 );
-                                            "
-                                            :style="{ width: progress + '%' }"
-                                        ></div>
+                                            " :style="{ width: progress + '%' }"></div>
                                     </div>
                                 </div>
                             </div>
@@ -75,113 +52,66 @@
                     </div>
                 </div>
 
-                <div
-                    class="flex-1 relative"
-                    :style="{ height: `${steps.length * 115}vh` }"
-                >
-                    <div
-                        class="sticky top-0 w-full h-screen flex items-start justify-center lg:items-center"
-                    >
-                        <div
-                            class="flex flex-col gap-5 lg:gap-10 xl:gap-12 items-center w-full max-w-3xl px-4"
-                        >
-                            <div
-                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
-                            >
-                                <ScatterPlotStoreyGroup
-                                    ref="storeyScatterChartRef"
-                                    v-show="currentStepIndex === 0"
-                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-100"
-                                />
+                <div class="flex-1 relative" :style="{ height: `${steps.length * 115}vh` }">
+                    <div class="sticky top-0 w-full h-screen flex items-start justify-center lg:items-center">
+                        <div class="flex flex-col gap-5 lg:gap-10 xl:gap-12 items-center w-full max-w-3xl px-4">
+                            <div class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0">
+                                <ScatterPlotStoreyGroup ref="storeyScatterChartRef" v-show="currentStepIndex === 0"
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-100" />
                             </div>
 
-                            <div
-                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
-                            >
-                                <LineChartFlatType
-                                    ref="flatTypeLineChartRef"
-                                    v-show="
-                                        currentStepIndex === 1 ||
-                                        currentStepIndex === 2
-                                    "
-                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                                    :highlightYears="
-                                        currentStepIndex === 2
-                                            ? [2020, 2021, 2022, 2023]
-                                            : []
-                                    "
-                                    :highlightedFlatTypes="
-                                        currentStepIndex === 2
+                            <div class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0">
+                                <LineChartFlatType ref="flatTypeLineChartRef" v-show="currentStepIndex === 1 ||
+                                    currentStepIndex === 2
+                                    " class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                                    :highlightYears="currentStepIndex === 2
+                                        ? [2020, 2021, 2022, 2023]
+                                        : []
+                                        " :highlightedFlatTypes="currentStepIndex === 2
                                             ? ['EXECUTIVE', 'MULTI-GENERATION']
                                             : []
-                                    "
-                                    :shouldHighlight="currentStepIndex === 2"
-                                />
+                                            " :shouldHighlight="currentStepIndex === 2" />
                             </div>
 
-                            <div
-                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
-                            >
-                                <ScatterPlotFlatType
-                                    ref="flatTypeScatterChartRef"
-                                    v-show="currentStepIndex === 3"
-                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                                />
+                            <div class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0">
+                                <ScatterPlotFlatType ref="flatTypeScatterChartRef" v-show="currentStepIndex === 3"
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0" />
                             </div>
 
-                            <div
-                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
-                            >
-                                <BoxPlotPricePerSqm
-                                    ref="boxPlotPricePerSqmChartRef"
-                                    v-show="
-                                        currentStepIndex === 4 ||
-                                        currentStepIndex === 5
-                                    "
-                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                                />
+                            <div class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0">
+                                <BoxPlotPricePerSqm ref="boxPlotPricePerSqmChartRef" v-show="currentStepIndex === 4 ||
+                                    currentStepIndex === 5" class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0" />
                             </div>
 
-                            <div
-                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
-                            >
-                                <LineChartHSD
-                                    ref="lineChartHSDRef"
-                                    v-show="currentStepIndex === 6"
-                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                                />
+                            <div class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0">
+                                <LineChartHSD ref="lineChartHSDRef" v-show="currentStepIndex === 6"
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0" />
                             </div>
 
-                            <div
-                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
-                            >
-                                <BoxPlotElectoralBoundaries
-                                    ref="boxPlotElectoralBoundariesChartRef"
-                                    v-show="currentStepIndex === 7"
-                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                                />
+                            <div class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0">
+                                <ScatterPlotMrtDist ref="scatterPlotMrtDistRef" :mode="mrtDistMode"
+                                    v-show="currentStepIndex >= 7 && currentStepIndex <= 9" 
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"/>
                             </div>
 
-                            <div
-                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
-                            >
-                                <LineChartLeaseRemaining
-                                    ref="LineChartLeaseRemainingRef"
-                                    v-show="currentStepIndex === 8"
-                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                                />
+                            <div class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0">
+                                <BoxPlotElectoralBoundaries ref="boxPlotElectoralBoundariesChartRef"
+                                    v-show="currentStepIndex === 10"
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0" />
+                            </div>
+
+                            <div class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0">
+                                <LineChartLeaseRemaining ref="LineChartLeaseRemainingRef"
+                                    v-show="currentStepIndex === 11"
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0" />
                             </div>
                         </div>
                     </div>
 
                     <div class="absolute inset-0 pointer-events-none">
                         <div class="space-y-[1vh]">
-                            <div
-                                v-for="(step, index) in steps"
-                                :key="index"
-                                :data-section3="index"
-                                class="h-[99vh]"
-                            ></div>
+                            <div v-for="(step, index) in steps" :key="index" :data-section3="index" class="h-[99vh]">
+                            </div>
                         </div>
 
                         <div data-section3="after-steps" class="h-[1vh]"></div>
@@ -200,6 +130,7 @@ import BoxPlotPricePerSqm from "./BoxPlotPricePerSqm.vue";
 import LineChartHSD from "./LineChartHSD.vue";
 import BoxPlotElectoralBoundaries from "./BoxPlotElectoralBoundaries.vue";
 import LineChartLeaseRemaining from "./LineChartLeaseRemaining.vue";
+import ScatterPlotMrtDist from "./ScatterPlotMrtDist.vue";
 import {
     ref,
     computed,
@@ -221,11 +152,18 @@ const flatTypeLineChartRef = ref(null);
 const flatTypeScatterChartRef = ref(null);
 const boxPlotPricePerSqmChartRef = ref(null);
 const lineChartHSDRef = ref(null);
+const scatterPlotMrtDistRef = ref(null);
 const boxPlotElectoralBoundariesChartRef = ref(null);
 const LineChartLeaseRemainingRef = ref(null);
 const isAfterSteps = ref(false);
 const isBeforeSteps = ref(true);
 const descScrollRef = ref(null);
+const mrtDistMode = computed(() => {
+    if (currentStepIndex.value === 7) return 'all';
+    if (currentStepIndex.value === 8) return 'above';
+    if (currentStepIndex.value === 9) return 'underground';
+    return 'all';
+});
 
 const steps = [
     {
@@ -318,6 +256,31 @@ const steps = [
     },
     {
         number: 5,
+        title: "Amenities & Accessibility",
+        description: [
+        "This chart illustrates how <span class='font-semibold'>distance to MRT stations</span> influences <span class='font-semibold'>HDB resale prices</span>. While the common belief is that closer always means more expensive, the data reveals a <span class='font-semibold'>generally negative trend</span>: as distance from MRT stations increases, <span class='font-semibold'>resale prices tend to decrease</span>. This underscores the premium that buyers place on accessibility."
+        ],
+        years: [2018, 2019, 2020, 2021, 2022, 2023],
+    },
+    {
+        number: 5,
+        title: "Amenities & Accessibility",
+        description: [
+        "However, when focusing solely on <span class='font-semibold'>above-ground MRT stations</span>, a unique pattern emerges. Resale prices <span class='font-semibold'>dip significantly for flats located too close to MRTs (within ~500m)</span>. This suggests that while proximity offers convenience, buyers may be deterred by <span class='font-semibold'>noise pollution, reduced privacy, and exposure to high foot traffic</span>—all typical of elevated train lines.",
+
+        ],
+        years: [2018, 2019, 2020, 2021, 2022, 2023],
+    },
+    {
+        number: 5,
+        title: "Amenities & Accessibility",
+        description: [
+        "In contrast, flats near <span class='font-semibold'>underground MRT stations</span> show a different behavior. These units tend to <span class='font-semibold'>retain or even command higher prices</span> even at close distances. The likely reason? <span class='font-semibold'>Underground stations offer strong accessibility benefits</span> without the external trade-offs—like train noise or visible infrastructure—that above-ground stations bring."
+        ],
+        years: [2018, 2019, 2020, 2021, 2022, 2023],
+    },
+    {
+        number: 6,
         title: "Electoral Boundaries",
         description: [
             'The chart shows <span class="font-semibold">resale prices (2024 adjusted)</span> of HDB flats within 500 meters of political boundaries between <span class="font-semibold">PAP</span>, <span class="font-semibold">WP</span>, and <span class="font-semibold">SDA</span> constituencies across five electoral periods. Overall, <span class="font-semibold">PAP-adjacent areas</span> consistently show higher median resale prices compared to WP or SDA areas from 2006 to 2023.',
@@ -331,7 +294,7 @@ const steps = [
         years: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013],
     },
     {
-        number: 6,
+        number: 7,
         title: "Years Remaining on Lease",
         description: [
             'Resale prices generally <span class="font-semibold">decline as lease years decrease</span>, especially when flats fall below <span class="font-semibold">60 years remaining</span>. This is due to CPF and loan eligibility <span class="font-semibold"><a href="https://dollarsandsense.sg/5-things-need-know-buying-older-hdb-lease-less-50-years/" target="_blank" style="color: blue; text-decoration: underline;">restrictions</a></span>, which limit financing options and reduce buyer demand for older flats.',
@@ -346,7 +309,7 @@ const steps = [
         ],
     },
     {
-        number: 7,
+        number: 8,
         title: "Demographics (Age)",
         description: [
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
@@ -439,8 +402,9 @@ watch(currentStepIndex, (newIndex) => {
     const showScatterFlat = newIndex === 3;
     const showBoxPlot = newIndex === 4 || newIndex === 5;
     const showHSD = newIndex === 6;
-    const showBoxPlotElectoral = newIndex === 7;
-    const showLease = newIndex === 8;
+    const showMrtDist = newIndex === 7 || newIndex === 8 || newIndex === 9;
+    const showBoxPlotElectoral = newIndex === 10;
+    const showLease = newIndex === 11;
 
     gsap.to(storeyScatterChartRef.value?.$el, {
         opacity: showScatter ? 1 : 0,
@@ -488,7 +452,7 @@ watch(currentStepIndex, (newIndex) => {
             if (
                 showScatterFlat &&
                 typeof flatTypeScatterChartRef.value?.handleResize ===
-                    "function"
+                "function"
             ) {
                 flatTypeScatterChartRef.value.handleResize();
             }
@@ -503,7 +467,7 @@ watch(currentStepIndex, (newIndex) => {
             if (
                 showBoxPlot &&
                 typeof boxPlotPricePerSqmChartRef.value?.handleResize ===
-                    "function"
+                "function"
             ) {
                 boxPlotPricePerSqmChartRef.value.resizeAndRedraw();
             }
@@ -511,7 +475,7 @@ watch(currentStepIndex, (newIndex) => {
             if (
                 newIndex === 4 &&
                 typeof boxPlotPricePerSqmChartRef.value?.sortToOriginalOrder ===
-                    "function"
+                "function"
             ) {
                 boxPlotPricePerSqmChartRef.value.sortToOriginalOrder();
             }
@@ -540,6 +504,25 @@ watch(currentStepIndex, (newIndex) => {
         },
     });
 
+    gsap.to(scatterPlotMrtDistRef.value?.$el, {
+        opacity: showMrtDist ? 1 : 0,
+        duration: 0.3,
+        ease: "power2.out",
+        onStart: () => {
+            console.log("Current Step Index:", currentStepIndex.value);
+            console.log("opacity:", showMrtDist);
+            if (
+                showMrtDist && 
+                typeof scatterPlotMrtDistRef.value?.resizeAndRedraw === "function"
+            ) {
+                scatterPlotMrtDistRef.value.resizeAndRedraw();
+            }
+        },
+    });
+
+
+
+
     gsap.to(boxPlotElectoralBoundariesChartRef.value?.$el, {
         opacity: showBoxPlotElectoral ? 1 : 0,
         duration: 0.3,
@@ -555,6 +538,7 @@ watch(currentStepIndex, (newIndex) => {
         },
     });
 
+
     watch(currentStepIndex, () => {
         if (descScrollRef.value) {
             descScrollRef.value.scrollTop = 0;
@@ -569,7 +553,7 @@ watch(currentStepIndex, (newIndex) => {
             if (
                 showLease &&
                 typeof LineChartLeaseRemainingRef.value?.resizeAndRedraw ===
-                    "function"
+                "function"
             ) {
                 LineChartLeaseRemainingRef.value.resizeAndRedraw();
             }
@@ -584,7 +568,7 @@ watch(currentStepIndex, (newIndex) => {
             if (
                 showLease &&
                 typeof LineChartLeaseRemainingRef.value?.resizeAndRedraw ===
-                    "function"
+                "function"
             ) {
                 LineChartLeaseRemainingRef.value.resizeAndRedraw();
             }
