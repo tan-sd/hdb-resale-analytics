@@ -50,20 +50,20 @@ export default {
 
         function getStoreyBin(avgStorey) {
             const bins = [
-                [0, 5],
-                [5, 10],
-                [10, 15],
-                [15, 20],
-                [20, 25],
-                [25, 30],
-                [30, 35],
-                [35, 40],
-                [40, 45],
-                [45, 51],
+                [1, 5],
+                [6, 10],
+                [11, 15],
+                [16, 20],
+                [21, 25],
+                [26, 30],
+                [31, 35],
+                [36, 40],
+                [41, 45],
+                [46, 51],
             ];
             for (const [start, end] of bins) {
-                if (avgStorey >= start && avgStorey < end)
-                    return `${start}-${end}`;
+                if (avgStorey >= start && avgStorey <= end)
+                    return `${String(start).padStart(2, "0")}-${String(end).padStart(2, "0")}`;
             }
             return null;
         }
@@ -108,16 +108,16 @@ export default {
                 .filter((d) => d.StoreyBin);
 
             const bins = [
-                "0-5",
-                "5-10",
-                "10-15",
-                "15-20",
-                "20-25",
-                "25-30",
-                "30-35",
-                "35-40",
-                "40-45",
-                "45-51",
+                "01-05",
+                "06-10",
+                "11-15",
+                "16-20",
+                "21-25",
+                "26-30",
+                "31-35",
+                "36-40",
+                "41-45",
+                "46-51",
             ];
 
             const x = d3

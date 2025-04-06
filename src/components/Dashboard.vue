@@ -124,30 +124,40 @@
                                                 @area-selected="
                                                     handleAreaSelected
                                                 "
+                                                @selected-flat-type="handleFlatTypeChange"
                                             />
                                         </CardContent>
                                     </Card>
                                 </div>
+                                <div class="w-full">
+                                <Card class="w-full">
+                                    <CardContent class="p-4 h-[300px]">
+                                    <div class="font-medium text-sm text-muted-foreground mb-1">
+                                        Annual HDB Resale Price 
+                                        <span v-if="selectedFlatType !== 'All'"> ({{ selectedFlatType }})</span>
+                                    </div>
+                                    <LineChartMedianResaleDashboard :selected-flat-type="selectedFlatType" />
+                                    </CardContent>
+                                </Card>
+                                </div>
                                 <div
                                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
                                 >
-                                    <Card class="w-full h-full flex flex-col">
-                                        <CardContent
-                                            class="flex-grow p-4 h-[290px]"
-                                        >
-                                            <div
-                                                class="font-medium text-sm text-muted-foreground mb-1"
-                                            >
-                                                Flat Type Distribution
-                                            </div>
-                                            <FlatTypeBarChartDashboard
-                                                :data="filteredData"
-                                                :area-name="
-                                                    selectedAreaStats.areaName
-                                                "
-                                                :year="selectedAreaStats.year"
-                                            />
-                                        </CardContent>
+                                <Card
+                                    v-if="selectedFlatType === 'All'"
+                                    class="w-full h-full flex flex-col"
+                                    >
+                                    <CardContent class="flex-grow p-4 h-[290px]">
+                                        <div class="font-medium text-sm text-muted-foreground mb-1">
+                                        Flat Type Distribution
+                                        </div>
+                                        <FlatTypeBarChartDashboard
+                                        :data="filteredData"
+                                        :area-name="selectedAreaStats.areaName"
+                                        :year="selectedAreaStats.year"
+                                        :selected-flat-type="selectedFlatType"
+                                        />
+                                    </CardContent>
                                     </Card>
 
                                     <Card class="w-full h-full flex flex-col">
@@ -159,12 +169,13 @@
                                             >
                                                 Storey Range Distribution
                                             </div>
-                                            <StoreyRangePieChart
+                                            <StoreyRangeBarChart
                                                 :data="filteredData"
                                                 :area-name="
                                                     selectedAreaStats.areaName
                                                 "
                                                 :year="selectedAreaStats.year"
+                                                :selected-flat-type="selectedFlatType"
                                             />
                                         </CardContent>
                                     </Card>
@@ -201,6 +212,7 @@
                                                 Demographics Distribution <span class="text-xs" v-if="usingFallbackYear"> (Using {{ fallbackYearValue }} Demographic Data)</span>
                                             </div>
                                             <DemographicsBarChartDashboard
+                                                class="w-full h-full"
                                                 ref="demographicsChart"
                                                 :data="filteredData"
                                                 :area-name="
@@ -219,8 +231,16 @@
                                             <div
                                                 class="font-medium text-sm text-muted-foreground mb-1"
                                             >
-                                                ...
+                                                Amenities Distribution
                                             </div>
+                                            <BarChartAmenitiesDashboard
+                                                class="w-full h-full"
+                                                :data="filteredData"
+                                                :area-name="
+                                                    selectedAreaStats.areaName
+                                                "
+                                                :year="selectedAreaStats.year"
+                                            />
                                         </CardContent>
                                     </Card>
 
@@ -250,21 +270,32 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import NumberFlow from "@number-flow/vue";
 import FlatTypeBarChartDashboard from "./BarChartFlatTypeDashboard.vue";
-import StoreyRangePieChart from "./PieChartStoreyRange.vue";
+import StoreyRangeBarChart from "./BarChartStoreyRange.vue";
 import PriceByFlatTypeChart from "./BarChartFlatType.vue";
 import DemographicsBarChartDashboard from "./BarChartDemographicsDashboard.vue";
+import BarChartAmenitiesDashboard from "./BarChartAmenitiesDashboard.vue";
+import LineChartMedianResaleDashboard from "./LineChartMedianResaleDashboard.vue";
 import MapChart from "./MapChart.vue";
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 
 const usingFallbackYear = ref(false);
 const fallbackYearValue = ref(null);
-
+const selectedFlatType = ref("All");
 const demographicsChart = ref(null);
 
 const handleFallbackYear = (data) => {
     usingFallbackYear.value = data.isFallback;
     fallbackYearValue.value = data.year;
 };
+
+function handleFlatTypeChange(newFlatType) {
+  console.log("Flat type changed to:", newFlatType);
+  selectedFlatType.value = newFlatType;
+}
+
+watch(() => selectedFlatType.value, (newVal) => {
+  console.log("Flat type updated (watcher):", newVal);
+}, { immediate: true });
 
 const selectedAreaStats = ref({
     areaName: "All Singapore",
