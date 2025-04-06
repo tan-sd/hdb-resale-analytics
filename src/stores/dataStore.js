@@ -1,8 +1,54 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import * as d3 from "d3";
+import { and } from "mathjs";
 
 let rawChartData = null;
+
+
+const aboveGroundStations = new Set([
+    "Ang Mo Kio MRT Station",
+    "Yio Chu Kang MRT Station",
+    "Khatib MRT Station",
+    "Yishun MRT Station",
+    "Canberra MRT Station",
+    "Sembawang MRT Station",
+    "Admiralty MRT Station",
+    "Woodlands MRT Station",
+    "Marsiling MRT Station",
+    "Kranji MRT Station",
+    "Yew Tee MRT Station",
+    "Choa Chu Kang MRT Station",
+    "Bukit Gombak MRT Station",
+    "Bukit Batok MRT Station",
+    "Jurong East MRT Station",
+    "Clementi MRT Station",
+    "Dover MRT Station",
+    "Buona Vista MRT Station",
+    "Commonwealth MRT Station",
+    "Queenstown MRT Station",
+    "Redhill MRT Station",
+    "Tiong Bahru MRT Station",
+    "Kallang MRT Station",
+    "Aljunied MRT Station",
+    "Paya Lebar MRT Station",
+    "Eunos MRT Station",
+    "Kembangan MRT Station",
+    "Bedok MRT Station",
+    "Tanah Merah MRT Station",
+    "Simei MRT Station",
+    "Tampines MRT Station",
+    "Pasir Ris MRT Station",
+    "Chinese Garden MRT Station",
+    "Lakeside MRT Station",
+    "Boon Lay MRT Station",
+    "Pioneer MRT Station",
+    "Joo Koon MRT Station",
+    "Gul Circle MRT Station",
+    "Tuas Crescent MRT Station",
+    "Tuas West Road MRT Station",
+    "Tuas Link MRT Station"
+  ]);
 
 export const useDataStore = defineStore("dataStore", () => {
     const chartData = computed(() => rawChartData ?? []);
@@ -19,6 +65,29 @@ export const useDataStore = defineStore("dataStore", () => {
     const leaseTrend = ref([]);
     const ageAndDwellingTypeData = ref([]);
     const amenitiesByPlanningArea = ref(null);
+    const sampledChartData = computed(() => {
+        if (!rawChartData) return [];
+
+        // log first 5 records
+        console.log(rawChartData.slice(0, 5));
+
+        const filtered = rawChartData
+            .filter((d) => d.Year > 2017)
+            .filter((d) => d["Years Remaining"] > 84) // ✅ only long lease
+    
+        const sampleSize = Math.ceil(filtered.length * 0.5); // 50% sample
+    
+        return d3.shuffle(filtered)
+            .slice(0, sampleSize)
+            .map((d) => ({
+                mrtDist: d["Closest Mrt Dist"],
+                pricePerSqm: d["Resale Price"] / d["Floor Area Sqm"],
+                yearsRemaining: d["Years Remaining"],
+                closestMrt: d["Closest Mrt"],
+                mrtType: !aboveGroundStations.has(d["Closest Mrt"]) ? "Above" : "Underground",
+            }));
+    });
+    
 
     const medianMonthlyIncome = {
         2022: 10099,
@@ -271,6 +340,7 @@ export const useDataStore = defineStore("dataStore", () => {
     return {
         rawChartData,
         chartData,
+        sampledChartData,
         yearMedians,
         yearCounts,
         yearFlatTypeMedians,
