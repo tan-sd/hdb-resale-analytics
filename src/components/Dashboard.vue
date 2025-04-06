@@ -115,7 +115,7 @@
     </div>
 
     <!-- MIDDLE: MapChart -->
-    <Card class="w-full h-[500px] flex flex-col">
+    <Card class="w-full h-[490px] flex flex-col">
       <CardContent class="p-0">
         <MapChart
           @area-selected="handleAreaSelected"
