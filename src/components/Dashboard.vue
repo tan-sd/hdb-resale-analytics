@@ -176,7 +176,7 @@
   >
     <CardContent class="flex-grow p-4 h-[290px]">
       <div class="font-medium text-sm text-muted-foreground mb-1">
-        Flat Type Distribution
+        Flat Type Distribution <span>(<span v-if="selectedAreaStats.areaName != 'All Singapore'">{{ selectedAreaStats.areaName }}, </span>{{ selectedAreaStats.year }})</span>
       </div>
       <FlatTypeBarChartDashboard
         :data="filteredData"
@@ -194,8 +194,16 @@
     <CardContent class="flex-grow p-4 h-[290px]">
       <div class="font-medium text-sm text-muted-foreground mb-1">
         Storey Range Distribution
+        <span v-if="selectedFlatType == 'All'">(<span v-if="selectedAreaStats.areaName !== 'All Singapore'">{{ selectedAreaStats.areaName}}, </span>{{ selectedAreaStats.year }})</span>
+        <span v-else><span v-if="selectedAreaStats.areaName !== 'All Singapore'">
+        ({{ selectedAreaStats.areaName }}, {{ selectedFlatType }}, {{ selectedAreaStats.year }})
+      </span>
+      <span v-else>
+        ({{ selectedFlatType }}, {{ selectedAreaStats.year }})
+      </span>
+      </span>
       </div>
-      <StoreyRangeBarChart
+      <StoreyRangeBarChartDashboard
         :data="filteredData"
         :area-name="selectedAreaStats.areaName"
         :year="selectedAreaStats.year"
@@ -240,7 +248,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import NumberFlow from "@number-flow/vue";
 import FlatTypeBarChartDashboard from "./BarChartFlatTypeDashboard.vue";
-import StoreyRangeBarChart from "./BarChartStoreyRange.vue";
+import StoreyRangeBarChartDashboard from "./BarChartStoreyRangeDashboard.vue";
 import PriceByFlatTypeChart from "./BarChartFlatType.vue";
 import DemographicsBarChartDashboard from "./BarChartDemographicsDashboard.vue";
 import BarChartAmenitiesDashboard from "./BarChartAmenitiesDashboard.vue";
