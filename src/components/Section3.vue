@@ -600,7 +600,7 @@ watch(currentStepIndex, (newIndex) => {
         ease: "power2.out",
         onStart: () => {
             console.log("Current Step Index:", currentStepIndex.value);
-            console.log("opacity:", showMrtDist);
+            // console.log("opacity:", showMrtDist);
             if (
                 showMrtDist &&
                 typeof scatterPlotMrtDistRef.value?.resizeAndRedraw ===
@@ -653,7 +653,7 @@ watch(currentStepIndex, (newIndex) => {
         ease: "power2.out",
         onStart: () => {
             if (
-                showLease &&
+                showAgeAndDwelling &&
                 typeof LineChartAgeAndDwellingRef.value?.resizeAndRedraw ===
                     "function"
             ) {
