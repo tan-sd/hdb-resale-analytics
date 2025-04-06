@@ -18,6 +18,7 @@ export const useDataStore = defineStore("dataStore", () => {
     const borderFlats = ref([]);
     const leaseTrend = ref([]);
     const ageAndDwellingTypeData = ref([]);
+    const amenitiesByPlanningArea = ref(null);
 
     const medianMonthlyIncome = {
         2022: 10099,
@@ -49,6 +50,11 @@ export const useDataStore = defineStore("dataStore", () => {
         if (isDataLoaded.value) return;
 
         try {
+            amenitiesByPlanningArea.value = await d3.csv(
+                "data/point_of_interest/amenities_by_planning_area.csv",
+                d3.autoType
+            );
+            
             const ethnicData = await d3.csv(
                 "data/population_demographics/ethnic_distribution.csv",
                 d3.autoType
@@ -277,6 +283,7 @@ export const useDataStore = defineStore("dataStore", () => {
         ageAndDwellingTypeData,
         isDataLoaded,
         medianMonthlyIncome,
+        amenitiesByPlanningArea,
         loadData,
         preprocessData,
         ensureDataLoaded,
