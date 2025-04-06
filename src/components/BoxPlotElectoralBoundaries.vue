@@ -160,6 +160,49 @@ export default {
         .attr("y1", (d) => y(d.median))
         .attr("y2", (d) => y(d.median))
         .attr("stroke", "black");
+
+      const legendGroup = svgEl.append("g")
+        .attr("class", "legend-group")
+        .attr("transform", `translate(${margin.left + 30}, ${margin.top})`);
+
+      const legendData = [
+        { label: "PAP", color: "#60a5fa" },
+        { label: "WP", color: "#f87171" },
+        { label: "SDA", color: "#facc15" },
+      ];
+
+      const legendBoxPadding = 10;
+      const legendItemHeight = 20;
+      const legendBoxWidth = 90;
+      const legendBoxHeight = legendData.length * legendItemHeight + legendBoxPadding * 2;
+
+      legendGroup.append("rect")
+        .attr("width", legendBoxWidth)
+        .attr("height", legendBoxHeight)
+        .attr("fill", "#fff")
+        .attr("stroke", "#ccc")
+        .attr("rx", 4)
+        .attr("ry", 4);
+
+      const itemGroup = legendGroup.selectAll(".legend-item")
+        .data(legendData)
+        .enter()
+        .append("g")
+        .attr("class", "legend-item")
+        .attr("transform", (d, i) => `translate(${legendBoxPadding}, ${legendBoxPadding + i * legendItemHeight})`);
+
+      itemGroup.append("rect")
+        .attr("width", 12)
+        .attr("height", 12)
+        .attr("fill", d => d.color)
+        .attr("stroke", "black");
+
+      itemGroup.append("text")
+        .attr("x", 18)
+        .attr("y", 10)
+        .style("font-size", "12px")
+        .style("fill", "#111")
+        .text(d => d.label);
     };
 
     onMounted(async () => {
