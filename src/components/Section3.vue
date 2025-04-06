@@ -77,7 +77,7 @@
 
                 <div
                     class="flex-1 relative"
-                    :style="{ height: `${(steps.length - 1) * 115 + 10}vh` }"
+                    :style="{ height: `${(steps.length) * 115 - 150}vh` }"
                 >
                     <div
                         class="sticky top-0 w-full h-screen flex items-start justify-center lg:items-center"
@@ -201,7 +201,7 @@
                             v-for="(step, index) in steps"
                             :key="index"
                             :data-section3="index"
-                            :class="index === steps.length - 1 ? 'h-[10vh]' : 'h-[99vh]'"
+                            class="h-[99vh]"
                         ></div>
                     </div>
 
