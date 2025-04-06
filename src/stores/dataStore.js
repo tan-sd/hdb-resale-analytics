@@ -68,9 +68,6 @@ export const useDataStore = defineStore("dataStore", () => {
     const sampledChartData = computed(() => {
         if (!rawChartData) return [];
 
-        // log first 5 records
-        console.log(rawChartData.slice(0, 5));
-
         const filtered = rawChartData
             .filter((d) => d.Year > 2017)
             .filter((d) => d["Years Remaining"] > 84) // ✅ only long lease
@@ -128,7 +125,7 @@ export const useDataStore = defineStore("dataStore", () => {
                 "data/population_demographics/ethnic_distribution.csv",
                 d3.autoType
             );
-            
+
             const borderFlatsData = await d3.csv(
                 "data/resale_prices_cleaned/BorderFlats.csv"
             );

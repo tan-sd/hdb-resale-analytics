@@ -112,17 +112,15 @@
                                     v-show="currentStepIndex === 11"
                                     class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0" />
                             </div>
-                        </div>
 
-                            <div
-                                class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
-                            >
+                            <div class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0">
                                 <LineChartAgeAndDwelling
                                     ref="LineChartAgeAndDwellingRef"
                                     v-show="currentStepIndex === 12"
-                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                                />
+                                    class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0" />
                             </div>
+                            
+                        </div>
                     </div>
 
                     <div class="absolute inset-0 pointer-events-none">
@@ -265,7 +263,7 @@ const steps = [
         ],
     },
     {
-        number: 5,
+        number: 4,
         title: "Amenities & Accessibility",
         description: [
         "This chart illustrates how <span class='font-semibold'>distance to MRT stations</span> influences <span class='font-semibold'>HDB resale prices</span>. While the common belief is that closer always means more expensive, the data reveals a <span class='font-semibold'>generally negative trend</span>: as distance from MRT stations increases, <span class='font-semibold'>resale prices tend to decrease</span>. This underscores the premium that buyers place on accessibility."
@@ -273,7 +271,7 @@ const steps = [
         years: [2018, 2019, 2020, 2021, 2022, 2023],
     },
     {
-        number: 5,
+        number: 4,
         title: "Amenities & Accessibility",
         description: [
         "However, when focusing solely on <span class='font-semibold'>above-ground MRT stations</span>, a unique pattern emerges. Resale prices <span class='font-semibold'>dip significantly for flats located too close to MRTs (within ~500m)</span>. This suggests that while proximity offers convenience, buyers may be deterred by <span class='font-semibold'>noise pollution, reduced privacy, and exposure to high foot traffic</span>—all typical of elevated train lines.",
@@ -282,7 +280,7 @@ const steps = [
         years: [2018, 2019, 2020, 2021, 2022, 2023],
     },
     {
-        number: 5,
+        number: 4,
         title: "Amenities & Accessibility",
         description: [
         "In contrast, flats near <span class='font-semibold'>underground MRT stations</span> show a different behavior. These units tend to <span class='font-semibold'>retain or even command higher prices</span> even at close distances. The likely reason? <span class='font-semibold'>Underground stations offer strong accessibility benefits</span> without the external trade-offs—like train noise or visible infrastructure—that above-ground stations bring."
@@ -290,7 +288,7 @@ const steps = [
         years: [2018, 2019, 2020, 2021, 2022, 2023],
     },
     {
-        number: 6,
+        number: 5,
         title: "Electoral Boundaries",
         description: [
             'This chart shows <span class="font-semibold">2024-adjusted resale prices</span> of HDB flats located within 500m of boundaries between <span class="font-semibold">PAP</span>, <span class="font-semibold">WP</span>, and <span class="font-semibold">SDA</span> constituencies across five electoral periods.',
@@ -305,7 +303,7 @@ const steps = [
         years: [2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013],
     },
     {
-        number: 7,
+        number: 6,
         title: "Years Remaining on Lease",
         description: [
             'Resale prices generally <span class="font-semibold">decline as lease years decrease</span>, especially when flats fall below <span class="font-semibold">60 years remaining</span>. This is due to CPF and loan eligibility <span class="font-semibold"><a href="https://dollarsandsense.sg/5-things-need-know-buying-older-hdb-lease-less-50-years/" target="_blank" style="color: blue; text-decoration: underline;">restrictions</a></span>, which limit financing options and reduce buyer demand for older flats.',
@@ -320,7 +318,7 @@ const steps = [
         ],
     },
     {
-        number: 8,
+        number: 7,
         title: "Demographics (Age)",
         description: [
             "This chart highlights the population distribution of HDB 1- and 2-room flats across different age groups from 2000 to 2024. The data reveals a significant increase in the population of <span class='font-semibold'>Seniors (60+ Years)</span>, reflecting Singapore's aging population and the growing demand for smaller, more manageable flats among elderly residents.",
@@ -527,7 +525,7 @@ watch(currentStepIndex, (newIndex) => {
         ease: "power2.out",
         onStart: () => {
             console.log("Current Step Index:", currentStepIndex.value);
-            console.log("opacity:", showMrtDist);
+            // console.log("opacity:", showMrtDist);
             if (
                 showMrtDist && 
                 typeof scatterPlotMrtDistRef.value?.resizeAndRedraw === "function"
@@ -583,7 +581,7 @@ watch(currentStepIndex, (newIndex) => {
         ease: "power2.out",
         onStart: () => {
             if (
-                showLease &&
+                showAgeAndDwelling &&
                 typeof LineChartAgeAndDwellingRef.value?.resizeAndRedraw ===
                     "function"
             ) {

@@ -67,13 +67,11 @@ export default defineComponent({
                 const rect = chartWrapper.value.getBoundingClientRect();
                 width.value = rect.width > 0 ? rect.width - margin.left - margin.right : 800;
                 height.value = rect.height > 0 ? rect.height - margin.top - margin.bottom : 500;
-                console.log("Set canvas size to", width.value, height.value);
             }
         };
 
 
         const animateTransition = () => {
-            console.log('Starting animation from', currentMode.value, 'to', props.mode);
             const startTime = performance.now();
 
             const animate = (now) => {
@@ -94,7 +92,6 @@ export default defineComponent({
         };
 
         watch(() => props.mode, (newMode, oldMode) => {
-            console.log('Mode changed:', oldMode, '→', newMode);
 
             if (newMode !== oldMode) {
                 currentMode.value = oldMode;
@@ -162,10 +159,7 @@ export default defineComponent({
         };
 
         const drawScatterPlot = (rawData) => {
-            // console.log('Drawing scatter plot. Data length:', rawData.length);
-            // console.log('first 5 data points:', rawData.slice(0, 5));
             if (!rawData.length) {
-                console.warn('No data available for drawing!');
             }
 
             if (!canvas.value || !rawData.length) return;
@@ -303,7 +297,6 @@ export default defineComponent({
         );
 
         onMounted(() => {
-            console.log("ScatterPlotMrtDist mounted");
             const observer = new ResizeObserver(() => {
                 if (chartWrapper.value?.offsetParent !== null) {
                     resizeAndRedraw();
