@@ -2,11 +2,11 @@
     <div ref="chartContainer" class="w-full h-full relative">
         <svg ref="chart" class="w-full h-full"></svg>
         <div
-            v-if="!hasData"
-            class="flex items-center justify-center h-full text-muted-foreground text-sm"
-        >
-            No data available
-        </div>
+            v-if="!hasData || !hasFlatTypeData"
+            class="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm"
+            >
+            No data available for this area and year.
+            </div>
         <div
             ref="tooltip"
             class="absolute z-50 text-xs bg-white border border-gray-300 rounded px-2 py-1 shadow-md pointer-events-none"
@@ -38,6 +38,8 @@ const chartContainer = ref(null);
 const chart = ref(null);
 const tooltip = ref(null);
 const hasData = computed(() => props.data && props.data.length > 0);
+const flatTypeData = ref([]);
+const hasFlatTypeData = computed(() => flatTypeData.value.length > 0);
 
 const showTooltip = (event, d) => {
     if (!tooltip.value) return;
@@ -87,15 +89,23 @@ const positionTooltip = (event, tooltipElement) => {
 };
 
 const drawChart = () => {
-    if (!chart.value || !hasData.value) return;
+    const svgSelection = d3.select(chart.value);
+    svgSelection.selectAll("*").remove();
 
-    d3.select(chart.value).selectAll("*").remove();
+    if (!chart.value) return;
 
     const flatTypeGroups = d3.group(props.data, (d) => d["Flat Type"]);
-    const flatTypeData = Array.from(flatTypeGroups, ([key, value]) => ({
+    const processed = Array.from(flatTypeGroups, ([key, value]) => ({
         type: key,
         count: value.length,
     })).sort((a, b) => b.count - a.count);
+
+    flatTypeData.value = processed;
+
+    if (processed.length === 0) {
+        d3.select(chart.value).selectAll("*").remove();
+        return;
+    }
 
     const width = chart.value.clientWidth;
     const height = chart.value.clientHeight;
@@ -106,8 +116,7 @@ const drawChart = () => {
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 
-    const svg = d3
-        .select(chart.value)
+    const svg = svgSelection
         .attr("width", width)
         .attr("height", height)
         .append("g")
@@ -115,19 +124,19 @@ const drawChart = () => {
 
     const y = d3
         .scaleBand()
-        .domain(flatTypeData.map((d) => d.type))
+        .domain(flatTypeData.value.map((d) => d.type))
         .range([0, innerHeight])
         .padding(0.2);
 
     const x = d3
         .scaleLinear()
-        .domain([0, d3.max(flatTypeData, (d) => d.count)])
+        .domain([0, d3.max(flatTypeData.value, (d) => d.count)])
         .nice()
         .range([0, innerWidth]);
 
     const color = d3
         .scaleOrdinal()
-        .domain(flatTypeData.map((d) => d.type))
+        .domain(flatTypeData.value.map((d) => d.type))
         .range(d3.schemeCategory10);
 
     d3.select(chart.value).selectAll(".tooltip").remove();
@@ -150,7 +159,7 @@ const drawChart = () => {
         .call(d3.axisBottom(x).ticks(tickCount));
 
     svg.selectAll(".bar")
-        .data(flatTypeData)
+        .data(flatTypeData.value)
         .enter()
         .append("rect")
         .attr("class", "bar")
@@ -187,13 +196,11 @@ onMounted(() => {
 });
 
 watch(
-    () => [props.data, props.areaName, props.year],
-    () => {
-        if (hasData.value) {
-            drawChart();
-        }
-    },
-    { deep: true }
+  () => [props.data, props.areaName, props.year],
+  () => {
+    drawChart();
+  },
+  { deep: true }
 );
 
 onUnmounted(() => {
