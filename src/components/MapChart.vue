@@ -1,6 +1,7 @@
 <template>
     <div class="map-container w-full h-full">
         <div ref="tooltip" class="tooltip"></div>
+        <div ref="histogramTooltip" class="tooltip absolute z-50 pointer-events-none text-xs bg-white px-2 py-1 border border-gray-300 rounded shadow" style="visibility: hidden;"></div>
         <div class="map-wrapper relative w-full h-full">
             <svg
                 ref="map"
@@ -13,9 +14,52 @@
                 class="absolute top-4 right-4 flex items-end gap-2 flex-col z-10"
             >
                 <div
-                    class="w-full flex flex-row gap-12 px-4 py-2 rounded-md shadow-lg text-xs bg-white border-none"
+                    class="w-full flex flex-row gap-5 px-4 py-2 rounded-md shadow-lg text-xs bg-white border-none"
                 >
-                    <div class="text-xs font-medium flex items-center gap-2">
+                <Select v-model="selectedYear">
+                <SelectTrigger class="w-[140px] text-xs h-8 flex items-center gap-1">
+                    <div class="flex items-center gap-1">
+                    <Calendar :size="16" />
+                    <span class="font-semibold">Year:</span>
+                    </div>
+                    <SelectValue :placeholder="selectedYear" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectGroup>
+                    <SelectItem
+                        v-for="year in [...Array(2023 - 1990 + 1)].map((_, i) => 1990 + i).reverse()"
+                        :key="year"
+                        :value="String(year)"
+                    >
+                        {{ year }}
+                    </SelectItem>
+                    </SelectGroup>
+                </SelectContent>
+                </Select>
+
+                <Select v-model="selectedFlatType">
+                <SelectTrigger class="w-[200px] text-xs h-8 flex items-center gap-1">
+                    <div class="flex items-center gap-1">
+                    <House :size="16" />
+                    <span class="font-semibold">Flat Type:</span>
+                    </div>
+                    <SelectValue placeholder="All" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="All">All</SelectItem>
+                    <SelectGroup>
+                    <SelectItem value="1 ROOM">1 Room</SelectItem>
+                    <SelectItem value="2 ROOM">2 Room</SelectItem>
+                    <SelectItem value="3 ROOM">3 Room</SelectItem>
+                    <SelectItem value="4 ROOM">4 Room</SelectItem>
+                    <SelectItem value="5 ROOM">5 Room</SelectItem>
+                    <SelectItem value="EXECUTIVE">Executive</SelectItem>
+                    <SelectItem value="MULTI-GENERATION">Multi-Generation</SelectItem>
+                    </SelectGroup>
+                </SelectContent>
+                </Select>
+
+                    <!-- <div class="text-xs font-medium flex items-center gap-2">
                         <Calendar :size="16" /> Year {{ selectedYear }} 
                     </div>
                     <div class="flex flex-row gap-2">
@@ -36,7 +80,7 @@
                         >
                             <ChevronRight/>
                         </Button>
-                    </div>
+                    </div> -->
                     <!-- <Slider
                         :model-value="[selectedYear]"
                         :min="1990"
@@ -206,7 +250,7 @@
             </div>
 
             <div
-                class="absolute top-4 left-4 w-80 bg-white rounded-md shadow-lg px-3 py-2 text-sm z-20 flex flex-col"
+                class="absolute top-4 left-4 w-80 bg-white rounded-md shadow-lg px-3 py-2 text-sm z-20 flex flex-col cursor-default"
             >
                 <div class="relative w-full max-w-sm">
                     <div class="flex items-center gap-1">
@@ -278,18 +322,29 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="selectedAreaInfo?.name" class="mt-2 text-xs">
-                    <span class="font-medium">Ruling Party:</span>
-                    {{ planningAreaFeatureMap.get(selectedAreaInfo.name)?.properties?.rulingParty ?? 'N/A' }}
-                    <img
+                <div v-if="selectedAreaInfo?.name" class="mt-5 text-xs flex flex-col justify-center items-center gap-1">
+                    <div class="flex items-center gap-1">
+                        <span class="font-medium">Ruling Party</span>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        {{ planningAreaFeatureMap.get(selectedAreaInfo.name)?.properties?.rulingParty ?? 'N/A' }}
+                        <img
                         :src="'img/' + planningAreaFeatureMap.get(selectedAreaInfo.name)?.properties?.rulingParty + '.png'"
-                        class="w-5 h-auto inline-block align-middle ml-1"
-                        />
+                        class="w-5 h-auto"
+                        alt="Party Logo"
+                    />
+                    </div>
                 </div>
-                <div
-                    id="histogram"
-                    :class="selectedAreaInfo ? 'mt-4' : ''"
-                ></div>
+
+                <div v-if="selectedAreaInfo?.name" class="mt-10 text-xs flex flex-col justify-center items-center gap-1">
+                    <div class="flex items-center gap-1">
+                        <span class="font-medium">HDB Resale Price Distribution</span>
+                    </div>
+                    <div
+                        id="histogram"
+                        :class="selectedAreaInfo ? 'w-full mt-1' : ''"
+                    ></div>
+                </div>
             </div>
         </div>
     </div>
@@ -332,7 +387,7 @@ import {
     ComboboxItemIndicator,
     ComboboxList,
 } from "@/components/ui/combobox";
-import { Funnel, ZoomOut, Layers, Calendar, Search, X, ChevronLeft, ChevronRight } from "lucide-vue-next";
+import { Funnel, ZoomOut, Calendar, Search, X, House } from "lucide-vue-next";
 
 const dataStore = useDataStore();
 
@@ -364,7 +419,8 @@ const showUniversities = ref(false);
 
 const minYear = 1990;
 const maxYear = 2023;
-const selectedYear = ref(2023);
+const selectedYear = ref("2023");
+const selectedFlatType = ref("All");
 const currentYear = ref(2023);
 const electoralBoundaries = ref({});
 const planningAreas = ref({});
@@ -380,8 +436,10 @@ const juniorColleges = ref(null);
 const polytechnics = ref(null);
 const universities = ref(null);
 const rulingPartyByEDYear = {};
+const medianPriceForHistogram = ref(null);
+const histogramTooltip = ref(null);
 
-const emit = defineEmits(['areaSelected', 'resetSelection']);
+const emit = defineEmits(['areaSelected', 'resetSelection', 'selectedFlatType']);
 
 const partyColors = {
     PAP: "#1A56A3",
@@ -445,8 +503,12 @@ function handleSelection(area) {
 
         const areaName = area.value;
         const resaleHDBsData = dataStore.chartData.filter(
-            (d) => d["Planning Area"] === areaName && String(d["Year"]) === String(selectedYear.value)
+            (d) =>
+                d["Planning Area"] === areaName &&
+                String(d["Year"]) === String(selectedYear.value) &&
+                (selectedFlatType.value === "All" || d["Flat Type"] === selectedFlatType.value)
         );
+
 
         const totalUnits = resaleHDBsData.length;
         const totalPrice = d3.sum(resaleHDBsData, d => +d["Resale Price"]);
@@ -642,75 +704,107 @@ const createLegend = () => {
             .text(`${formatPrice(maxPrice)}`);
     }
 
-function drawHistogram(areaName) {
-    const container = d3.select("#histogram");
-    container.selectAll("*").remove();
+    function drawHistogram(areaName) {
+  const container = d3.select("#histogram");
+  container.selectAll("*").remove();
 
-    const resaleData = dataStore.chartData.filter(
-        (d) =>
-            d["Planning Area"] === areaName &&
-            String(d["Year"]) === String(selectedYear.value)
-    );
+  const resaleData = dataStore.chartData.filter(
+  (d) =>
+    d["Planning Area"] === areaName &&
+    String(d["Year"]) === String(selectedYear.value) &&
+    (selectedFlatType.value === "All" || d["Flat Type"] === selectedFlatType.value)
+);
 
-    const prices = resaleData.map((d) => +d["Resale Price"]);
-    if (prices.length === 0) return;
+  const prices = resaleData.map((d) => +d["Resale Price"]);
+  
+  if (prices.length === 0) {
+    container
+      .append("div")
+      .attr("class", "text-center text-gray-500 text-xs mt-2")
+      .text("No data available for this flat type in the selected year.");
+    return;
+  }
 
-    const width = 240;
-    const height = 140;
-    const margin = { top: 10, right: 10, bottom: 30, left: 35 };
+  const containerNode = document.getElementById("histogram");
+  const containerWidth = containerNode?.offsetWidth || 400;
 
-    const svg = container
-        .append("svg")
-        .attr("width", width)
-        .attr("height", height);
+  const width = containerWidth;
+  const height = 140;
+  const margin = { top: 20, right: 10, bottom: 30, left: 35 };
 
-    const x = d3
-        .scaleLinear()
-        .domain([d3.min(prices), d3.max(prices)])
-        .range([margin.left, width - margin.right]);
+  const svg = container
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
 
-    const bins = d3.bin().domain(x.domain()).thresholds(15)(prices);
+  const x = d3
+    .scaleLinear()
+    .domain([d3.min(prices), d3.max(prices)])
+    .range([margin.left, width - margin.right]);
 
-    const y = d3
-        .scaleLinear()
-        .domain([0, d3.max(bins, (d) => d.length)])
-        .nice()
-        .range([height - margin.bottom, margin.top]);
+  const bins = d3.bin().domain(x.domain()).thresholds(15)(prices);
+
+  const y = d3
+    .scaleLinear()
+    .domain([0, d3.max(bins, (d) => d.length)])
+    .nice()
+    .range([height - margin.bottom, margin.top]);
 
     svg.selectAll("rect")
-        .data(bins)
-        .enter()
-        .append("rect")
-        .attr("x", (d) => x(d.x0) + 1)
-        .attr("y", (d) => y(d.length))
-        .attr("width", (d) => x(d.x1) - x(d.x0) - 1)
-        .attr("height", (d) => y(0) - y(d.length))
-        .attr("fill", "#93c5fd");
+  .data(bins)
+  .enter()
+  .append("rect")
+  .attr("x", (d) => x(d.x0) + 1)
+  .attr("y", (d) => y(d.length))
+  .attr("width", (d) => Math.max(0, x(d.x1) - x(d.x0) - 1))
+  .attr("height", (d) => y(0) - y(d.length))
+  .attr("fill", "#93c5fd")
+  .on("mouseover", function (event, d) {
+    d3.select(this).attr("fill", "#60a5fa");
+    d3.select(histogramTooltip.value)
+      .style("visibility", "visible")
+      .html(`
+        <div><strong>${d.length}</strong> resale units</div>
+        <div>Price range: $${d3.format(",")(d.x0)} – $${d3.format(",")(d.x1)}</div>
+      `);
+  })
+  .on("mousemove", function (event) {
+    const [mouseX, mouseY] = d3.pointer(event, map.value);
+    d3.select(histogramTooltip.value)
+      .style("left", `${mouseX + 15}px`)
+      .style("top", `${mouseY}px`);
+  })
+  .on("mouseout", function () {
+    d3.select(this).attr("fill", "#93c5fd");
+    d3.select(histogramTooltip.value).style("visibility", "hidden");
+  });
 
-    svg.append("g")
-        .attr("transform", `translate(0,${height - margin.bottom})`)
-        .call(d3.axisBottom(x).ticks(4).tickFormat(d3.format("~s")));
+  svg.append("g")
+    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(x).ticks(4).tickFormat(d3.format("~s")));
 
-    svg.append("g")
-        .attr("transform", `translate(${margin.left},0)`)
-        .call(d3.axisLeft(y).ticks(4));
+  svg.append("g")
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y).ticks(4));
 
-    const median = d3.median(prices);
-    svg.append("line")
-        .attr("x1", x(median))
-        .attr("x2", x(median))
-        .attr("y1", y(0))
-        .attr("y2", y(d3.max(bins, (d) => d.length)))
-        .attr("stroke", "red")
-        .attr("stroke-width", 2)
-        .attr("stroke-dasharray", "4 2");
+  const median = d3.median(prices);
+  medianPriceForHistogram.value = median;
+  
+  svg.append("line")
+    .attr("x1", x(median))
+    .attr("x2", x(median))
+    .attr("y1", y(0))
+    .attr("y2", y(d3.max(bins, (d) => d.length)))
+    .attr("stroke", "red")
+    .attr("stroke-width", 2)
+    .attr("stroke-dasharray", "4 2");
 
-    svg.append("text")
-        .attr("x", x(median) + 4)
-        .attr("y", y(d3.max(bins, (d) => d.length)) - 5)
-        .attr("fill", "red")
-        .attr("font-size", "10px")
-        .text("Median");
+  svg.append("text")
+    .attr("x", x(median) + 4)
+    .attr("y", y(d3.max(bins, (d) => d.length)) - 5)
+    .attr("fill", "red")
+    .attr("font-size", "10px")
+    .text("Median" + ": $" + d3.format(",")(median));
 }
 
 const redrawMap = (forceReset = false) => {
@@ -932,11 +1026,11 @@ const drawMapContent = () => {
 
     selectedDataset = planningAreas.value[2019];
 
-        selectedDataset = planningAreas.value[2019];
-
-        const resaleHDBsData = dataStore.chartData.filter(
-            (d) => String(d["Year"]) === String(selectedYear.value)
-        );
+    const resaleHDBsData = dataStore.chartData.filter(
+        (d) =>
+            String(d["Year"]) === String(selectedYear.value) &&
+            (selectedFlatType.value === "All" || d["Flat Type"] === selectedFlatType.value)
+    );
 
         const medianPriceByPlanningArea = d3.rollup(
             resaleHDBsData,
@@ -1081,6 +1175,9 @@ const drawMapContent = () => {
                         .selectAll("path")
                         .attr("stroke", "black")
                         .attr("stroke-width", 0.5);
+
+                    emitAggregatedStats();
+
                     return;
                 }
 
@@ -1845,6 +1942,46 @@ watch([selectedYear], async () => {
         rawData: resaleHDBsData,
         });
     }
+});
+
+watch(selectedFlatType, (newVal) => {
+    console.log("MapChart emitting:", newVal);
+
+    emit("selectedFlatType", newVal);
+    
+    redrawMap();
+    createLegend();
+
+  if (selectedAreaName.value) {
+    nextTick(() => {
+        drawHistogram(selectedAreaName.value);
+    });
+}
+
+  if (!selectedArea.value) {
+    emitAggregatedStats();
+  } else {
+    const areaName = selectedArea.value.value;
+    const resaleHDBsData = dataStore.chartData.filter(
+      (d) =>
+        d["Planning Area"] === areaName &&
+        String(d["Year"]) === String(selectedYear.value) &&
+        (selectedFlatType.value === "All" || d["Flat Type"] === selectedFlatType.value)
+    );
+
+    const totalUnits = resaleHDBsData.length;
+    const totalPrice = d3.sum(resaleHDBsData, (d) => +d["Resale Price"]);
+    const pricePerSqm = d3.median(resaleHDBsData, (d) => +d["Resale Price"] / +d["Floor Area Sqm"]);
+
+    emit("areaSelected", {
+      areaName,
+      totalUnits,
+      totalPrice,
+      pricePerSqm,
+      year: selectedYear.value,
+      rawData: resaleHDBsData,
+    });
+  }
 });
 
 watch(selectedYear, async () => {
