@@ -1,5 +1,5 @@
 <template>
-    <main class="flex flex-1 flex-col mt-[50vh] items-center justify-center">
+    <main class="flex flex-1 flex-col items-center justify-center">
         <h2
             class="text-sm sm:text-base font-bold uppercase tracking-tight mb-2 section-title"
         >
@@ -18,9 +18,9 @@
                 style="background-color: #ffffff"
             >
 
-            <div class="grid grid-cols-1 lg:grid-cols-7 gap-4">
+            <div class="grid grid-cols-1 lg:grid-cols-8 gap-4">
   <!-- LEFT SIDE: col-span-2 -->
-  <div class="space-y-4 lg:col-span-3">
+  <div class="space-y-4 lg:col-span-4">
     <!-- TOP: Stats cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
         <Card class="w-full h-full flex flex-col">
@@ -131,6 +131,7 @@
         <CardContent class="flex-grow p-4 h-[290px]">
           <div class="font-medium text-sm text-muted-foreground mb-1">
             Demographics Distribution
+            <br/>
             <span class="text-xs" v-if="usingFallbackYear">
               (Using {{ fallbackYearValue }} Demographic Data)
             </span>
