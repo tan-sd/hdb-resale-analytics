@@ -96,7 +96,7 @@
                             variant="outline"
                             class="px-4 py-2 rounded-md shadow-lg text-xs"
                         >
-                            <Funnel /> Filters
+                            <MapPinned /> Amenities
                         </Button>
                     </DrawerTrigger>
                     <DrawerContent>
@@ -387,7 +387,7 @@ import {
     ComboboxItemIndicator,
     ComboboxList,
 } from "@/components/ui/combobox";
-import { Funnel, ZoomOut, Calendar, Search, X, House } from "lucide-vue-next";
+import { MapPinned, Calendar, Search, X, House, Locate } from "lucide-vue-next";
 
 const dataStore = useDataStore();
 
@@ -605,6 +605,15 @@ const createZoom = () => {
 };
 
 const createLegend = () => {
+    const data = dataStore.chartData;
+
+    const filtered = data.filter(
+        (d) =>
+            String(d["Year"]) === String(selectedYear.value) &&
+            (selectedFlatType.value === "All" || d["Flat Type"] === selectedFlatType.value)
+    );
+
+
     const legendContainer = d3.select(legend.value);
     legendContainer.html("");
 
@@ -613,7 +622,7 @@ const createLegend = () => {
         );
 
         const medianPriceByPlanningArea = d3.rollup(
-            resaleHDBsData,
+            filtered,
             (v) => d3.median(v, (d) => +d["Resale Price"]),
             (d) => d["Planning Area"]
         );
@@ -674,11 +683,11 @@ const createLegend = () => {
             .attr("x", 0)
             .attr("y", titleOffsetY)
             .attr("text-anchor", "left")
-            .attr("font-size", "12px")
+            .attr("font-size", "10px")
             .attr("fill", "black")
             .style("letter-spacing", letterSpacing)
             .attr("class", "font-bold")
-            .text("LEGEND");
+            .text("MEDIAN RESALE PRICE");
 
         legendSvg
             .append("rect")
@@ -721,7 +730,7 @@ const createLegend = () => {
     container
       .append("div")
       .attr("class", "text-center text-gray-500 text-xs mt-2")
-      .text("No data available for this flat type in the selected year.");
+      .text("No data available for this area and year.");
     return;
   }
 
@@ -1041,6 +1050,7 @@ const drawMapContent = () => {
         const priceExtent = d3.extent(
             Array.from(medianPriceByPlanningArea.values())
         );
+        
         const colorScale = d3
             .scaleSequential()
             .domain(priceExtent)
