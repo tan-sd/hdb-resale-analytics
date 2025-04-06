@@ -14,10 +14,10 @@
                 class="absolute top-4 right-4 flex items-end gap-2 flex-col z-10"
             >
                 <div
-                    class="w-full flex flex-row gap-5 px-4 py-2 rounded-md shadow-lg text-xs bg-white border-none"
+                    class="w-full flex flex-row gap-2 px-4 py-2 rounded-md shadow-lg text-xs bg-white border-none"
                 >
                 <Select v-model="selectedYear">
-                <SelectTrigger class="w-[140px] text-xs h-8 flex items-center gap-1">
+                <SelectTrigger class="w-[130px] text-xs h-8 flex items-center gap-1">
                     <div class="flex items-center gap-1">
                     <Calendar :size="16" />
                     <span class="font-semibold">Year:</span>
@@ -38,7 +38,7 @@
                 </Select>
 
                 <Select v-model="selectedFlatType">
-                <SelectTrigger class="w-[200px] text-xs h-8 flex items-center gap-1">
+                <SelectTrigger class="w-[150px] text-xs h-8 flex items-center gap-1">
                     <div class="flex items-center gap-1">
                     <House :size="16" />
                     <span class="font-semibold">Flat Type:</span>
