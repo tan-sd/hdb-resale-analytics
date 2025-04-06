@@ -33,9 +33,7 @@
                                         {{ currentStep.title }}
                                     </p>
                                     <div class="space-y-4 text-xs md:text-sm leading-relaxed">
-                                        <p v-for="(
-para, idx
-                                            ) in currentStep.description" :key="idx" v-html="para"></p>
+                                        <p v-for="(para, idx) in currentStep.description" :key="idx" v-html="para"></p>
                                     </div>
 
                                     <div
@@ -137,7 +135,6 @@ para, idx
                     </div>
                 </div>
             </div>
-        </div>
     </section>
 </template>
 

@@ -63,10 +63,10 @@ export const useDataStore = defineStore("dataStore", () => {
     const hsdResaleTrend = ref([]);
     const borderFlats = ref([]);
     const leaseTrend = ref([]);
-    const sampledChartData = computed(() => {
-        if (!rawChartData) return [];
     const ageAndDwellingTypeData = ref([]);
     const amenitiesByPlanningArea = ref(null);
+    const sampledChartData = computed(() => {
+        if (!rawChartData) return [];
 
         // log first 5 records
         console.log(rawChartData.slice(0, 5));
