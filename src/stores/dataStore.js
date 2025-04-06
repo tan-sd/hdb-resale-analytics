@@ -54,6 +54,7 @@ export const useDataStore = defineStore("dataStore", () => {
     const chartData = computed(() => rawChartData ?? []);
     const isDataLoaded = computed(() => rawChartData !== null);
 
+    const mrtStations = ref([]);
     const yearMedians = ref([]);
     const yearCounts = ref([]);
     const yearFlatTypeMedians = ref([]);
@@ -130,6 +131,10 @@ export const useDataStore = defineStore("dataStore", () => {
                 "data/resale_prices_cleaned/BorderFlats.csv"
             );
 
+            const mrtStationData = await d3.csv(
+                "data/all_stations.csv", d3.autoType
+            );
+
             ageAndDwellingTypeData.value = await d3.csv(
                 "data/population_demographics/age_and_dwelling_type.csv",
                 d3.autoType
@@ -159,6 +164,15 @@ export const useDataStore = defineStore("dataStore", () => {
                 malays: +d["malays"],
                 indian: +d["indian"],
                 others: +d["others"],
+            }));
+
+            mrtStations.value = mrtStationData.map((d) => ({
+                code: d.station_code,
+                name: d.name,
+                lat: +d.Latitude,
+                lng: +d.Longitude,
+                source: d.source,
+                comment: d.comment
             }));
 
             const splitHdbResaleData = Array.from(
@@ -354,5 +368,6 @@ export const useDataStore = defineStore("dataStore", () => {
         loadData,
         preprocessData,
         ensureDataLoaded,
+        mrtStations,
     };
 });

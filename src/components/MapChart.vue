@@ -1356,7 +1356,7 @@ const loadData = async () => {
     gyms.value = await d3.json("/data/point_of_interest/GymsSGGEOJSON.geojson");
     parks.value = await d3.json("/data/point_of_interest/Parks.geojson");
     mrts.value = await d3.json(
-        "/data/point_of_interest/MasterPlan2003MRTName.geojson"
+        "/data/point_of_interest/UpdatedMRTStations.geojson"
     );
     preschools.value = await d3.json(
         "/data/point_of_interest/PreSchoolsLocation.geojson"
