@@ -1,11 +1,15 @@
 <template>
-    <div class="w-full h-full">
-      <svg ref="chart" class="w-full h-full"></svg>
-      <div v-if="!hasData" class="flex items-center justify-center h-full text-muted-foreground text-sm">
-        No data available
-      </div>
+  <div ref="chartContainer" class="w-full h-full relative">
+    <svg ref="chart" class="w-full h-full"></svg>
+    <div v-if="!hasData" class="flex items-center justify-center h-full text-muted-foreground text-sm">
+      No data available
     </div>
-  </template>
+    <div ref="tooltip"
+         class="absolute z-50 text-xs bg-white border border-gray-300 rounded px-2 py-1 shadow-md pointer-events-none"
+         style="opacity: 0;">
+    </div>
+  </div>
+</template>
   
   <script setup>
   import { ref, onMounted, watch, computed, onUnmounted } from 'vue';
@@ -26,8 +30,57 @@
     }
   });
   
+  const chartContainer = ref(null);
   const chart = ref(null);
+  const tooltip = ref(null);
   const hasData = computed(() => props.data && props.data.length > 0);
+
+  const showTooltip = (event, d) => {
+  if (!tooltip.value) return;
+  tooltip.value.innerHTML = `${d.type}: <strong>${d.count}</strong> units`;
+  tooltip.value.style.opacity = 1;
+  positionTooltip(event, tooltip.value);
+};
+
+const hideTooltip = () => {
+  if (tooltip.value) {
+    tooltip.value.style.opacity = 0;
+  }
+};
+
+const positionTooltip = (event, tooltipElement) => {
+  if (!tooltipElement || !chartContainer.value) return;
+
+  const chartRect = chartContainer.value.getBoundingClientRect();
+  const tooltipRect = tooltipElement.getBoundingClientRect();
+
+  const relativeX = event.clientX - chartRect.left;
+  const relativeY = event.clientY - chartRect.top;
+
+  let top, left;
+
+  const preferredTop = relativeY - tooltipRect.height;
+  const preferredLeft = relativeX + 5;
+
+  if (preferredTop < 0) {
+    top = relativeY + 20;
+  } else {
+    top = preferredTop;
+  }
+
+  if (preferredLeft + tooltipRect.width > chartRect.width) {
+    left = relativeX - tooltipRect.width - 5;
+
+    if (left < 0) {
+      left = Math.max(0, relativeX - (tooltipRect.width / 2));
+    }
+  } else {
+    left = preferredLeft;
+  }
+
+  tooltipElement.style.top = `${top}px`;
+  tooltipElement.style.left = `${left}px`;
+};
   
   const drawChart = () => {
     if (!chart.value || !hasData.value) return;
@@ -69,14 +122,11 @@
       .domain(flatTypeData.map(d => d.type))
       .range(d3.schemeCategory10);
 
-    const tooltip = d3.select('body').append('div')
-      .attr('class', 'tooltip')
-      .style('position', 'absolute')
-      .style('background', 'white')
-      .style('padding', '5px')
-      .style('border', '1px solid #ccc')
-      .style('border-radius', '5px')
-      .style('pointer-events', 'none')
+    d3.select(chart.value).selectAll('.tooltip').remove();
+
+    const tooltip = d3.select(chart.value.parentNode)
+      .append('div')
+      .attr('class', 'tooltip absolute text-xs bg-white border border-gray-300 rounded px-2 py-1 shadow-md pointer-events-none')
       .style('opacity', 0);
 
     svg.append('g')
@@ -97,16 +147,16 @@
       .attr('width', d => x(d.count))
       .attr('fill', d => color(d.type))
       .style('opacity', 0.7)
-      .on('mouseover', function(event, d) {
+      .on('mouseover', function (event, d) {
         d3.select(this).style('opacity', 1);
-        tooltip.transition().duration(200).style('opacity', 0.9);
-        tooltip.html(`${d.type}: ${d.count} units (${(d.count / props.data.length * 100).toFixed(1)}%)`)
-          .style('left', (event.pageX + 10) + 'px')
-          .style('top', (event.pageY - 28) + 'px');
+        showTooltip(event, d);
       })
-      .on('mouseout', function() {
+      .on('mousemove', function (event, d) {
+        showTooltip(event, d)
+      })
+      .on('mouseout', function () {
         d3.select(this).style('opacity', 0.7);
-        tooltip.transition().duration(500).style('opacity', 0);
+        hideTooltip();
       });
 
     svg.append("text")
@@ -130,6 +180,8 @@
   }, { deep: true });
 
   onUnmounted(() => {
-    d3.select('body').selectAll('.tooltip').remove();
-  });
+  if (chart.value?.parentNode) {
+    d3.select(chart.value.parentNode).selectAll('.tooltip').remove();
+  }
+});
   </script>  

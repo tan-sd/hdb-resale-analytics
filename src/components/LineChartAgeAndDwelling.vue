@@ -1,7 +1,7 @@
 <template>
     <div class="chart-container w-full max-w-[1500px] min-h-[600px] flex flex-col items-center justify-center px-4">
         <h3 class="text-sm text-center tracking-wide font-semibold">
-        Median Resale Price (2024 Adj) vs Years Remaining on Lease
+        Population Distribution of HDB 1- And 2-Room Flats by Age Group Category
         </h3>
         <div id="line-chart" ref="chartWrapper" class="w-full relative">
         <svg ref="svg" class="w-full h-full"></svg>
@@ -15,17 +15,17 @@
     import { useDataStore } from "@/stores/dataStore";
 
     export default {
-    name: "LineChartLeaseRemaining",
+    name: "LineChartAgeAndDwelling",
     setup() {
         const svg = ref(null);
         const chartWrapper = ref(null);
         const width = ref(800);
         const height = ref(500);
-        const margin = { top: 40, right: 70, bottom: 90, left: 80 };
+        const margin = { top: 40, right: 100, bottom: 90, left: 80 };
 
         // Access the dataStore
         const dataStore = useDataStore();
-        const leaseTrend = dataStore.leaseTrend;
+        const ageAndDwellingTypeData = dataStore.ageAndDwellingTypeData;
 
         const setDimensions = () => {
         if (!chartWrapper.value) return;
@@ -41,6 +41,15 @@
             return;
         }
 
+        // Parse and filter data
+        data.forEach((d) => {
+            d.Year = +d.Year; // Convert Year to a number
+            d.Population = +d.Population; // Convert Population to a number
+        });
+        data = data.filter((d) => !isNaN(d.Year) && !isNaN(d.Population));
+
+        console.log("Processed Data:", data);
+
         const svgEl = d3.select(svg.value);
         svgEl.selectAll("*").remove();
 
@@ -55,21 +64,25 @@
         // Scales
         const x = d3
             .scaleLinear()
-            .domain(d3.extent(data, (d) => d["Years Remaining"]))
-            .range([0,width.value]);
+            .domain(d3.extent(data, (d) => d["Year"]))
+            .range([0, width.value]);
 
         const y = d3
             .scaleLinear()
             .domain([
+                // d3.min(data, (d) => d["Population"]),
                 0,
-                d3.max(data, (d) => d["Resale Price Adj 2024"]) * 1.1, // Add 10% padding to the top
+                d3.max(data, (d) => d["Population"]) * 1.1,
             ])
             .range([height.value, 0]);
+
+        console.log("X Scale Domain:", x.domain());
+        console.log("Y Scale Domain:", y.domain());
 
         // Axes
         g.append("g")
             .attr("transform", `translate(0,${height.value})`)
-            .call(d3.axisBottom(x).ticks(8).tickFormat(d3.format("d")))
+            .call(d3.axisBottom(x).tickFormat(d3.format("d")))
             .selectAll("text")
             .style("font-size", "10px");
 
@@ -78,57 +91,62 @@
             .selectAll("text")
             .style("font-size", "10px");
 
-        // Line generator
-        const line = d3
-            .line()
-            .x((d) => x(d["Years Remaining"]))
-            .y((d) => y(d["Resale Price Adj 2024"]))
-            .curve(d3.curveMonotoneX);
+        // Define color scale
+        const colorScale = d3.scaleOrdinal(d3.schemeCategory10);
 
-        // Draw the line
-        g.append("path")
-            .datum(data)
-            .attr("fill", "none")
-            .attr("stroke", "#60a5fa")
+        // Group data by Age Group Category
+        const groupedData = d3.group(data, (d) => d["Age Group Category"]);
 
-            .attr("stroke-width", 2)
-            .attr("d", line);
+        // Draw lines for each age group
+        groupedData.forEach((values, key) => {
+            const sanitizedKey = key.replace(/[^a-zA-Z0-9]/g, "-").toLowerCase();
 
-          // Add reference lines
-        const referenceYears = [
-            { year: 50, label: "CPF and Loan Eligibility Restrictions" },
-            { year: 99, label: "Newer Flats Premium" },
-        ];
-        referenceYears.forEach((ref) => {
-            // Add dotted line
-            g.append("line")
-                .attr("x1", x(ref.year))
-                .attr("x2", x(ref.year))
-                .attr("y1", 0)
-                .attr("y2", height.value)
-                .attr("stroke", "#999") // Light gray color
-                .attr("stroke-width", 1)
-                .attr("stroke-dasharray", "4 4"); // Dotted line
+            // Draw the line
+            g.append("path")
+                .datum(values)
+                .attr("fill", "none")
+                .attr("stroke", colorScale(key))
+                .attr("stroke-width", 2)
+                .attr(
+                    "d",
+                    d3
+                        .line()
+                        .x((d) => x(d["Year"]))
+                        .y((d) => y(d["Population"]))
+                        .curve(d3.curveMonotoneX)
+                );
 
-            // Add label
+            // Add circles at each data point
+            g.selectAll(`.dot-${sanitizedKey}`)
+                .data(values)
+                .enter()
+                .append("circle")
+                .attr("class", `dot-${sanitizedKey}`)
+                .attr("cx", (d) => x(d["Year"]))
+                .attr("cy", (d) => y(d["Population"]))
+                .attr("r", 3)
+                .attr("fill", colorScale(key));
+
+            // Add a label at the end of each line
             g.append("text")
-                .attr("x", x(ref.year) + 5) // Slightly offset from the line
-                .attr("y", 20) // Fixed vertical position for all labels
-                .style("fill", "#555") // Dark gray color
+                .datum(values[values.length - 1])
+                .attr("x", x(values[values.length - 1]["Year"]) + 5)
+                .attr("y", y(values[values.length - 1]["Population"]))
+                .style("fill", colorScale(key))
                 .style("font-size", "10px")
-                .text(ref.label);
+                .text(key);
         });
-        
+
         // Add labels
         svgEl
             .append("text")
             .attr("text-anchor", "middle")
             .attr("x", margin.left + width.value / 2)
-            .attr("y", totalHeight - 40)
+            .attr("y", totalHeight - 10)
             .style("fill", "#4b5563")
             .style("font-size", "12px")
             .style("font-weight", "500")
-            .text("Years Remaining on Lease");
+            .text("Year");
 
         svgEl
             .append("text")
@@ -139,29 +157,29 @@
             .style("fill", "#4b5563")
             .style("font-size", "12px")
             .style("font-weight", "500")
-            .text("Resale Price (2024 Adjusted)");
-        };
+            .text("Population");
+    };
 
 
         onMounted(async () => {
         await dataStore.ensureDataLoaded(); // Ensure data is loaded
+        console.log("Data loaded:", ageAndDwellingTypeData);
         await nextTick();
         setDimensions();
 
-        drawChart(leaseTrend || []);
+        drawChart(ageAndDwellingTypeData || []);
 
         window.addEventListener("resize", () => {
             setDimensions();
-            drawChart(leaseTrend || []);
+            drawChart(ageAndDwellingTypeData || []);
         });
         });
 
         // Watch for changes in the data and redraw the chart
         watch(
-        () => leaseTrend,
+        () => ageAndDwellingTypeData,
         (newData) => {
             if (newData && newData.length > 0) {
-            // console.log("Lease Trend Data updated:", newData);
             setDimensions();
             drawChart(newData);
             }
@@ -181,12 +199,6 @@
 .chart-container {
     width: 100%;
     height: auto;
-}
-
-#line-chart-median{
-    width: 100%;
-    height: 100%;
-    position: relative;
 }
 
 .line {

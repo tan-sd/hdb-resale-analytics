@@ -1,6 +1,6 @@
 <template>
     <div
-        class="chart-container w-full max-w-[1500px] min-h-[600px] flex flex-col items-center justify-center px-4"
+        class="chart-container max-w-[1500px] min-h-[600px] w-full flex flex-col items-center justify-center px-4"
     >
         <h3 class="text-sm mb-1 text-center tracking-wide font-semibold">
             Median HDB Resale Price by Flat Type per Year

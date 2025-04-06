@@ -18,7 +18,7 @@
     const chartWrapper = ref(null);
     const width = ref(800);
     const height = ref(500);
-    const margin = { top: 50, right: 120, bottom: 90, left: 70 };
+    const margin = { top: 50, right: 120, bottom: 90, left: 80 };
     const store = useDataStore();
 
     function setDimensions() {
@@ -91,10 +91,9 @@
         .attr("transform", `translate(0,${height.value})`)
         .call(d3.axisBottom(x).ticks(5).tickFormat(d3.format("d")))
         .selectAll("text")
-        .attr("text-anchor", "end")
-        .attr("transform", "rotate(-45)")
-        .attr("dx", "-0.8em")
-        .attr("dy", "0.15em");
+        .attr("text-anchor", "middle")
+        .attr("dx", "0")
+        .attr("dy", "1em");
 
     chart.append("g").call(d3.axisLeft(y));
 
@@ -102,7 +101,7 @@
         .append("text")
         .attr("text-anchor", "middle")
         .attr("x", margin.left + width.value / 2)
-        .attr("y", totalHeight - 5)
+        .attr("y", totalHeight - 40)
         .style("fill", "#4b5563")
         .style("font-size", "12px")
         .style("font-weight", "500")
@@ -113,7 +112,7 @@
         .attr("text-anchor", "middle")
         .attr("transform", "rotate(-90)")
         .attr("x", -margin.top - height.value / 2)
-        .attr("y", 15)
+        .attr("y", 10)
         .style("fill", "#4b5563")
         .style("font-size", "12px")
         .style("font-weight", "500")

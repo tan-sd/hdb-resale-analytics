@@ -1,8 +1,5 @@
 <template>
   <div class="chart-container w-full max-w-[1500px] min-h-[600px] flex flex-col items-center justify-center px-4">
-    <h3 class="text-sm mb-1 text-center tracking-wide font-semibold">
-      Resale Prices (2024 Adj) Within 500m of WP/SDA–PAP Boundaries
-    </h3>
     <div id="box-plot" ref="chartWrapper" class="w-full relative">
       <svg ref="svg" class="w-full h-full"></svg>
     </div>
@@ -21,7 +18,7 @@ export default {
     const chartWrapper = ref(null);
     const width = ref(800);
     const height = ref(500);
-    const margin = { top: 20, right: 30, bottom: 90, left: 70 };
+    const margin = { top: 50, right: 30, bottom: 90, left: 85 };
 
     // Access the dataStore
     const dataStore = useDataStore();
@@ -97,50 +94,28 @@ export default {
         .attr("transform", `translate(0,${height.value})`)
         .call(d3.axisBottom(x0))
         .selectAll("text")
-        .attr("transform", "rotate(-45)")
-        .style("text-anchor", "end")
-        .style("font-size", "10px");
+        .style("text-anchor", "middle")
+        .style("font-size", "12px")
+        .attr("y", 15);
 
       g.append("g")
         .call(d3.axisLeft(y))
         .selectAll("text")
-        .style("font-size", "10px");
-
-      const legendColors = {
-        PAP: "#60a5fa",
-        WP: "#f87171",
-        SDA: "#facc15",
-      };
-
-      const legend = svgEl.append("g")
-        .attr("transform", `translate(${width.value - margin.right - 100}, ${margin.top})`); // Top-right corner
-
-      const legendEntries = Object.entries(legendColors);
-
-      legend.selectAll("rect")
-        .data(legendEntries)
-        .enter()
-        .append("rect")
-        .attr("x", 0)
-        .attr("y", (_, i) => i * 20) // Space out the legend items vertically
-        .attr("width", 12)
-        .attr("height", 12)
-        .attr("fill", ([_, color]) => color);
-
-      legend.selectAll("text")
-        .data(legendEntries)
-        .enter()
-        .append("text")
-        .attr("x", 18) // Position text to the right of the color box
-        .attr("y", (_, i) => i * 20 + 10) // Align text with the color box
-        .text(([zone]) => zone)
-        .style("font-size", "11px")
-        .attr("alignment-baseline", "middle");
+        .style("font-size", "12px");
 
       svgEl.append("text")
         .attr("text-anchor", "middle")
         .attr("x", margin.left + width.value / 2)
-        .attr("y", totalHeight - 5)
+        .attr("y", margin.top - 30)
+        .style("fill", "black")
+        .style("font-size", "14px")
+        .style("font-weight", "500")
+        .text("Resale Prices (2024 Adj) Within 500m of WP/SDA–PAP Boundaries");
+
+      svgEl.append("text")
+        .attr("text-anchor", "middle")
+        .attr("x", margin.left + width.value / 2)
+        .attr("y", totalHeight - 35)
         .style("fill", "#4b5563")
         .style("font-size", "12px")
         .style("font-weight", "500")
@@ -150,7 +125,7 @@ export default {
         .attr("text-anchor", "middle")
         .attr("transform", "rotate(-90)")
         .attr("x", -margin.top - height.value / 2)
-        .attr("y", 15)
+        .attr("y", 10)
         .style("fill", "#4b5563")
         .style("font-size", "12px")
         .style("font-weight", "500")
@@ -225,7 +200,9 @@ export default {
 <style scoped>
 .chart-container {
   width: 100%;
-  height: auto;
+  height: 100%;
+  padding: 30px;
+  box-sizing: border-box;
 }
 
 #box-plot {

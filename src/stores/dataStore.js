@@ -4,31 +4,6 @@ import * as d3 from "d3";
 import { and } from "mathjs";
 
 let rawChartData = null;
-const medianMonthlyIncome = {
-    2022: 10099,
-    2021: 9520,
-    2020: 9189,
-    2019: 9425,
-    2018: 9293,
-    2017: 9023,
-    2016: 8846,
-    2015: 8666,
-    2014: 8292,
-    2013: 7872,
-    2012: 7566,
-    2011: 7037,
-    2010: 6342,
-    2009: 6006,
-    2008: 6100,
-    2007: 5362,
-    2006: 4952,
-    2005: 4831,
-    2004: 4552,
-    2003: 4612,
-    2002: 4590,
-    2001: 4716,
-    2000: 4398,
-};
 
 
 const aboveGroundStations = new Set([
@@ -90,6 +65,7 @@ export const useDataStore = defineStore("dataStore", () => {
     const leaseTrend = ref([]);
     const sampledChartData = computed(() => {
         if (!rawChartData) return [];
+    const ageAndDwellingTypeData = ref([]);
 
         // log first 5 records
         console.log(rawChartData.slice(0, 5));
@@ -97,8 +73,6 @@ export const useDataStore = defineStore("dataStore", () => {
         const filtered = rawChartData
             .filter((d) => d.Year > 2017)
             .filter((d) => d["Years Remaining"] > 84) // ✅ only long lease
-            // .filter((d) => !aboveGroundStations.has(d["Closest Mrt"])) // ✅ only above ground stations
-            // .filter((d) => d["Closest Mrt Dist"] >= 300) // optional: skip too-close flats
     
         const sampleSize = Math.ceil(filtered.length * 0.5); // 50% sample
     
@@ -114,6 +88,32 @@ export const useDataStore = defineStore("dataStore", () => {
     });
     
 
+    const medianMonthlyIncome = {
+        2022: 10099,
+        2021: 9520,
+        2020: 9189,
+        2019: 9425,
+        2018: 9293,
+        2017: 9023,
+        2016: 8846,
+        2015: 8666,
+        2014: 8292,
+        2013: 7872,
+        2012: 7566,
+        2011: 7037,
+        2010: 6342,
+        2009: 6006,
+        2008: 6100,
+        2007: 5362,
+        2006: 4952,
+        2005: 4831,
+        2004: 4552,
+        2003: 4612,
+        2002: 4590,
+        2001: 4716,
+        2000: 4398,
+    };
+
     async function loadData() {
         if (isDataLoaded.value) return;
 
@@ -126,6 +126,11 @@ export const useDataStore = defineStore("dataStore", () => {
             const borderFlatsData = await d3.csv(
                 "data/resale_prices_cleaned/BorderFlats.csv"
             );
+
+            ageAndDwellingTypeData.value = await d3.csv(
+                "data/population_demographics/age_and_dwelling_type.csv",
+                d3.autoType
+            )
 
             const groupedData = d3.group(
                 borderFlatsData,
@@ -143,7 +148,7 @@ export const useDataStore = defineStore("dataStore", () => {
                     };
                 });
             }).flat();
-
+            
             ethnicDistribution.value = ethnicData.map((d) => ({
                 planningArea: d["Planning Area"].toUpperCase(),
                 year: +d["Year"],
@@ -339,7 +344,9 @@ export const useDataStore = defineStore("dataStore", () => {
         hsdResaleTrend,
         borderFlats,
         leaseTrend,
+        ageAndDwellingTypeData,
         isDataLoaded,
+        medianMonthlyIncome,
         loadData,
         preprocessData,
         ensureDataLoaded,

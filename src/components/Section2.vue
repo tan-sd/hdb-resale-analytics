@@ -140,26 +140,27 @@ const descScrollRef = ref(null);
 
 const steps = [
     {
-        title: "2007–2012: ...",
+        title: "2007–2012",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            'Between <span class="font-semibold">2007 and 2012</span>, HDB resale prices rose sharply, while <span class="font-semibold">income growth remained modest</span>. This led to a noticeable spike in the <span class="font-semibold">affordability index</span>, which reached its peak in 2012.',
+            'Flats became <span class="font-semibold">less affordable</span> during this period, with the index exceeding a multiple of <span class="font-semibold">4.8× annual income</span>. This affordability squeeze likely contributed to growing concerns about housing access and long-term sustainability.'
         ],
         years: [2007, 2008, 2009, 2010, 2011, 2012],
     },
     {
-        title: "2013–2019: ...",
+        title: "2013–2019",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            'From <span class="font-semibold">2013 to 2019</span>, the <span class="font-semibold">affordability index declined steadily</span> as income growth began to outpace resale price increases.',
+            'Government <span class="font-semibold">cooling measures</span> introduced from 2010 to 2013 — such as the <span class="font-semibold">Mortgage Servicing Ratio (MSR)</span> and <span class="font-semibold">Total Debt Servicing Ratio (TDSR)</span> — started taking effect, helping to <span class="font-semibold">stabilize resale prices</span> and improve housing affordability.'
         ],
         years: [2013, 2014, 2015, 2016, 2017, 2018, 2019],
     },
     {
-        title: "2020–2022: ...",
+        title: "2020–2022",
         description: [
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi in tincidunt lorem. Nulla dapibus risus et tristique aliquam. Nulla sodales magna ac risus porttitor, vitae molestie lorem bibendum. Praesent nec lacinia erat, eget lacinia lacus. Donec congue odio eget porta maximus. Donec vitae ex ac risus iaculis.",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam vestibulum, justo id egestas aliquet, purus elit pellentesque risus, sed vulputate metus ex ac lorem. Vivamus a gravida ante. Aenean rutrum pulvinar dictum. Integer bibendum bibendum est, sed eleifend mauris sodales ac. In hendrerit erat sed.",
+            'During <span class="font-semibold">2020 to 2022</span>, the <span class="font-semibold">affordability index climbed again</span> as HDB resale prices surged in the aftermath of the COVID-19 pandemic.',
+            '<span class="font-semibold">Income growth resumed</span> but was quickly outpaced by price increases, driven by <span class="font-semibold">construction delays</span>, <span class="font-semibold">work-from-home trends</span>, and <span class="font-semibold">heightened demand</span> for larger resale flats.',
+            'While incomes reached a record high by 2022, the rise in resale prices <span class="font-semibold">narrowed affordability</span> once more, raising questions about long-term price pressures.'
         ],
         years: [2020, 2021, 2022],
     },

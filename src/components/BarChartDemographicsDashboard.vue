@@ -1,15 +1,21 @@
 <template>
-    <div class="w-full h-full">
-        <svg ref="chart" class="w-full h-full"></svg>
+    <div ref="chartContainer" class="w-full h-full relative">
+      <svg ref="chart" class="w-full h-full"></svg>
+      <div ref="tooltip"
+           class="absolute z-50 text-xs bg-white border border-gray-300 rounded px-2 py-1 shadow-md pointer-events-none"
+           style="opacity: 0;">
+      </div>
     </div>
-</template>
+  </template>
 
 <script setup>
 import { ref, onMounted, watch, computed, onUnmounted } from "vue";
 import { useDataStore } from "@/stores/dataStore";
 import * as d3 from "d3";
 
+const chartContainer = ref(null);
 const chart = ref(null);
+const tooltip = ref(null);
 const dataStore = useDataStore();
 const demographicYears = [2000, 2005, 2010, 2015, 2020];
 
@@ -29,6 +35,40 @@ const props = defineProps({
         default: 2023,
     },
 });
+
+const positionTooltip = (event, tooltipElement) => {
+  if (!tooltipElement || !chartContainer.value) return;
+
+  const chartRect = chartContainer.value.getBoundingClientRect();
+  const tooltipRect = tooltipElement.getBoundingClientRect();
+
+  const relativeX = event.clientX - chartRect.left;
+  const relativeY = event.clientY - chartRect.top;
+
+  let top, left;
+
+  const preferredTop = relativeY - tooltipRect.height;
+  const preferredLeft = relativeX + 5;
+
+  if (preferredTop < 0) {
+    top = relativeY + 20;
+  } else {
+    top = preferredTop;
+  }
+
+  if (preferredLeft + tooltipRect.width > chartRect.width) {
+    left = relativeX - tooltipRect.width - 5;
+
+    if (left < 0) {
+      left = Math.max(0, relativeX - tooltipRect.width / 2);
+    }
+  } else {
+    left = preferredLeft;
+  }
+
+  tooltipElement.style.top = `${top}px`;
+  tooltipElement.style.left = `${left}px`;
+};
 
 const fallbackYear = computed(() => {
     const inputYear = props.year;
@@ -140,21 +180,6 @@ const drawChart = () => {
         .domain(data.map(d => d.type))
         .range(["#2563eb", "#16a34a", "#dc2626", "#9333ea"]);
 
-    const tooltipClass = `tooltip-${Date.now()}`;
-    d3.select("body").selectAll(`.${tooltipClass}`).remove();
-
-    const tooltip = d3.select("body")
-        .append("div")
-        .attr("class", tooltipClass)
-        .style("position", "absolute")
-        .style("background", "white")
-        .style("padding", "5px")
-        .style("border", "1px solid #ccc")
-        .style("border-radius", "5px")
-        .style("pointer-events", "none")
-        .style("opacity", 0)
-        .style("z-index", 1000);
-
     svg.append("g")
         .attr("transform", `translate(0,${innerHeight})`)
         .call(d3.axisBottom(x).ticks(5).tickFormat(d3.format(".2s")));
@@ -175,19 +200,24 @@ const drawChart = () => {
         .style("opacity", 0.7)
         .on("mouseover", function (event, d) {
             d3.select(this).style("opacity", 1);
-            tooltip.transition().duration(200).style("opacity", 0.9);
-            tooltip.html(
-                `${d.type}: ${formatWithCommas(d.value)} (${(
-                    (d.value / totalValue) *
-                    100
-                ).toFixed(1)}%)`
-            )
-                .style("left", `${event.pageX + 10}px`)
-                .style("top", `${event.pageY - 28}px`);
-        })
-        .on("mouseout", function () {
+            if (tooltip.value) {
+                tooltip.value.innerHTML = `${d.type}: <strong>${formatWithCommas(d.value)} (${(
+                (d.value / totalValue) * 100
+                ).toFixed(1)}%)</strong>`;
+                tooltip.value.style.opacity = 1;
+                positionTooltip(event, tooltip.value);
+            }
+            })
+            .on("mousemove", function (event) {
+            if (tooltip.value) {
+                positionTooltip(event, tooltip.value);
+            }
+            })
+            .on("mouseout", function () {
             d3.select(this).style("opacity", 0.7);
-            tooltip.transition().duration(500).style("opacity", 0);
+            if (tooltip.value) {
+                tooltip.value.style.opacity = 0;
+            }
         });
 
     // Optional axis labels

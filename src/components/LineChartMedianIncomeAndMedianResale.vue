@@ -74,19 +74,11 @@ export default {
 
         const store = useDataStore();
 
-        watch(
-            () => [store.yearMedians, store.affordabilityIndex],
-            ([yearMedians, affordability]) => {
-                if (yearMedians.length && affordability.length) {
-                    this.createChart(store);
-                }
-            },
-            { immediate: true }
-        );
+        console.log(store.medianMonthlyIncome);
 
         watch(
             () => [store.yearMedians, store.affordabilityIndex],
-            ([yearMedians, affordability], _, onCleanup) => {
+            ([yearMedians, affordability]) => {
                 if (yearMedians.length && affordability.length) {
                     this.createChart(store);
                 }
@@ -153,11 +145,9 @@ export default {
             svg.selectAll("*").remove();
 
             const incomeMap = Object.fromEntries(
-                store.affordabilityIndex.map((d) => [
-                    d.Year,
-                    d.AffordabilityIndex *
-                        (store.yearMedians.find((m) => m.Year === d.Year)
-                            ?.median || 0),
+                Object.entries(store.medianMonthlyIncome).map(([year, income]) => [
+                    year,
+                    income * 12,
                 ])
             );
 

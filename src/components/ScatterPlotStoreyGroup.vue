@@ -1,12 +1,9 @@
 <template>
     <div
-        class="chart-container relative flex flex-col items-center justify-center"
+        class="chart-container w-full h-full flex flex-col items-center justify-center"
     >
-        <h3 class="text-sm mb-1 text-center tracking-wide font-semibold">
-            HDB Price per Sqm by Storey Group
-        </h3>
-        <div id="line-chart" ref="chartWrapper" class="w-full h-full relative">
-            <canvas ref="canvas"></canvas>
+        <div id="line-chart" ref="chartWrapper" class="w-full h-full flex items-center justify-center">
+            <canvas ref="canvas" class="w-full h-full"></canvas>
             <svg
                 ref="svg"
                 class="absolute top-0 left-0 pointer-events-none"
@@ -14,6 +11,7 @@
         </div>
         <div
             id="tooltip-median"
+            ref="tooltip"
             style="
                 position: absolute;
                 padding: 8px;
@@ -70,6 +68,14 @@ export default {
             return null;
         }
 
+        // Adjust the chart size dynamically based on its container
+        const setDimensions = () => {
+            if (chartWrapper.value) {
+                width.value = chartWrapper.value.clientWidth - margin.left - margin.right;
+                height.value = chartWrapper.value.clientHeight - margin.top - margin.bottom;
+            }
+        };
+
         const drawScatter = (data) => {
             if (props.preloadMode) return;
             if (!canvas.value || !svg.value) return;
@@ -88,6 +94,11 @@ export default {
             canvas.value.style.height = "auto";
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
             ctx.clearRect(0, 0, totalWidth, totalHeight);
+
+            ctx.font = "bold 16px Arial";
+            ctx.fillStyle = "#4b5563";
+            ctx.textAlign = "center";
+            ctx.fillText("HDB Price per Sqm by Storey Group", totalWidth / 2, margin.top + 20);
 
             const categorizedData = data
                 .map((d) => ({
@@ -199,14 +210,6 @@ export default {
             }
         };
 
-        const setDimensions = () => {
-            if (chartWrapper.value) {
-                width.value =
-                    chartWrapper.value.clientWidth - margin.left - margin.right;
-                height.value = chartWrapper.value.clientWidth * 0.6;
-            }
-        };
-
         onMounted(() => {
             setDimensions();
             window.addEventListener("resize", setDimensions);
@@ -255,8 +258,9 @@ export default {
 <style scoped>
 .chart-container {
     width: 100%;
-    max-width: 800px;
-    height: auto;
+    height: 100%;
+    padding: 30px;
+    box-sizing: border-box;
 }
 
 #line-chart {

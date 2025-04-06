@@ -1,19 +1,10 @@
 <template>
-    <div
-        class="chart-container relative flex flex-col items-center justify-center"
-    >
+    <div class="chart-container w-full h-full flex flex-col items-center justify-center">
         <h3 class="text-sm mb-1 text-center tracking-wide font-semibold">
             HDB Resale Prices by Flat Type and Floor Area
         </h3>
-        <div
-            id="scatter-canvas-wrapper"
-            ref="chartWrapper"
-            class="w-full h-full relative"
-        >
-            <canvas
-                ref="canvas"
-                class="absolute top-0 left-0 w-full h-full"
-            ></canvas>
+        <div id="scatter-canvas-wrapper" ref="chartWrapper" class="w-full h-full flex items-center justify-center">
+            <canvas ref="canvas" class="w-full h-full"></canvas>
         </div>
     </div>
 </template>
@@ -49,6 +40,7 @@ export default {
         const dataStore = useDataStore();
         const latestData = ref([]);
 
+        // Set chart dimensions dynamically
         const setDimensions = () => {
             if (chartWrapper.value) {
                 const rect = chartWrapper.value.getBoundingClientRect();
@@ -57,16 +49,15 @@ export default {
             }
         };
 
-        const getSampledData = (data, sampleRate) => {
-            const sampleSize = Math.floor(data.length * sampleRate);
-            const sampled = [];
-            for (let i = 0; i < sampleSize; i++) {
-                const idx = Math.floor(Math.random() * data.length);
-                sampled.push(data[idx]);
-            }
-            return sampled;
+        // Resize event handler
+        const handleResize = () => {
+            requestAnimationFrame(() => {
+                setDimensions();
+                if (latestData.value.length) drawScatterPlot(latestData.value);
+            });
         };
 
+        // Drawing axes
         const drawAxes = (ctx, xScale, yScale) => {
             ctx.save();
             ctx.strokeStyle = "#666";
@@ -83,11 +74,7 @@ export default {
                 ctx.moveTo(x, height.value + margin.top);
                 ctx.lineTo(x, height.value + margin.top + 6);
                 ctx.stroke();
-                ctx.fillText(
-                    tick.toFixed(0),
-                    x - 10,
-                    height.value + margin.top + 16
-                );
+                ctx.fillText(tick.toFixed(0), x - 10, height.value + margin.top + 16);
             });
 
             yTicks.forEach((tick) => {
@@ -110,11 +97,7 @@ export default {
             ctx.fillStyle = "#4b5563";
             ctx.font = "bold 12px sans-serif";
             ctx.textAlign = "center";
-            ctx.fillText(
-                "Floor Area (sqm)",
-                margin.left + width.value / 2,
-                height.value + margin.top + 40
-            );
+            ctx.fillText("Floor Area (sqm)", margin.left + width.value / 2, height.value + margin.top + 40);
             ctx.restore();
 
             ctx.save();
@@ -128,6 +111,7 @@ export default {
             ctx.restore();
         };
 
+        // Draw the scatter plot on canvas
         const drawScatterPlot = (rawData) => {
             requestIdleCallback(() => {
                 const data = getSampledData(rawData, 0.02);
@@ -156,27 +140,18 @@ export default {
                     .range([height.value + margin.top, margin.top])
                     .nice();
 
-                // Draw axes
                 drawAxes(ctx, x, y);
 
-                // Plot circles
                 ctx.save();
                 data.forEach((d) => {
                     ctx.beginPath();
-                    ctx.arc(
-                        x(d.FloorArea),
-                        y(d.ResalePrice),
-                        3,
-                        0,
-                        2 * Math.PI
-                    );
+                    ctx.arc(x(d.FloorArea), y(d.ResalePrice), 3, 0, 2 * Math.PI);
                     ctx.fillStyle = color(d.FlatType);
                     ctx.globalAlpha = 0.6;
                     ctx.fill();
                 });
                 ctx.restore();
 
-                // Regression line
                 const [xMean, yMean] = [
                     d3.mean(data, (d) => d.FloorArea),
                     d3.mean(data, (d) => d.ResalePrice),
@@ -185,17 +160,12 @@ export default {
                     d3.sum(
                         data,
                         (d) => (d.FloorArea - xMean) * (d.ResalePrice - yMean)
-                    ) / d3.sum(data, (d) => (d.FloorArea - xMean) ** 2);
+                    ) /
+                    d3.sum(data, (d) => (d.FloorArea - xMean) ** 2);
                 const intercept = yMean - slope * xMean;
                 const xRange = d3.extent(data, (d) => d.FloorArea);
-                const lineStart = [
-                    x(xRange[0]),
-                    y(slope * xRange[0] + intercept),
-                ];
-                const lineEnd = [
-                    x(xRange[1]),
-                    y(slope * xRange[1] + intercept),
-                ];
+                const lineStart = [x(xRange[0]), y(slope * xRange[0] + intercept)];
+                const lineEnd = [x(xRange[1]), y(slope * xRange[1] + intercept)];
 
                 ctx.beginPath();
                 ctx.moveTo(...lineStart);
@@ -204,54 +174,59 @@ export default {
                 ctx.lineWidth = 1.5;
                 ctx.stroke();
 
-                // Legend
-                const flatTypes = hueOrder.filter((type) =>
-                    data.some((d) => d.FlatType === type)
-                );
-                const rowHeight = 20;
-                const legendPadding = 10;
-                const legendWidth = 140;
-                const legendHeight =
-                    flatTypes.length * rowHeight + legendPadding;
-                const legendX = width.value + margin.left - legendWidth - 20;
-                const legendY = height.value + margin.top - legendHeight - 10;
-
-                ctx.save();
-                ctx.fillStyle = "white";
-                ctx.globalAlpha = 0.95;
-                ctx.strokeStyle = "#d1d5db";
-                ctx.lineWidth = 1;
-                ctx.beginPath();
-                ctx.roundRect(legendX, legendY, legendWidth, legendHeight, 6);
-                ctx.fill();
-                ctx.stroke();
-                ctx.restore();
-
-                flatTypes.forEach((type, i) => {
-                    const centerY =
-                        legendY + legendPadding + i * rowHeight + rowHeight / 2;
-                    const circleX = legendX + 12;
-                    const circleRadius = 5;
-
-                    ctx.beginPath();
-                    ctx.arc(circleX, centerY, circleRadius, 0, 2 * Math.PI);
-                    ctx.fillStyle = color(type);
-                    ctx.fill();
-
-                    ctx.fillStyle = "#4b5563";
-                    ctx.font = "10px sans-serif";
-                    ctx.textBaseline = "middle";
-                    ctx.textAlign = "left";
-                    ctx.fillText(type, circleX + circleRadius + 6, centerY);
-                });
+                drawLegend(ctx, data);
             });
         };
 
-        const handleResize = () => {
-            requestAnimationFrame(() => {
-                setDimensions();
-                if (latestData.value.length) drawScatterPlot(latestData.value);
+        const drawLegend = (ctx, data) => {
+            const flatTypes = hueOrder.filter((type) =>
+                data.some((d) => d.FlatType === type)
+            );
+            const rowHeight = 20;
+            const legendPadding = 10;
+            const legendWidth = 140;
+            const legendHeight = flatTypes.length * rowHeight + legendPadding;
+            const legendX = width.value + margin.left - legendWidth - 20;
+            const legendY = height.value + margin.top - legendHeight - 10;
+
+            ctx.save();
+            ctx.fillStyle = "white";
+            ctx.globalAlpha = 0.95;
+            ctx.strokeStyle = "#d1d5db";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.roundRect(legendX, legendY, legendWidth, legendHeight, 6);
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+
+            flatTypes.forEach((type, i) => {
+                const centerY =
+                    legendY + legendPadding + i * rowHeight + rowHeight / 2;
+                const circleX = legendX + 12;
+                const circleRadius = 5;
+
+                ctx.beginPath();
+                ctx.arc(circleX, centerY, circleRadius, 0, 2 * Math.PI);
+                ctx.fillStyle = color(type);
+                ctx.fill();
+
+                ctx.fillStyle = "#4b5563";
+                ctx.font = "10px sans-serif";
+                ctx.textBaseline = "middle";
+                ctx.textAlign = "left";
+                ctx.fillText(type, circleX + circleRadius + 6, centerY);
             });
+        };
+
+        const getSampledData = (data, sampleRate) => {
+            const sampleSize = Math.floor(data.length * sampleRate);
+            const sampled = [];
+            for (let i = 0; i < sampleSize; i++) {
+                const idx = Math.floor(Math.random() * data.length);
+                sampled.push(data[idx]);
+            }
+            return sampled;
         };
 
         onMounted(async () => {
@@ -311,6 +286,8 @@ export default {
 .chart-container {
     width: 100%;
     height: 100%;
+    padding: 30px;
+    box-sizing: border-box;
 }
 
 #scatter-canvas-wrapper {

@@ -23,14 +23,7 @@
                             class="flex items-center justify-between space-y-2"
                         ></div>
                         <Tabs defaultValue="overview" class="space-y-4">
-                            <!-- <TabsList>
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="analytics" disabled>Analytics</TabsTrigger>
-                  <TabsTrigger value="reports" disabled>Reports</TabsTrigger>
-                  <TabsTrigger value="notifications" disabled>Notifications</TabsTrigger>
-                </TabsList> -->
                             <TabsContent value="overview" class="space-y-4">
-                                <!-- <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4"> -->
                                 <div
                                     class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
                                 >
@@ -147,7 +140,7 @@
                                             >
                                                 Flat Type Distribution
                                             </div>
-                                            <FlatTypeLineChartDashboard
+                                            <FlatTypeBarChartDashboard
                                                 :data="filteredData"
                                                 :area-name="
                                                     selectedAreaStats.areaName
@@ -207,7 +200,7 @@
                                             >
                                                 Demographics Distribution <span class="text-xs" v-if="usingFallbackYear"> (Using {{ fallbackYearValue }} Demographic Data)</span>
                                             </div>
-                                            <DemographicsLineChartDashboard
+                                            <DemographicsBarChartDashboard
                                                 ref="demographicsChart"
                                                 :data="filteredData"
                                                 :area-name="
@@ -256,10 +249,10 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import NumberFlow from "@number-flow/vue";
-import FlatTypeLineChartDashboard from "./LineChartFlatTypeDashboard.vue";
+import FlatTypeBarChartDashboard from "./BarChartFlatTypeDashboard.vue";
 import StoreyRangePieChart from "./PieChartStoreyRange.vue";
 import PriceByFlatTypeChart from "./BarChartFlatType.vue";
-import DemographicsLineChartDashboard from "./LineChartDemographicsDashboard.vue";
+import DemographicsBarChartDashboard from "./BarChartDemographicsDashboard.vue";
 import MapChart from "./MapChart.vue";
 import { ref, computed } from "vue";
 
