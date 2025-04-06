@@ -2,6 +2,12 @@
   <div ref="chartContainer" class="w-full h-full relative">
     <svg ref="chart" class="w-full h-full"></svg>
     <div
+      v-if="!hasData || !hasStoreyRangeData"
+      class="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm"
+    >
+      No data available for this area and year.
+    </div>
+    <div
       ref="tooltip"
       class="absolute z-50 text-xs bg-white border border-gray-300 rounded px-2 py-1 shadow-md pointer-events-none"
       style="opacity: 0;"
@@ -16,6 +22,8 @@ import * as d3 from 'd3';
 const chart = ref(null);
 const chartContainer = ref(null);
 const tooltip = ref(null);
+const storeyRangeData = ref([]);
+const hasStoreyRangeData = computed(() => storeyRangeData.value.length > 0);
 
 const props = defineProps({
   data: {
@@ -103,14 +111,21 @@ const positionTooltip = (event, tooltipElement) => {
 };
 
 const drawChart = () => {
-  if (!chart.value || !hasData.value) return;
-  d3.select(chart.value).selectAll('*').remove();
+  const svgSelection = d3.select(chart.value);
+  svgSelection.selectAll("*").remove();
 
-  const filtered = props.data.filter(
-  (d) =>
-    props.selectedFlatType === 'All' ||
-    d['Flat Type'] === props.selectedFlatType
-);
+  if (!chart.value || !hasData.value) {
+    storeyRangeData.value = [];
+    return;
+  }
+
+  const filtered = props.data
+  .filter((d) => {
+    const hasPlanningArea = d["Planning Area"] && d["Planning Area"].trim() !== "";
+    const matchesYear = String(d["Year"]) === String(props.year);
+    const matchesFlatType = props.selectedFlatType === "All" || d["Flat Type"] === props.selectedFlatType;
+    return hasPlanningArea && matchesYear && matchesFlatType;
+  });
 
 const grouped = d3.group(filtered, (d) => storeyBin(d['Storey Lower']));
 const binned = storeyOrder
@@ -119,6 +134,12 @@ const binned = storeyOrder
     count: grouped.get(range)?.length || 0,
   }))
   .filter((d) => d.count > 0);
+
+storeyRangeData.value = binned;
+
+if (binned.length === 0) {
+    return;
+  }
 
   const width = chart.value.clientWidth;
   const height = chart.value.clientHeight;
@@ -198,7 +219,7 @@ onMounted(() => {
 watch(
   () => [props.data, props.areaName, props.year, props.selectedFlatType],
   () => {
-    if (hasData.value) drawChart();
+    drawChart();
   },
   { deep: true }
 );
@@ -208,9 +229,17 @@ watch(
   () => props.selectedFlatType,
   (newVal) => {
     console.log("StoreyRangeBarChart - selectedFlatType changed to:", newVal);
-    // You can trigger a data update here
   }
 );
+
+watch(
+  () => storeyRangeData.value,
+  (newVal) => {
+    for (const item of newVal) {
+      console.log("StoreyRangeBarChart - storeyRangeData changed:", item);
+    }
+  }
+)
 
 onUnmounted(() => {
   tooltip.value?.remove();
