@@ -197,10 +197,13 @@ export default defineComponent({
 
             ctx.save();
             rawData.forEach((d) => {
+                const dimAlpha = 0.02;       // 👈 adjust this to control dimness
+                const highlightAlpha = 0.75;
+                const baseAlpha = 0.6;
                 const isPrev = d.mrtType.toLowerCase() === currentMode.value;
                 const isNew = d.mrtType.toLowerCase() === props.mode;
-                const prevAlpha = currentMode.value === 'all' ? 0.6 : (isPrev ? 0.8 : 0.1);
-                const newAlpha = props.mode === 'all' ? 0.6 : (isNew ? 0.8 : 0.1);
+                const prevAlpha = currentMode.value === 'all' ? baseAlpha : (isPrev ? highlightAlpha : dimAlpha);
+                const newAlpha = props.mode === 'all' ? baseAlpha : (isNew ? highlightAlpha : dimAlpha);
                 const blendedAlpha = prevAlpha * (1 - transitionProgress.value) + newAlpha * transitionProgress.value;
 
                 ctx.beginPath();

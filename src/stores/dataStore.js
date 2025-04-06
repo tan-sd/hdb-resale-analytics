@@ -128,7 +128,7 @@ export const useDataStore = defineStore("dataStore", () => {
                 "data/population_demographics/ethnic_distribution.csv",
                 d3.autoType
             );
-
+            
             const borderFlatsData = await d3.csv(
                 "data/resale_prices_cleaned/BorderFlats.csv"
             );
