@@ -12,22 +12,18 @@
             Click or tap on the interactive map, or search by planning area to
             begin your journey.
         </p>
-        <div class="container py-6">
+        <div class="w-full px-4 py-6 mx-auto">
             <section
                 class="overflow-hidden rounded-[0.5rem] border shadow"
                 style="background-color: #ffffff"
             >
-                <div class="flex flex-col">
-                    <div class="flex-1 space-y-4 p-8 pt-6">
-                        <div
-                            class="flex items-center justify-between space-y-2"
-                        ></div>
-                        <Tabs defaultValue="overview" class="space-y-4">
-                            <TabsContent value="overview" class="space-y-4">
-                                <div
-                                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-                                >
-                                    <Card class="w-full h-full flex flex-col">
+
+            <div class="grid grid-cols-1 lg:grid-cols-7 gap-4">
+  <!-- LEFT SIDE: col-span-2 -->
+  <div class="space-y-4 lg:col-span-3">
+    <!-- TOP: Stats cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+        <Card class="w-full h-full flex flex-col">
                                         <CardContent class="flex-grow p-4">
                                             <div
                                                 class="font-medium text-sm text-muted-foreground mb-1"
@@ -116,150 +112,123 @@
                                             </div>
                                         </CardContent>
                                     </Card>
-                                </div>
-                                <div class="grid gap-4">
-                                    <Card class="w-full h-full flex flex-col">
-                                        <CardContent class="flex-grow p-0">
-                                            <MapChart
-                                                @area-selected="
-                                                    handleAreaSelected
-                                                "
-                                                @selected-flat-type="handleFlatTypeChange"
-                                            />
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                                <div class="w-full">
-                                <Card class="w-full">
-                                    <CardContent class="p-4 h-[300px]">
-                                    <div class="font-medium text-sm text-muted-foreground mb-1">
-                                        Annual HDB Resale Price 
-                                        <span v-if="selectedFlatType !== 'All'"> ({{ selectedFlatType }})</span>
-                                    </div>
-                                    <LineChartMedianResaleDashboard :selected-flat-type="selectedFlatType" />
-                                    </CardContent>
-                                </Card>
-                                </div>
-                                <div
-                                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-                                >
-                                <Card
-                                    v-if="selectedFlatType === 'All'"
-                                    class="w-full h-full flex flex-col"
-                                    >
-                                    <CardContent class="flex-grow p-4 h-[290px]">
-                                        <div class="font-medium text-sm text-muted-foreground mb-1">
-                                        Flat Type Distribution
-                                        </div>
-                                        <FlatTypeBarChartDashboard
-                                        :data="filteredData"
-                                        :area-name="selectedAreaStats.areaName"
-                                        :year="selectedAreaStats.year"
-                                        :selected-flat-type="selectedFlatType"
-                                        />
-                                    </CardContent>
-                                    </Card>
+    </div>
 
-                                    <Card class="w-full h-full flex flex-col">
-                                        <CardContent
-                                            class="flex-grow p-4 h-[290px]"
-                                        >
-                                            <div
-                                                class="font-medium text-sm text-muted-foreground mb-1"
-                                            >
-                                                Storey Range Distribution
-                                            </div>
-                                            <StoreyRangeBarChart
-                                                :data="filteredData"
-                                                :area-name="
-                                                    selectedAreaStats.areaName
-                                                "
-                                                :year="selectedAreaStats.year"
-                                                :selected-flat-type="selectedFlatType"
-                                            />
-                                        </CardContent>
-                                    </Card>
+    <!-- MIDDLE: MapChart -->
+    <Card class="w-full h-[490px] flex flex-col">
+      <CardContent class="p-0">
+        <MapChart
+          @area-selected="handleAreaSelected"
+          @selected-flat-type="handleFlatTypeChange"
+        />
+      </CardContent>
+    </Card>
 
-                                    <Card class="w-full h-full flex flex-col">
-                                        <CardContent
-                                            class="flex-grow p-4 h-[290px]"
-                                        >
-                                            <div
-                                                class="font-medium text-sm text-muted-foreground mb-1"
-                                            >
-                                                Average Price by Flat Type
-                                            </div>
-                                            <PriceByFlatTypeChart
-                                                :data="filteredData"
-                                                :area-name="
-                                                    selectedAreaStats.areaName
-                                                "
-                                                :year="selectedAreaStats.year"
-                                            />
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                                <div
-                                    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-                                >
-                                    <Card class="w-full h-full flex flex-col">
-                                        <CardContent
-                                            class="flex-grow p-4 h-[290px]"
-                                        >
-                                            <div
-                                                class="font-medium text-sm text-muted-foreground mb-1"
-                                            >
-                                                Demographics Distribution <span class="text-xs" v-if="usingFallbackYear"> (Using {{ fallbackYearValue }} Demographic Data)</span>
-                                            </div>
-                                            <DemographicsBarChartDashboard
-                                                class="w-full h-full"
-                                                ref="demographicsChart"
-                                                :data="filteredData"
-                                                :area-name="
-                                                    selectedAreaStats.areaName
-                                                "
-                                                :year="selectedAreaStats.year"
-                                                @update:fallback-year="handleFallbackYear"
-                                            />
-                                        </CardContent>
-                                    </Card>
+    <!-- 🔽 NEW: BOTTOM Demographics + Amenities charts go HERE -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Demographics Distribution -->
+      <Card class="w-full h-full flex flex-col">
+        <CardContent class="flex-grow p-4 h-[290px]">
+          <div class="font-medium text-sm text-muted-foreground mb-1">
+            Demographics Distribution
+            <span class="text-xs" v-if="usingFallbackYear">
+              (Using {{ fallbackYearValue }} Demographic Data)
+            </span>
+          </div>
+          <DemographicsBarChartDashboard
+            class="w-full h-full"
+            ref="demographicsChart"
+            :data="filteredData"
+            :area-name="selectedAreaStats.areaName"
+            :year="selectedAreaStats.year"
+            @update:fallback-year="handleFallbackYear"
+          />
+        </CardContent>
+      </Card>
 
-                                    <Card class="w-full h-full flex flex-col">
-                                        <CardContent
-                                            class="flex-grow p-4 h-[290px]"
-                                        >
-                                            <div
-                                                class="font-medium text-sm text-muted-foreground mb-1"
-                                            >
-                                                Amenities Distribution
-                                            </div>
-                                            <BarChartAmenitiesDashboard
-                                                class="w-full h-full"
-                                                :data="filteredData"
-                                                :area-name="
-                                                    selectedAreaStats.areaName
-                                                "
-                                                :year="selectedAreaStats.year"
-                                            />
-                                        </CardContent>
-                                    </Card>
+      <!-- Amenities Distribution -->
+      <Card class="w-full h-full flex flex-col">
+        <CardContent class="flex-grow p-4 h-[290px]">
+          <div class="font-medium text-sm text-muted-foreground mb-1">
+            Amenities Distribution
+          </div>
+          <BarChartAmenitiesDashboard
+            class="w-full h-full"
+            :data="filteredData"
+            :area-name="selectedAreaStats.areaName"
+            :year="selectedAreaStats.year"
+          />
+        </CardContent>
+      </Card>
+    </div>
+  </div>
 
-                                    <Card class="w-full h-full flex flex-col">
-                                        <CardContent
-                                            class="flex-grow p-4 h-[290px]"
-                                        >
-                                            <div
-                                                class="font-medium text-sm text-muted-foreground mb-1"
-                                            >
-                                                ...
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                </div>
-                            </TabsContent>
-                        </Tabs>
-                    </div>
-                </div>
+  <!-- RIGHT COLUMN -->
+  <div class="space-y-4 lg:col-span-4">
+    <!-- TOP: Flat Type + Storey Range side by side -->
+    <div
+  :class="selectedFlatType === 'All' ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'grid grid-cols-1 gap-4'"
+>
+  <Card
+    v-if="selectedFlatType === 'All'"
+    class="w-full h-full flex flex-col"
+  >
+    <CardContent class="flex-grow p-4 h-[290px]">
+      <div class="font-medium text-sm text-muted-foreground mb-1">
+        Flat Type Distribution
+      </div>
+      <FlatTypeBarChartDashboard
+        :data="filteredData"
+        :area-name="selectedAreaStats.areaName"
+        :year="selectedAreaStats.year"
+        :selected-flat-type="selectedFlatType"
+      />
+    </CardContent>
+  </Card>
+
+  <Card
+    :class="selectedFlatType !== 'All' ? 'col-span-full' : ''"
+    class="w-full h-full flex flex-col"
+  >
+    <CardContent class="flex-grow p-4 h-[290px]">
+      <div class="font-medium text-sm text-muted-foreground mb-1">
+        Storey Range Distribution
+      </div>
+      <StoreyRangeBarChart
+        :data="filteredData"
+        :area-name="selectedAreaStats.areaName"
+        :year="selectedAreaStats.year"
+        :selected-flat-type="selectedFlatType"
+      />
+    </CardContent>
+  </Card>
+</div>
+
+
+    <!-- BOTTOM: Median Resale Price & Transactions stacked -->
+    <div class="space-y-4">
+      <Card class="w-full h-full flex flex-col">
+        <CardContent class="p-4 h-[300px]">
+          <div class="font-medium text-sm text-muted-foreground mb-1">
+            Median Resale Price By Year
+            <span v-if="selectedFlatType !== 'All'">({{ selectedFlatType }})</span>
+          </div>
+          <LineChartMedianResaleDashboard :selected-flat-type="selectedFlatType" />
+        </CardContent>
+      </Card>
+
+      <Card class="w-full h-full flex flex-col">
+        <CardContent class="p-4 h-[300px]">
+          <div class="font-medium text-sm text-muted-foreground mb-1">
+            Annual Transactions
+            <span v-if="selectedFlatType !== 'All'">({{ selectedFlatType }})</span>
+          </div>
+          <LineChartTransactionsDashboard :selected-flat-type="selectedFlatType" />
+        </CardContent>
+      </Card>
+    </div>
+  </div>
+</div>
             </section>
         </div>
     </main>
@@ -275,6 +244,7 @@ import PriceByFlatTypeChart from "./BarChartFlatType.vue";
 import DemographicsBarChartDashboard from "./BarChartDemographicsDashboard.vue";
 import BarChartAmenitiesDashboard from "./BarChartAmenitiesDashboard.vue";
 import LineChartMedianResaleDashboard from "./LineChartMedianResaleDashboard.vue";
+import LineChartTransactionsDashboard from "./LineChartTransactionsDashboard.vue";
 import MapChart from "./MapChart.vue";
 import { ref, computed, watch } from "vue";
 
