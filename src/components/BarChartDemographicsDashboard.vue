@@ -155,7 +155,7 @@ const drawChart = () => {
     const height = chart.value.clientHeight;
     const margin = { top: 20, right: 30, bottom: 40, left: 50 };
 
-    margin.bottom = 70;
+    margin.bottom = 90;
 
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -223,7 +223,7 @@ const drawChart = () => {
     // Optional axis labels
     svg.append("text")
         .attr("x", innerWidth / 2)
-        .attr("y", innerHeight + margin.bottom - 30)
+        .attr("y", innerHeight + margin.bottom - 50)
         .attr("text-anchor", "middle")
         .style("font-size", "12px")
         .text("Population Count");
