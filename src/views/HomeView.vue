@@ -4,6 +4,7 @@ import Dashboard from "@/components/Dashboard.vue";
 import Section1 from "../components/Section1.vue";
 import Section2 from "../components/Section2.vue";
 import FactorsOverview from "../components/FactorsOverview.vue";
+import Conclusion from "../components/Conclusion.vue";
 import Section3 from "../components/Section3.vue";
 </script>
 
@@ -14,6 +15,7 @@ import Section3 from "../components/Section3.vue";
         <Section2 />
         <FactorsOverview />
         <Section3 />
+        <Conclusion />
         <Dashboard />
     </main>
 </template>

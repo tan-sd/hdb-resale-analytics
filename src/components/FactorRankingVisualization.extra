@@ -1,0 +1,416 @@
+<template>
+    <section class="pt-40 w-full min-h-screen py-20 bg-gray-50">
+      <div class="w-full px-6 mx-auto grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12 min-h-screen">
+        <!-- Sticky Text Section -->
+        <div class="w-full max-w-lg mx-auto">
+          <div
+            class="lg:sticky lg:top-1/2 lg:transform lg:-translate-y-1/2 fixed lg:static bottom-4 left-1/2 -translate-x-1/2 lg:translate-x-0 z-20"
+            :class="[
+              'transition-opacity duration-300',
+              {
+                'opacity-0 pointer-events-none': !showBox,
+                'opacity-100': showBox,
+              },
+            ]"
+          >
+            <div
+              class="border rounded-lg backdrop-blur-md p-6 space-y-6 bg-white shadow-md w-full lg:w-auto"
+            >
+              <h2 class="text-sm sm:text-base font-bold uppercase tracking-tight text-rose-500">
+                {{ currentStep.header }}
+              </h2>
+              <div ref="descScrollRef" class="overflow-y-auto h-full pr-1 pb-10">
+                <div class="space-y-4 text-sm sm:text-base leading-relaxed text-gray-700">
+                  <p v-for="(para, idx) in currentStep.description" :key="idx" v-html="para"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Factors Display -->
+        <div class="relative" :style="{ height: `${steps.length * 115}vh` }">
+          <div class="sticky top-0 w-full h-screen flex items-center justify-center">
+            <div v-if="currentStep.layout === 'split'" class="flex gap-12">
+              <div class="flex flex-col gap-4 w-full max-w-xs">
+                <h3 class="text-center font-semibold text-sm text-gray-500 uppercase">Macro Factors</h3>
+                <transition-group name="fade-move" tag="div">
+                  <div
+                    v-for="factor in macroFactors"
+                    :key="factor.label"
+                    class="p-4 rounded-xl border shadow-sm bg-white border-gray-200 text-gray-800 flex items-center gap-3"
+                  >
+                    <div class="text-xl">{{ factor.icon }}</div>
+                    <div class="text-sm sm:text-base">{{ factor.label }}</div>
+                  </div>
+                </transition-group>
+              </div>
+              <div class="flex flex-col gap-4 w-full max-w-xs">
+                <h3 class="text-center font-semibold text-sm text-gray-500 uppercase">Micro Factors</h3>
+                <transition-group name="fade-move" tag="div">
+                  <div
+                    v-for="factor in microFactors"
+                    :key="factor.label"
+                    class="p-4 rounded-xl border shadow-sm bg-white border-gray-200 text-gray-800 flex items-center gap-3"
+                  >
+                    <div class="text-xl">{{ factor.icon }}</div>
+                    <div class="text-sm sm:text-base">{{ factor.label }}</div>
+                  </div>
+                </transition-group>
+              </div>
+            </div>
+  
+            <div v-else class="flex flex-col w-full max-w-xs mx-auto">
+              <h3 class="text-center font-semibold text-sm text-gray-500 uppercase mb-4">
+                Most Influential → Least Influential
+              </h3>
+              <transition-group name="fade-move" tag="div" class="space-y-4">
+                <div
+                  v-for="factor in sortedFactors"
+                  :key="factor.label"
+                  :class="[
+                    'p-4 rounded-xl border shadow-sm transition-all duration-500 flex items-center gap-3',
+                    currentStep.highlighted.includes(factor.label)
+                      ? 'bg-rose-100 border-rose-300 text-rose-700 font-semibold'
+                      : 'bg-white border-gray-200 text-gray-800'
+                  ]"
+                >
+                  <div class="text-xl">{{ factor.icon }}</div>
+                  <div class="text-sm sm:text-base">{{ factor.label }}</div>
+                </div>
+              </transition-group>
+            </div>
+          </div>
+  
+          <!-- Scroll Triggers -->
+          <div class="absolute inset-0 pointer-events-none">
+            <div
+              v-for="(_, i) in steps"
+              :key="i"
+              :data-stepindex-trigger="i"
+              class="h-[99vh]"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </template>
+  
+  <script setup>
+  import { ref, computed, onMounted } from 'vue';
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+  
+  const currentStepIndex = ref(0);
+  const descScrollRef = ref(null);
+  const showBox = ref(true);
+  
+  const allFactors = [
+    { label: 'Government Policy', icon: '📜', tier: 1, scale: 'macro' },
+    { label: 'Planning Area', icon: '🗺️', tier: 1, scale: 'macro' },
+    { label: 'Flat Type & Size', icon: '📐', tier: 1, scale: 'micro' },
+    { label: 'Storey Level', icon: '🏢', tier: 1, scale: 'micro' },
+    { label: 'Proximity to MRT', icon: '🚇', tier: 2, scale: 'macro' },
+    { label: 'Years Remaining on Lease', icon: '📄', tier: 2, scale: 'micro' },
+    { label: 'Proximity to Schools', icon: '🏫', tier: 2, scale: 'macro' },
+    { label: 'Demographics (Age)', icon: '📊', tier: 3, scale: 'macro' },
+    { label: 'Electoral Boundaries', icon: '🗳️', tier: 3, scale: 'macro' },
+  ];
+  
+  const steps = [
+    {
+      header: 'Macro vs. Micro Factors',
+      description: [
+        '<span class="font-semibold">Macro factors</span> affect broad location-based trends, while <span class="font-semibold">micro factors</span> relate to specific unit characteristics like size and height.',
+      ],
+      highlighted: [],
+      layout: 'split'
+    },
+    {
+      header: 'Ranking the Influences',
+      description: [
+        'Here are the factors sorted by their <span class="font-semibold">influence on resale prices</span>, from strongest to weakest. Macro factors tend to lead, with micro traits offering premiums.',
+      ],
+      highlighted: [],
+      layout: 'ranked'
+    },
+    {
+      header: '🥇 Top Tier — Strongest Influence',
+      description: [
+        'These are systemic drivers that shape broad market trends. <span class="font-semibold">Government policy</span> dictates financing and sentiment, while <span class="font-semibold">Planning Area</span> and unit traits define value.',
+      ],
+      highlighted: ['Government Policy', 'Planning Area', 'Flat Type & Size', 'Storey Level'],
+      layout: 'ranked'
+    },
+    {
+      header: '🥈 Middle Tier — Moderate Impact',
+      description: [
+        '<span class="font-semibold">MRT proximity</span> and <span class="font-semibold">Lease duration</span> play key roles but with exceptions. <span class="font-semibold">School zones</span> mainly affect young families.',
+      ],
+      highlighted: ['Proximity to MRT', 'Years Remaining on Lease', 'Proximity to Schools'],
+      layout: 'ranked'
+    },
+    {
+      header: '🥉 Lower Tier — Indirect Influence',
+      description: [
+        'These reflect longer-term trends or soft perceptions. <span class="font-semibold">Demographics</span> guide future planning; <span class="font-semibold">Electoral boundaries</span> matter less today than in the past.',
+      ],
+      highlighted: ['Demographics (Age)', 'Electoral Boundaries'],
+      layout: 'ranked'
+    },
+  ];
+  
+  const currentStep = computed(() => steps[currentStepIndex.value]);
+  
+  const macroFactors = computed(() => allFactors.filter(f => f.scale === 'macro'));
+  const microFactors = computed(() => allFactors.filter(f => f.scale === 'micro'));
+  
+  const sortedFactors = computed(() => {
+    return [...allFactors].sort((a, b) => a.tier - b.tier);
+  });
+  
+  onMounted(() => {
+    steps.forEach((_, index) => {
+      const el = document.querySelector(`[data-stepindex-trigger="${index}"]`);
+      if (el) {
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top center',
+          end: 'bottom center',
+          onEnter: () => (currentStepIndex.value = index),
+          onEnterBack: () => (currentStepIndex.value = index),
+        });
+      }
+    });
+    ScrollTrigger.refresh();
+  });
+  </script>
+  
+  <style scoped>
+  .fade-move-enter-active,
+  .fade-move-leave-active {
+    transition: all 0.4s ease;
+  }
+  .fade-move-enter-from,
+  .fade-move-leave-to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  </style>
+
+
+
+
+
+
+
+
+
+=======================================================================================================
+=======================================================================================================
+=======================================================================================================
+
+
+
+
+
+<template>
+    <section class="pt-40 w-full min-h-screen py-20 bg-gray-50">
+      <div class="w-full px-6 mx-auto grid grid-cols-1 lg:grid-cols-[auto_1fr] gap-12 min-h-screen">
+        <!-- Sticky Description -->
+        <div class="w-full max-w-lg mx-auto">
+          <div
+            class="lg:sticky lg:top-1/2 lg:transform lg:-translate-y-1/2 fixed lg:static bottom-4 left-1/2 -translate-x-1/2 lg:translate-x-0 z-20"
+            :class="[
+              'transition-opacity duration-300',
+              {
+                'opacity-0 pointer-events-none': !showBox,
+                'opacity-100': showBox,
+              },
+            ]"
+          >
+            <div
+              class="border rounded-lg backdrop-blur-md p-6 space-y-6 bg-white shadow-md w-full lg:w-auto"
+            >
+              <h2 class="text-sm sm:text-base font-bold uppercase tracking-tight text-rose-500">
+                {{ currentStep.header }}
+              </h2>
+              <div ref="descScrollRef" class="overflow-y-auto h-full pr-1 pb-10">
+                <div class="space-y-4 text-sm sm:text-base leading-relaxed text-gray-700">
+                  <p v-for="(para, idx) in currentStep.description" :key="idx" v-html="para"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Factors Display -->
+        <div class="relative" :style="{ height: `${steps.length * 115}vh` }">
+          <div class="sticky top-0 w-full h-screen flex items-center justify-center">
+            <div v-if="currentStep.layout === 'split'" class="flex gap-12">
+              <div class="flex flex-col gap-4 w-full max-w-xs">
+                <h3 class="text-center font-semibold text-sm text-gray-500 uppercase">Macro Factors</h3>
+                <transition-group name="fade-move" tag="div">
+                  <div
+                    v-for="factor in macroFactors"
+                    :key="factor.label"
+                    class="p-4 rounded-xl border shadow-sm bg-white border-gray-200 text-gray-800 flex items-center gap-3"
+                  >
+                    <div class="text-xl">{{ factor.icon }}</div>
+                    <div class="text-sm sm:text-base">{{ factor.label }}</div>
+                  </div>
+                </transition-group>
+              </div>
+              <div class="flex flex-col gap-4 w-full max-w-xs">
+                <h3 class="text-center font-semibold text-sm text-gray-500 uppercase">Micro Factors</h3>
+                <transition-group name="fade-move" tag="div">
+                  <div
+                    v-for="factor in microFactors"
+                    :key="factor.label"
+                    class="p-4 rounded-xl border shadow-sm bg-white border-gray-200 text-gray-800 flex items-center gap-3"
+                  >
+                    <div class="text-xl">{{ factor.icon }}</div>
+                    <div class="text-sm sm:text-base">{{ factor.label }}</div>
+                  </div>
+                </transition-group>
+              </div>
+            </div>
+  
+            <div v-else class="flex flex-col w-full max-w-xs mx-auto items-center relative transition-all duration-700">
+              <div class="text-xs text-gray-500 text-center uppercase mb-2">Most Influential Factor</div>
+              <transition-group name="fade-move" tag="div" class="w-full space-y-4">
+                <div
+                  v-for="factor in sortedFactors"
+                  :key="factor.label"
+                  :class="[
+                    'p-4 rounded-xl border shadow-sm transition-all duration-500 flex items-center gap-3 w-full',
+                    currentStep.highlighted.includes(factor.label)
+                      ? 'bg-rose-100 border-rose-300 text-rose-700 font-semibold'
+                      : 'bg-white border-gray-200 text-gray-800'
+                  ]"
+                >
+                  <div class="text-xl">{{ factor.icon }}</div>
+                  <div class="text-sm sm:text-base">{{ factor.label }}</div>
+                </div>
+              </transition-group>
+              <div class="text-xs text-gray-500 text-center uppercase mt-2">Least Influential Factor</div>
+            </div>
+          </div>
+  
+          <!-- Scroll Triggers -->
+          <div class="absolute inset-0 pointer-events-none">
+            <div
+              v-for="(_, i) in steps"
+              :key="i"
+              :data-stepindex-trigger="i"
+              class="h-[99vh]"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </template>
+  
+  <script setup>
+  import { ref, computed, onMounted } from 'vue';
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+  gsap.registerPlugin(ScrollTrigger);
+  
+  const currentStepIndex = ref(0);
+  const descScrollRef = ref(null);
+  const showBox = ref(true);
+  
+  const allFactors = [
+    { label: 'Government Policy', icon: '📜', tier: 1, scale: 'macro' },
+    { label: 'Planning Area', icon: '🗺️', tier: 1, scale: 'macro' },
+    { label: 'Flat Type & Size', icon: '📐', tier: 1, scale: 'micro' },
+    { label: 'Storey Level', icon: '🏢', tier: 1, scale: 'micro' },
+    { label: 'Proximity to MRT', icon: '🚇', tier: 2, scale: 'macro' },
+    { label: 'Years Remaining on Lease', icon: '📄', tier: 2, scale: 'micro' },
+    { label: 'Proximity to Schools', icon: '🏫', tier: 2, scale: 'macro' },
+    { label: 'Demographics (Age)', icon: '📊', tier: 3, scale: 'macro' },
+    { label: 'Electoral Boundaries', icon: '🗳️', tier: 3, scale: 'macro' },
+  ];
+  
+  const steps = [
+    {
+      header: 'Macro vs. Micro Factors',
+      description: [
+        '<span class="font-semibold">Macro factors</span> affect broad location-based trends, while <span class="font-semibold">micro factors</span> relate to specific unit characteristics like size and height.',
+      ],
+      highlighted: [],
+      layout: 'split'
+    },
+    {
+      header: 'Most to Least Influential',
+      description: [
+        'Here are the factors sorted by their <span class="font-semibold">influence on resale prices</span>, from strongest to weakest. Macro factors tend to lead, with micro traits offering premiums.',
+      ],
+      highlighted: [],
+      layout: 'ranked'
+    },
+    {
+      header: '🥇 Top Tier — Strongest Influence',
+      description: [
+        'These are systemic drivers that shape broad market trends. <span class="font-semibold">Government policy</span> dictates financing and sentiment, while <span class="font-semibold">Planning Area</span> and unit traits define value.',
+      ],
+      highlighted: ['Government Policy', 'Planning Area', 'Flat Type & Size', 'Storey Level'],
+      layout: 'ranked'
+    },
+    {
+      header: '🥈 Middle Tier — Moderate Impact',
+      description: [
+        '<span class="font-semibold">MRT proximity</span> and <span class="font-semibold">Lease duration</span> play key roles but with exceptions. <span class="font-semibold">School zones</span> mainly affect young families.',
+      ],
+      highlighted: ['Proximity to MRT', 'Years Remaining on Lease', 'Proximity to Schools'],
+      layout: 'ranked'
+    },
+    {
+      header: '🥉 Lower Tier — Indirect Influence',
+      description: [
+        'These reflect longer-term trends or soft perceptions. <span class="font-semibold">Demographics</span> guide future planning; <span class="font-semibold">Electoral boundaries</span> matter less today than in the past.',
+      ],
+      highlighted: ['Demographics (Age)', 'Electoral Boundaries'],
+      layout: 'ranked'
+    },
+  ];
+  
+  const currentStep = computed(() => steps[currentStepIndex.value]);
+  
+  const macroFactors = computed(() => allFactors.filter(f => f.scale === 'macro'));
+  const microFactors = computed(() => allFactors.filter(f => f.scale === 'micro'));
+  
+  const sortedFactors = computed(() => {
+    return [...allFactors].sort((a, b) => a.tier - b.tier);
+  });
+  
+  onMounted(() => {
+    steps.forEach((_, index) => {
+      const el = document.querySelector(`[data-stepindex-trigger="${index}"]`);
+      if (el) {
+        ScrollTrigger.create({
+          trigger: el,
+          start: 'top center',
+          end: 'bottom center',
+          onEnter: () => (currentStepIndex.value = index),
+          onEnterBack: () => (currentStepIndex.value = index),
+        });
+      }
+    });
+    ScrollTrigger.refresh();
+  });
+  </script>
+  
+  <style scoped>
+  .fade-move-enter-active,
+  .fade-move-leave-active {
+    transition: all 0.4s ease;
+  }
+  .fade-move-enter-from,
+  .fade-move-leave-to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  </style>
