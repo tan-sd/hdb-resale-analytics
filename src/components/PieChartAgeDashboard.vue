@@ -31,18 +31,26 @@ const props = defineProps({
     },
 });
 
-const availableYears = [2000, 2005, 2010, 2015, 2020];
+const availableYears = [2000, 2010, 2015, 2020];
 
 const fallbackYear = computed(() => {
     const inputYear = +props.year;
-    const valid = availableYears.filter((y) => y <= inputYear);
-    return valid.length > 0 ? Math.max(...valid) : null;
+    const earlier = availableYears.filter((y) => y <= inputYear);
+    const later = availableYears.filter((y) => y > inputYear);
+
+    if (earlier.length > 0) {
+        return Math.max(...earlier);
+    } else if (later.length > 0) {
+        return Math.min(...later);
+    } else {
+        return null;
+    }
 });
 
 async function loadData() {
     try {
         rawData.value = await d3.csv(
-            "data/population_demographics/age_group_population_by_year_planning_area.csv",
+            "data/population_demographics/age_group_population_by_year.csv",
             d3.autoType
         );
         console.log("Data loaded:", rawData.value);
