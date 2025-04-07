@@ -26,6 +26,19 @@ const props = defineProps({
     },
 });
 
+const colorMap = {
+    num_malls: "#ea5545",
+    num_mrt: "#f46a9b",
+    num_primary_schools: "#ef9b20",
+    num_secondary_schools: "#edbf33",
+    num_polytechnics: "#1a53ff",
+    num_junior_colleges: "#bdcf32",
+    num_universities: "#27aeef",
+    num_parks: "#87bc45",
+    num_gyms: "#b33dc6",
+    num_hawker_centres: "#e03131",
+};
+
 const formatWithCommas = (value) =>
     value.toLocaleString("en-US", { maximumFractionDigits: 0 });
 
@@ -33,6 +46,7 @@ const amenitiesData = computed(() => {
     if (!dataStore.amenitiesByPlanningArea) return [];
 
     const area = props.areaName.toUpperCase();
+    
     if (area === "ALL SINGAPORE") {
         const aggregated = {};
         dataStore.amenitiesByPlanningArea.forEach((row) => {
@@ -66,8 +80,26 @@ const positionTooltip = (event, tooltipElement) => {
     const relativeX = event.clientX - chartRect.left;
     const relativeY = event.clientY - chartRect.top;
 
-    const top = relativeY - tooltipRect.height - 10;
-    const left = relativeX + 10;
+    let top, left;
+
+    const preferredTop = relativeY - tooltipRect.height;
+    const preferredLeft = relativeX + 5;
+
+    if (preferredTop < 0) {
+        top = relativeY + 20;
+    } else {
+        top = preferredTop;
+    }
+
+    if (preferredLeft + tooltipRect.width > chartRect.width) {
+        left = relativeX - tooltipRect.width - 5;
+
+        if (left < 0) {
+            left = Math.max(0, relativeX - tooltipRect.width / 2);
+        }
+    } else {
+        left = preferredLeft;
+    }
 
     tooltipElement.style.top = `${top}px`;
     tooltipElement.style.left = `${left}px`;
@@ -149,7 +181,7 @@ const drawChart = () => {
         .attr("x", 0)
         .attr("height", y.bandwidth())
         .attr("width", (d) => x(d.value))
-        .attr("fill", (d) => color(d.type))
+        .attr("fill", (d) => colorMap[d.type] || "#9ca3af") // fallback: gray-400
         .style("opacity", 0.8)
         .on("mouseover", function (event, d) {
             d3.select(this).style("opacity", 1);
