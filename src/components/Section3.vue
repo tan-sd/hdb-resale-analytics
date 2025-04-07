@@ -182,17 +182,17 @@
                                 class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
                             />
                         </div>
+                        <div
+                            class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
+                        >
+                            <LineChartAgeAndDwelling
+                                ref="LineChartAgeAndDwellingRef"
+                                v-show="currentStepIndex === 12"
+                                class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                            />
+                        </div>
                     </div>
 
-                    <div
-                        class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
-                    >
-                        <LineChartAgeAndDwelling
-                            ref="LineChartAgeAndDwellingRef"
-                            v-show="currentStepIndex === 12"
-                            class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
-                        />
-                    </div>
                 </div>
 
                 <div class="absolute inset-0 pointer-events-none">
