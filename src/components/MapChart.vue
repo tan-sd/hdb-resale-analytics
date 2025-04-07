@@ -1352,7 +1352,43 @@ const drawMapContent = () => {
                 rawData: resaleHDBsData,
             });
         });
+
+    const hardcodedOverrides = {
+        SENGKANG: "WP",
+        SERANGOON: "PAP",
+    };
+
     planningAreas.value[2019].features.forEach((paFeature) => {
+        const htmlDoc = new DOMParser().parseFromString(
+            paFeature.properties.Description,
+            "text/html"
+        );
+        const cell = Array.from(htmlDoc.querySelectorAll("td")).find((td) => {
+            const prevTh = td.previousElementSibling;
+            return prevTh && prevTh.textContent.trim() === "PLN_AREA_N";
+        });
+
+        const areaName = cell?.textContent?.toUpperCase();
+
+        // Apply override only for year >= 2020
+        if (
+            +selectedYear.value >= 2020 &&
+            areaName &&
+            areaName === "SENGKANG"
+        ) {
+            paFeature.properties.rulingParty = "WP";
+            return;
+        } else if (
+            +selectedYear.value >= 2006 &&
+            +selectedYear.value < 2011 &&
+            areaName &&
+            areaName === "SERANGOON"
+        ) {
+            paFeature.properties.rulingParty = "PAP";
+            return;
+        }
+
+        // Fallback: assign by checking which ED the center of the PA falls in
         const paCenter = turf.center(paFeature);
         const edFeatures = electoralBoundaries.value[2020].features;
 
