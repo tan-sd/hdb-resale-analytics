@@ -17,252 +17,379 @@
                 class="overflow-hidden rounded-[0.5rem] border shadow"
                 style="background-color: #ffffff"
             >
+                <div class="grid grid-cols-1 lg:grid-cols-8 gap-4">
+                    <!-- LEFT SIDE: col-span-2 -->
+                    <div class="space-y-4 lg:col-span-4">
+                        <!-- TOP: Stats cards -->
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"
+                        >
+                            <Card class="w-full h-full flex flex-col">
+                                <CardContent class="flex-grow p-4">
+                                    <div
+                                        class="font-medium text-sm text-muted-foreground mb-1"
+                                    >
+                                        Number of HDB Units Resold
+                                    </div>
+                                    <div class="text-2xl font-bold">
+                                        <NumberFlow
+                                            :value="
+                                                selectedAreaStats?.totalUnits ||
+                                                0
+                                            "
+                                        />
+                                    </div>
+                                    <div
+                                        class="text-xs text-muted-foreground mt-1"
+                                    >
+                                        {{
+                                            selectedAreaStats.isAggregated
+                                                ? "Across Singapore"
+                                                : `in ${selectedAreaStats.areaName}`
+                                        }}
+                                        ({{ selectedAreaStats.year }})
+                                    </div>
+                                </CardContent>
+                            </Card>
 
-            <div class="grid grid-cols-1 lg:grid-cols-8 gap-4">
-  <!-- LEFT SIDE: col-span-2 -->
-  <div class="space-y-4 lg:col-span-4">
-    <!-- TOP: Stats cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-        <Card class="w-full h-full flex flex-col">
-                                        <CardContent class="flex-grow p-4">
-                                            <div
-                                                class="font-medium text-sm text-muted-foreground mb-1"
+                            <Card class="w-full h-full flex flex-col">
+                                <CardContent class="flex-grow p-4">
+                                    <div
+                                        class="font-medium text-sm text-muted-foreground mb-1"
+                                    >
+                                        Total Transaction Price
+                                    </div>
+                                    <div class="text-2xl font-bold">
+                                        $<NumberFlow
+                                            :value="
+                                                selectedAreaStats.totalPrice
+                                                    ? selectedAreaStats.totalPrice.toFixed(
+                                                          2
+                                                      )
+                                                    : 0.0
+                                            "
+                                        />
+                                    </div>
+                                    <div
+                                        class="text-xs text-muted-foreground mt-1"
+                                    >
+                                        {{
+                                            selectedAreaStats.isAggregated
+                                                ? "Across Singapore"
+                                                : `in ${selectedAreaStats.areaName}`
+                                        }}
+                                        ({{ selectedAreaStats.year }})
+                                    </div>
+                                </CardContent>
+                            </Card>
+
+                            <Card class="w-full h-full flex flex-col">
+                                <CardContent class="flex-grow p-4">
+                                    <div
+                                        class="font-medium text-sm text-muted-foreground mb-1"
+                                    >
+                                        Price Per Square Meter
+                                    </div>
+                                    <div class="text-2xl font-bold">
+                                        $<NumberFlow
+                                            :value="
+                                                selectedAreaStats.pricePerSqm
+                                                    ? selectedAreaStats.pricePerSqm.toFixed(
+                                                          0
+                                                      )
+                                                    : 0
+                                            "
+                                        />
+                                    </div>
+                                    <div
+                                        class="text-xs text-muted-foreground mt-1"
+                                    >
+                                        {{
+                                            selectedAreaStats.isAggregated
+                                                ? "Median across Singapore"
+                                                : `Median in ${selectedAreaStats.areaName}`
+                                        }}
+                                        ({{ selectedAreaStats.year }})
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                        <!-- MIDDLE: MapChart -->
+                        <Card class="w-full h-[490px] flex flex-col">
+                            <CardContent class="p-0">
+                                <MapChart
+                                    @area-selected="handleAreaSelected"
+                                    @selected-flat-type="handleFlatTypeChange"
+                                />
+                            </CardContent>
+                        </Card>
+
+                        <!-- 🔽 NEW: BOTTOM Demographics + Amenities charts go HERE -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Demographics Distribution -->
+                            <Card class="w-full h-full flex flex-col">
+                                <CardContent class="flex-grow p-4 h-[290px]">
+                                    <div
+                                        class="font-medium text-sm text-muted-foreground mb-1"
+                                    >
+                                        Age Distribution
+                                        <span v-if="selectedFlatType == 'All'"
+                                            ><span
+                                                v-if="
+                                                    selectedAreaStats.areaName !==
+                                                    'All Singapore'
+                                                "
+                                                >({{
+                                                    selectedAreaStats.areaName
+                                                }})</span
+                                            ></span
+                                        >
+                                        <span v-else
+                                            ><span
+                                                v-if="
+                                                    selectedAreaStats.areaName !==
+                                                    'All Singapore'
+                                                "
                                             >
-                                                Number of HDB Units Resold
-                                            </div>
-                                            <div class="text-2xl font-bold">
-                                                <NumberFlow
-                                                    :value="
-                                                        selectedAreaStats?.totalUnits ||
-                                                        0
-                                                    "
-                                                />
-                                            </div>
-                                            <div
-                                                class="text-xs text-muted-foreground mt-1"
+                                                ({{
+                                                    selectedAreaStats.areaName
+                                                }})
+                                            </span>
+                                        </span>
+                                        <br />
+                                        <span
+                                            class="text-xs"
+                                            v-if="usingFallbackYear"
+                                        >
+                                            (Using
+                                            {{ fallbackYearValue }} Age
+                                            Data)
+                                        </span>
+                                    </div>
+                                    <AgePieChartDashboard
+                                        class="w-full h-full"
+                                        ref="demographicsChart"
+                                        :data="filteredData"
+                                        :area-name="selectedAreaStats.areaName"
+                                        :year="selectedAreaStats.year"
+                                        @update:fallback-year="
+                                            handleFallbackYear
+                                        "
+                                    />
+                                </CardContent>
+                            </Card>
+
+                            <!-- Amenities Distribution -->
+                            <Card class="w-full h-full flex flex-col">
+                                <CardContent class="flex-grow p-4 h-[290px]">
+                                    <div
+                                        class="font-medium text-sm text-muted-foreground mb-1"
+                                    >
+                                        Amenities Distribution
+                                        <span
+                                            v-if="
+                                                selectedAreaStats.areaName !==
+                                                'All Singapore'
+                                            "
+                                            >({{
+                                                selectedAreaStats.areaName
+                                            }})</span
+                                        >
+                                    </div>
+                                    <BarChartAmenitiesDashboard
+                                        class="w-full h-full"
+                                        :data="filteredData"
+                                        :area-name="selectedAreaStats.areaName"
+                                        :year="selectedAreaStats.year"
+                                    />
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT COLUMN -->
+                    <div class="space-y-4 lg:col-span-4">
+                        <!-- TOP: Flat Type + Storey Range side by side -->
+                        <div
+                            :class="
+                                selectedFlatType === 'All'
+                                    ? 'grid grid-cols-1 md:grid-cols-2 gap-4'
+                                    : 'grid grid-cols-1 gap-4'
+                            "
+                        >
+                            <Card
+                                v-if="selectedFlatType === 'All'"
+                                class="w-full h-full flex flex-col"
+                            >
+                                <CardContent class="flex-grow p-4 h-[290px]">
+                                    <div
+                                        class="font-medium text-sm text-muted-foreground mb-1"
+                                    >
+                                        Flat Type Distribution
+                                        <span
+                                            >(<span
+                                                v-if="
+                                                    selectedAreaStats.areaName !=
+                                                    'All Singapore'
+                                                "
+                                                >{{
+                                                    selectedAreaStats.areaName
+                                                }}, </span
+                                            >{{ selectedAreaStats.year }})</span
+                                        >
+                                    </div>
+                                    <FlatTypeBarChartDashboard
+                                        :data="filteredData"
+                                        :area-name="selectedAreaStats.areaName"
+                                        :year="selectedAreaStats.year"
+                                        :selected-flat-type="selectedFlatType"
+                                    />
+                                </CardContent>
+                            </Card>
+
+                            <Card
+                                :class="
+                                    selectedFlatType !== 'All'
+                                        ? 'col-span-full'
+                                        : ''
+                                "
+                                class="w-full h-full flex flex-col"
+                            >
+                                <CardContent class="flex-grow p-4 h-[290px]">
+                                    <div
+                                        class="font-medium text-sm text-muted-foreground mb-1"
+                                    >
+                                        Storey Range Distribution
+                                        <span v-if="selectedFlatType == 'All'"
+                                            >(<span
+                                                v-if="
+                                                    selectedAreaStats.areaName !==
+                                                    'All Singapore'
+                                                "
+                                                >{{
+                                                    selectedAreaStats.areaName
+                                                }}, </span
+                                            >{{ selectedAreaStats.year }})</span
+                                        >
+                                        <span v-else
+                                            ><span
+                                                v-if="
+                                                    selectedAreaStats.areaName !==
+                                                    'All Singapore'
+                                                "
                                             >
-                                                {{
-                                                    selectedAreaStats.isAggregated
-                                                        ? "Across Singapore"
-                                                        : `in ${selectedAreaStats.areaName}`
-                                                }}
-                                                ({{ selectedAreaStats.year }})
-                                            </div>
-                                        </CardContent>
-                                    </Card>
+                                                ({{
+                                                    selectedAreaStats.areaName
+                                                }}, {{ selectedFlatType }},
+                                                {{ selectedAreaStats.year }})
+                                            </span>
+                                            <span v-else>
+                                                ({{ selectedFlatType }},
+                                                {{ selectedAreaStats.year }})
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <StoreyRangeBarChartDashboard
+                                        :data="filteredData"
+                                        :area-name="selectedAreaStats.areaName"
+                                        :year="selectedAreaStats.year"
+                                        :selected-flat-type="selectedFlatType"
+                                    />
+                                </CardContent>
+                            </Card>
+                        </div>
 
-                                    <Card class="w-full h-full flex flex-col">
-                                        <CardContent class="flex-grow p-4">
-                                            <div
-                                                class="font-medium text-sm text-muted-foreground mb-1"
+                        <!-- BOTTOM: Median Resale Price & Transactions stacked -->
+                        <div class="space-y-4">
+                            <Card class="w-full h-full flex flex-col">
+                                <CardContent class="p-4 h-[300px]">
+                                    <div
+                                        class="font-medium text-sm text-muted-foreground mb-1"
+                                    >
+                                        Median Resale Price By Year
+                                        <span v-if="selectedFlatType == 'All'"
+                                            >(<span
+                                                v-if="
+                                                    selectedAreaStats.areaName !==
+                                                    'All Singapore'
+                                                "
+                                                >{{
+                                                    selectedAreaStats.areaName
+                                                }}, </span
+                                            >{{ selectedAreaStats.year }})</span
+                                        >
+                                        <span v-else
+                                            ><span
+                                                v-if="
+                                                    selectedAreaStats.areaName !==
+                                                    'All Singapore'
+                                                "
                                             >
-                                                Total Transaction Price
-                                            </div>
-                                            <div class="text-2xl font-bold">
-                                                $<NumberFlow
-                                                    :value="
-                                                        selectedAreaStats.totalPrice
-                                                            ? selectedAreaStats.totalPrice.toFixed(
-                                                                  2
-                                                              )
-                                                            : 0.0
-                                                    "
-                                                />
-                                            </div>
-                                            <div
-                                                class="text-xs text-muted-foreground mt-1"
+                                                ({{
+                                                    selectedAreaStats.areaName
+                                                }}, {{ selectedFlatType }},
+                                                {{ selectedAreaStats.year }})
+                                            </span>
+                                            <span v-else>
+                                                ({{ selectedFlatType }},
+                                                {{ selectedAreaStats.year }})
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <LineChartMedianResaleDashboard
+                                        :selected-flat-type="selectedFlatType"
+                                        :year="selectedAreaStats.year"
+                                        :area-name="selectedAreaStats.areaName"
+                                    />
+                                </CardContent>
+                            </Card>
+
+                            <Card class="w-full h-full flex flex-col">
+                                <CardContent class="p-4 h-[300px]">
+                                    <div
+                                        class="font-medium text-sm text-muted-foreground mb-1"
+                                    >
+                                        Annual Transactions
+                                        <span v-if="selectedFlatType == 'All'"
+                                            >(<span
+                                                v-if="
+                                                    selectedAreaStats.areaName !==
+                                                    'All Singapore'
+                                                "
+                                                >{{
+                                                    selectedAreaStats.areaName
+                                                }}, </span
+                                            >{{ selectedAreaStats.year }})</span
+                                        >
+                                        <span v-else
+                                            ><span
+                                                v-if="
+                                                    selectedAreaStats.areaName !==
+                                                    'All Singapore'
+                                                "
                                             >
-                                                {{
-                                                    selectedAreaStats.isAggregated
-                                                        ? "Across Singapore"
-                                                        : `in ${selectedAreaStats.areaName}`
-                                                }}
-                                                ({{ selectedAreaStats.year }})
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-
-                                    <Card class="w-full h-full flex flex-col">
-                                        <CardContent class="flex-grow p-4">
-                                            <div
-                                                class="font-medium text-sm text-muted-foreground mb-1"
-                                            >
-                                                Price Per Square Meter
-                                            </div>
-                                            <div class="text-2xl font-bold">
-                                                $<NumberFlow
-                                                    :value="
-                                                        selectedAreaStats.pricePerSqm
-                                                            ? selectedAreaStats.pricePerSqm.toFixed(
-                                                                  0
-                                                              )
-                                                            : 0
-                                                    "
-                                                />
-                                            </div>
-                                            <div
-                                                class="text-xs text-muted-foreground mt-1"
-                                            >
-                                                {{
-                                                    selectedAreaStats.isAggregated
-                                                        ? "Median across Singapore"
-                                                        : `Median in ${selectedAreaStats.areaName}`
-                                                }}
-                                                ({{ selectedAreaStats.year }})
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-    </div>
-
-    <!-- MIDDLE: MapChart -->
-    <Card class="w-full h-[490px] flex flex-col">
-      <CardContent class="p-0">
-        <MapChart
-          @area-selected="handleAreaSelected"
-          @selected-flat-type="handleFlatTypeChange"
-        />
-      </CardContent>
-    </Card>
-
-    <!-- 🔽 NEW: BOTTOM Demographics + Amenities charts go HERE -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- Demographics Distribution -->
-      <Card class="w-full h-full flex flex-col">
-        <CardContent class="flex-grow p-4 h-[290px]">
-          <div class="font-medium text-sm text-muted-foreground mb-1">
-            Demographics Distribution
-            <span v-if="selectedFlatType == 'All'"><span v-if="selectedAreaStats.areaName !== 'All Singapore'">({{ selectedAreaStats.areaName}})</span></span>
-        <span v-else><span v-if="selectedAreaStats.areaName !== 'All Singapore'">
-        ({{ selectedAreaStats.areaName }})
-      </span>
-      </span>
-            <br/>
-            <span class="text-xs" v-if="usingFallbackYear">
-              (Using {{ fallbackYearValue }} Demographic Data)
-            </span>
-          </div>
-          <DemographicsBarChartDashboard
-            class="w-full h-full"
-            ref="demographicsChart"
-            :data="filteredData"
-            :area-name="selectedAreaStats.areaName"
-            :year="selectedAreaStats.year"
-            @update:fallback-year="handleFallbackYear"
-          />
-        </CardContent>
-      </Card>
-
-      <!-- Amenities Distribution -->
-      <Card class="w-full h-full flex flex-col">
-        <CardContent class="flex-grow p-4 h-[290px]">
-          <div class="font-medium text-sm text-muted-foreground mb-1">
-            Amenities Distribution
-          </div>
-          <BarChartAmenitiesDashboard
-            class="w-full h-full"
-            :data="filteredData"
-            :area-name="selectedAreaStats.areaName"
-            :year="selectedAreaStats.year"
-          />
-        </CardContent>
-      </Card>
-    </div>
-  </div>
-
-  <!-- RIGHT COLUMN -->
-  <div class="space-y-4 lg:col-span-4">
-    <!-- TOP: Flat Type + Storey Range side by side -->
-    <div
-  :class="selectedFlatType === 'All' ? 'grid grid-cols-1 md:grid-cols-2 gap-4' : 'grid grid-cols-1 gap-4'"
->
-  <Card
-    v-if="selectedFlatType === 'All'"
-    class="w-full h-full flex flex-col"
-  >
-    <CardContent class="flex-grow p-4 h-[290px]">
-      <div class="font-medium text-sm text-muted-foreground mb-1">
-        Flat Type Distribution <span>(<span v-if="selectedAreaStats.areaName != 'All Singapore'">{{ selectedAreaStats.areaName }}, </span>{{ selectedAreaStats.year }})</span>
-      </div>
-      <FlatTypeBarChartDashboard
-        :data="filteredData"
-        :area-name="selectedAreaStats.areaName"
-        :year="selectedAreaStats.year"
-        :selected-flat-type="selectedFlatType"
-      />
-    </CardContent>
-  </Card>
-
-  <Card
-    :class="selectedFlatType !== 'All' ? 'col-span-full' : ''"
-    class="w-full h-full flex flex-col"
-  >
-    <CardContent class="flex-grow p-4 h-[290px]">
-      <div class="font-medium text-sm text-muted-foreground mb-1">
-        Storey Range Distribution
-        <span v-if="selectedFlatType == 'All'">(<span v-if="selectedAreaStats.areaName !== 'All Singapore'">{{ selectedAreaStats.areaName}}, </span>{{ selectedAreaStats.year }})</span>
-        <span v-else><span v-if="selectedAreaStats.areaName !== 'All Singapore'">
-        ({{ selectedAreaStats.areaName }}, {{ selectedFlatType }}, {{ selectedAreaStats.year }})
-      </span>
-      <span v-else>
-        ({{ selectedFlatType }}, {{ selectedAreaStats.year }})
-      </span>
-      </span>
-      </div>
-      <StoreyRangeBarChartDashboard
-        :data="filteredData"
-        :area-name="selectedAreaStats.areaName"
-        :year="selectedAreaStats.year"
-        :selected-flat-type="selectedFlatType"
-      />
-    </CardContent>
-  </Card>
-</div>
-
-
-    <!-- BOTTOM: Median Resale Price & Transactions stacked -->
-    <div class="space-y-4">
-      <Card class="w-full h-full flex flex-col">
-        <CardContent class="p-4 h-[300px]">
-          <div class="font-medium text-sm text-muted-foreground mb-1">
-            Median Resale Price By Year
-            <span v-if="selectedFlatType == 'All'">(<span v-if="selectedAreaStats.areaName !== 'All Singapore'">{{ selectedAreaStats.areaName}}, </span>{{ selectedAreaStats.year }})</span>
-            <span v-else><span v-if="selectedAreaStats.areaName !== 'All Singapore'">
-            ({{ selectedAreaStats.areaName }}, {{ selectedFlatType }}, {{ selectedAreaStats.year }})
-          </span>
-          <span v-else>
-            ({{ selectedFlatType }}, {{ selectedAreaStats.year }})
-          </span>
-          </span>
-          </div>
-          <LineChartMedianResaleDashboard
-            :selected-flat-type="selectedFlatType"
-            :year="selectedAreaStats.year"
-            :area-name="selectedAreaStats.areaName" />
-        </CardContent>
-      </Card>
-
-      <Card class="w-full h-full flex flex-col">
-        <CardContent class="p-4 h-[300px]">
-          <div class="font-medium text-sm text-muted-foreground mb-1">
-            Annual Transactions
-            <span v-if="selectedFlatType == 'All'">(<span v-if="selectedAreaStats.areaName !== 'All Singapore'">{{ selectedAreaStats.areaName}}, </span>{{ selectedAreaStats.year }})</span>
-            <span v-else><span v-if="selectedAreaStats.areaName !== 'All Singapore'">
-            ({{ selectedAreaStats.areaName }}, {{ selectedFlatType }}, {{ selectedAreaStats.year }})
-          </span>
-          <span v-else>
-            ({{ selectedFlatType }}, {{ selectedAreaStats.year }})
-          </span>
-          </span>
-          </div>
-          <LineChartTransactionsDashboard
-            :selected-flat-type="selectedFlatType"
-            :year="selectedAreaStats.year"
-            :area-name="selectedAreaStats.areaName" />
-        </CardContent>
-      </Card>
-    </div>
-  </div>
-</div>
+                                                ({{
+                                                    selectedAreaStats.areaName
+                                                }}, {{ selectedFlatType }},
+                                                {{ selectedAreaStats.year }})
+                                            </span>
+                                            <span v-else>
+                                                ({{ selectedFlatType }},
+                                                {{ selectedAreaStats.year }})
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <LineChartTransactionsDashboard
+                                        :selected-flat-type="selectedFlatType"
+                                        :year="selectedAreaStats.year"
+                                        :area-name="selectedAreaStats.areaName"
+                                    />
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </div>
+                </div>
             </section>
         </div>
     </main>
@@ -275,7 +402,7 @@ import NumberFlow from "@number-flow/vue";
 import FlatTypeBarChartDashboard from "./BarChartFlatTypeDashboard.vue";
 import StoreyRangeBarChartDashboard from "./BarChartStoreyRangeDashboard.vue";
 import PriceByFlatTypeChart from "./BarChartFlatType.vue";
-import DemographicsBarChartDashboard from "./BarChartDemographicsDashboard.vue";
+import AgePieChartDashboard from "./PieChartAgeDashboard.vue";
 import BarChartAmenitiesDashboard from "./BarChartAmenitiesDashboard.vue";
 import LineChartMedianResaleDashboard from "./LineChartMedianResaleDashboard.vue";
 import LineChartTransactionsDashboard from "./LineChartTransactionsDashboard.vue";
@@ -293,13 +420,17 @@ const handleFallbackYear = (data) => {
 };
 
 function handleFlatTypeChange(newFlatType) {
-  console.log("Flat type changed to:", newFlatType);
-  selectedFlatType.value = newFlatType;
+    console.log("Flat type changed to:", newFlatType);
+    selectedFlatType.value = newFlatType;
 }
 
-watch(() => selectedFlatType.value, (newVal) => {
-  console.log("Flat type updated (watcher):", newVal);
-}, { immediate: true });
+watch(
+    () => selectedFlatType.value,
+    (newVal) => {
+        console.log("Flat type updated (watcher):", newVal);
+    },
+    { immediate: true }
+);
 
 const selectedAreaStats = ref({
     areaName: "All Singapore",
