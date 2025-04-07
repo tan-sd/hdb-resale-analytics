@@ -1,5 +1,5 @@
 <template>
-    <main class="flex flex-1 flex-col items-center justify-center">
+    <main class="mt-10 flex flex-1 flex-col items-center justify-center">
         <h2
             class="text-sm sm:text-base font-bold uppercase tracking-tight mb-2 section-title"
         >
@@ -131,6 +131,11 @@
         <CardContent class="flex-grow p-4 h-[290px]">
           <div class="font-medium text-sm text-muted-foreground mb-1">
             Demographics Distribution
+            <span v-if="selectedFlatType == 'All'"><span v-if="selectedAreaStats.areaName !== 'All Singapore'">({{ selectedAreaStats.areaName}})</span></span>
+        <span v-else><span v-if="selectedAreaStats.areaName !== 'All Singapore'">
+        ({{ selectedAreaStats.areaName }})
+      </span>
+      </span>
             <br/>
             <span class="text-xs" v-if="usingFallbackYear">
               (Using {{ fallbackYearValue }} Demographic Data)
@@ -220,9 +225,19 @@
         <CardContent class="p-4 h-[300px]">
           <div class="font-medium text-sm text-muted-foreground mb-1">
             Median Resale Price By Year
-            <span v-if="selectedFlatType !== 'All'">({{ selectedFlatType }})</span>
+            <span v-if="selectedFlatType == 'All'">(<span v-if="selectedAreaStats.areaName !== 'All Singapore'">{{ selectedAreaStats.areaName}}, </span>{{ selectedAreaStats.year }})</span>
+            <span v-else><span v-if="selectedAreaStats.areaName !== 'All Singapore'">
+            ({{ selectedAreaStats.areaName }}, {{ selectedFlatType }}, {{ selectedAreaStats.year }})
+          </span>
+          <span v-else>
+            ({{ selectedFlatType }}, {{ selectedAreaStats.year }})
+          </span>
+          </span>
           </div>
-          <LineChartMedianResaleDashboard :selected-flat-type="selectedFlatType" />
+          <LineChartMedianResaleDashboard
+            :selected-flat-type="selectedFlatType"
+            :year="selectedAreaStats.year"
+            :area-name="selectedAreaStats.areaName" />
         </CardContent>
       </Card>
 
@@ -230,9 +245,19 @@
         <CardContent class="p-4 h-[300px]">
           <div class="font-medium text-sm text-muted-foreground mb-1">
             Annual Transactions
-            <span v-if="selectedFlatType !== 'All'">({{ selectedFlatType }})</span>
+            <span v-if="selectedFlatType == 'All'">(<span v-if="selectedAreaStats.areaName !== 'All Singapore'">{{ selectedAreaStats.areaName}}, </span>{{ selectedAreaStats.year }})</span>
+            <span v-else><span v-if="selectedAreaStats.areaName !== 'All Singapore'">
+            ({{ selectedAreaStats.areaName }}, {{ selectedFlatType }}, {{ selectedAreaStats.year }})
+          </span>
+          <span v-else>
+            ({{ selectedFlatType }}, {{ selectedAreaStats.year }})
+          </span>
+          </span>
           </div>
-          <LineChartTransactionsDashboard :selected-flat-type="selectedFlatType" />
+          <LineChartTransactionsDashboard
+            :selected-flat-type="selectedFlatType"
+            :year="selectedAreaStats.year"
+            :area-name="selectedAreaStats.areaName" />
         </CardContent>
       </Card>
     </div>
