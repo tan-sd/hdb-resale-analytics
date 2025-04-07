@@ -54,6 +54,10 @@ export const useDataStore = defineStore("dataStore", () => {
     const chartData = computed(() => rawChartData ?? []);
     const isDataLoaded = computed(() => rawChartData !== null);
 
+    const flatAgeDist_1and2 = ref([]);
+    const flatAgeDist_3and4 = ref([]);
+    const flatAgeDist_5exec = ref([]);
+    const totalHdbPop = ref([]);
     const mrtStations = ref([]);
     const yearMedians = ref([]);
     const yearCounts = ref([]);
@@ -140,6 +144,27 @@ export const useDataStore = defineStore("dataStore", () => {
                 d3.autoType
             )
 
+            const ageAndDwelling1And2 = await d3.csv(
+                "data/population_demographics/age_and_dwelling_1and2_room_flats.csv",
+                d3.autoType
+            );
+            
+            const ageAndDwelling3And4 = await d3.csv(
+                "data/population_demographics/age_and_dwelling_3and4_room_flats.csv",
+                d3.autoType
+            );
+            
+            const ageAndDwelling5Exec = await d3.csv(
+                "data/population_demographics/age_and_dwelling_5room_and_exec_flats.csv",
+                d3.autoType
+            );
+            
+            const hdbPopTotal = await d3.csv(
+                "data/population_demographics/age_group_hdb_population_by_year.csv",
+                d3.autoType
+            );
+            
+
             const groupedData = d3.group(
                 borderFlatsData,
                 (d) => d.Period,
@@ -174,6 +199,24 @@ export const useDataStore = defineStore("dataStore", () => {
                 source: d.source,
                 comment: d.comment
             }));
+
+            function reshapeAgeData(raw, flatType) {
+                return raw.flatMap((row) => {
+                    return Object.keys(row)
+                        .filter((key) => key !== "Age Group")
+                        .map((year) => ({
+                            "Age Group": row["Age Group"],
+                            "Year": +year,
+                            "Population": +row[year],
+                            "Flat Type": flatType
+                        }));
+                });
+            }
+            
+            flatAgeDist_1and2.value = reshapeAgeData(ageAndDwelling1And2, "1- & 2-Room Flats");
+            flatAgeDist_3and4.value = reshapeAgeData(ageAndDwelling3And4, "3- & 4-Room Flats");
+            flatAgeDist_5exec.value = reshapeAgeData(ageAndDwelling5Exec, "5-Room & Executive Flats");            
+            totalHdbPop.value = hdbPopTotal;
 
             const splitHdbResaleData = Array.from(
                 { length: 2023 - 1990 + 1 },
@@ -369,5 +412,9 @@ export const useDataStore = defineStore("dataStore", () => {
         preprocessData,
         ensureDataLoaded,
         mrtStations,
+        flatAgeDist_1and2,
+        flatAgeDist_3and4,
+        flatAgeDist_5exec,
+        totalHdbPop,
     };
 });
