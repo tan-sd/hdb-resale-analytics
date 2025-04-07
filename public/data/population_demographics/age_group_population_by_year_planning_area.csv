@@ -1,0 +1,659 @@
+Year,Planning Area,Age Range,Value
+2000,Ang Mo Kio,0-24,58680
+2000,Ang Mo Kio,25-59,100150
+2000,Ang Mo Kio,60+,21860
+2000,Bedok,0-24,98320
+2000,Bedok,25-59,153270
+2000,Bedok,60+,33390
+2000,Bishan,0-24,31310
+2000,Bishan,25-59,49620
+2000,Bishan,60+,9040
+2000,Boon Lay,0-24,0
+2000,Boon Lay,25-59,0
+2000,Boon Lay,60+,0
+2000,Bukit Batok,0-24,47650
+2000,Bukit Batok,25-59,69890
+2000,Bukit Batok,60+,9130
+2000,Bukit Merah,0-24,40130
+2000,Bukit Merah,25-59,81430
+2000,Bukit Merah,60+,26930
+2000,Bukit Panjang,0-24,37090
+2000,Bukit Panjang,25-59,52440
+2000,Bukit Panjang,60+,7080
+2000,Bukit Timah,0-24,21610
+2000,Bukit Timah,25-59,34880
+2000,Bukit Timah,60+,7840
+2000,Central Water Catchment,0-24,0
+2000,Central Water Catchment,25-59,0
+2000,Central Water Catchment,60+,0
+2000,Changi,0-24,410
+2000,Changi,25-59,580
+2000,Changi,60+,130
+2000,Changi Bay,0-24,0
+2000,Changi Bay,25-59,0
+2000,Changi Bay,60+,0
+2000,Choa Chu Kang,0-24,54290
+2000,Choa Chu Kang,25-59,74610
+2000,Choa Chu Kang,60+,7940
+2000,Clementi,0-24,28980
+2000,Clementi,25-59,51260
+2000,Clementi,60+,10720
+2000,Downtown Core,0-24,1130
+2000,Downtown Core,25-59,2540
+2000,Downtown Core,60+,970
+2000,Geylang,0-24,37490
+2000,Geylang,25-59,63650
+2000,Geylang,60+,17800
+2000,Hougang,0-24,74730
+2000,Hougang,25-59,110100
+2000,Hougang,60+,19240
+2000,Jurong East,0-24,32340
+2000,Jurong East,25-59,48960
+2000,Jurong East,60+,7790
+2000,Jurong West,0-24,78490
+2000,Jurong West,25-59,112560
+2000,Jurong West,60+,13700
+2000,Kallang,0-24,26010
+2000,Kallang,25-59,49770
+2000,Kallang,60+,16440
+2000,Lim Chu Kang,0-24,120
+2000,Lim Chu Kang,25-59,180
+2000,Lim Chu Kang,60+,10
+2000,Mandai,0-24,360
+2000,Mandai,25-59,540
+2000,Mandai,60+,110
+2000,Marina East,0-24,0
+2000,Marina East,25-59,0
+2000,Marina East,60+,0
+2000,Marina South,0-24,0
+2000,Marina South,25-59,0
+2000,Marina South,60+,0
+2000,Marine Parade,0-24,13570
+2000,Marine Parade,25-59,25010
+2000,Marine Parade,60+,7680
+2000,Museum,0-24,30
+2000,Museum,25-59,120
+2000,Museum,60+,100
+2000,Newton,0-24,1650
+2000,Newton,25-59,3540
+2000,Newton,60+,940
+2000,North-Eastern Islands,0-24,0
+2000,North-Eastern Islands,25-59,0
+2000,North-Eastern Islands,60+,0
+2000,Novena,0-24,12580
+2000,Novena,25-59,23430
+2000,Novena,60+,6870
+2000,Orchard,0-24,160
+2000,Orchard,25-59,350
+2000,Orchard,60+,90
+2000,Outram,0-24,4950
+2000,Outram,25-59,11600
+2000,Outram,60+,5670
+2000,Pasir Ris,0-24,46690
+2000,Pasir Ris,25-59,63270
+2000,Pasir Ris,60+,6760
+2000,Paya Lebar,0-24,50
+2000,Paya Lebar,25-59,80
+2000,Paya Lebar,60+,10
+2000,Pioneer,60+,0
+2000,Punggol,0-24,80
+2000,Punggol,25-59,130
+2000,Punggol,60+,20
+2000,Queenstown,0-24,26870
+2000,Queenstown,25-59,53850
+2000,Queenstown,60+,17180
+2000,River Valley,0-24,2680
+2000,River Valley,25-59,5350
+2000,River Valley,60+,1340
+2000,Rochor,0-24,4560
+2000,Rochor,25-59,9420
+2000,Rochor,60+,3970
+2000,Seletar,0-24,130
+2000,Seletar,25-59,300
+2000,Seletar,60+,30
+2000,Sembawang,0-24,11010
+2000,Sembawang,25-59,18380
+2000,Sembawang,60+,2270
+2000,Sengkang,0-24,21890
+2000,Sengkang,25-59,35070
+2000,Sengkang,60+,4380
+2000,Serangoon,0-24,43430
+2000,Serangoon,25-59,66320
+2000,Serangoon,60+,12670
+2000,Simpang,0-24,0
+2000,Simpang,25-59,0
+2000,Simpang,60+,0
+2000,Singapore River,0-24,210
+2000,Singapore River,25-59,540
+2000,Singapore River,60+,100
+2000,Southern Islands,0-24,0
+2000,Southern Islands,25-59,0
+2000,Southern Islands,60+,0
+2000,Straits View,0-24,0
+2000,Straits View,25-59,0
+2000,Straits View,60+,0
+2000,Sungei Kadut,0-24,250
+2000,Sungei Kadut,25-59,400
+2000,Sungei Kadut,60+,270
+2000,Tampines,0-24,98710
+2000,Tampines,25-59,135830
+2000,Tampines,60+,18580
+2000,Tanglin,0-24,4070
+2000,Tanglin,25-59,7780
+2000,Tanglin,60+,1890
+2000,Tengah,0-24,0
+2000,Tengah,25-59,0
+2000,Tengah,60+,0
+2000,Toa Payoh,0-24,35080
+2000,Toa Payoh,25-59,66490
+2000,Toa Payoh,60+,19680
+2000,Tuas,0-24,0
+2000,Tuas,25-59,0
+2000,Tuas,60+,0
+2000,Western Islands,0-24,0
+2000,Western Islands,25-59,0
+2000,Western Islands,60+,0
+2000,Western Water Catchment,0-24,140
+2000,Western Water Catchment,25-59,250
+2000,Western Water Catchment,60+,10
+2000,Woodlands,0-24,73000
+2000,Woodlands,25-59,103890
+2000,Woodlands,60+,11840
+2000,Yishun,0-24,68680
+2000,Yishun,25-59,95850
+2000,Yishun,60+,12720
+2010,Ang Mo Kio,0-24,46850
+2010,Ang Mo Kio,25-59,99190
+2010,Ang Mo Kio,60+,33290
+2010,Bedok,0-24,85980
+2010,Bedok,25-59,158880
+2010,Bedok,60+,49670
+2010,Bishan,0-24,27910
+2010,Bishan,25-59,49400
+2010,Bishan,60+,13980
+2010,Boon Lay,0-24,0
+2010,Boon Lay,25-59,0
+2010,Boon Lay,60+,0
+2010,Bukit Batok,0-24,46510
+2010,Bukit Batok,25-59,81750
+2010,Bukit Batok,60+,15970
+2010,Bukit Merah,0-24,37270
+2010,Bukit Merah,25-59,85090
+2010,Bukit Merah,60+,34790
+2010,Bukit Panjang,0-24,44740
+2010,Bukit Panjang,25-59,70450
+2010,Bukit Panjang,60+,13570
+2010,Bukit Timah,0-24,22120
+2010,Bukit Timah,25-59,36400
+2010,Bukit Timah,60+,11820
+2010,Central Water Catchment,0-24,0
+2010,Central Water Catchment,25-59,0
+2010,Central Water Catchment,60+,0
+2010,Changi,0-24,760
+2010,Changi,25-59,1160
+2010,Changi,60+,270
+2010,Changi Bay,0-24,0
+2010,Changi Bay,25-59,0
+2010,Changi Bay,60+,0
+2010,Choa Chu Kang,0-24,63270
+2010,Choa Chu Kang,25-59,94930
+2010,Choa Chu Kang,60+,15150
+2010,Clementi,0-24,23390
+2010,Clementi,25-59,51220
+2010,Clementi,60+,17290
+2010,Downtown Core,0-24,720
+2010,Downtown Core,25-59,2130
+2010,Downtown Core,60+,880
+2010,Geylang,0-24,33080
+2010,Geylang,25-59,65630
+2010,Geylang,60+,21990
+2010,Hougang,0-24,67610
+2010,Hougang,25-59,118410
+2010,Hougang,60+,30710
+2010,Jurong East,0-24,26280
+2010,Jurong East,25-59,49330
+2010,Jurong East,60+,12540
+2010,Jurong West,0-24,88580
+2010,Jurong West,25-59,152290
+2010,Jurong West,60+,26670
+2010,Kallang,0-24,24240
+2010,Kallang,25-59,54580
+2010,Kallang,60+,20720
+2010,Lim Chu Kang,0-24,0
+2010,Lim Chu Kang,25-59,0
+2010,Lim Chu Kang,60+,0
+2010,Mandai,0-24,640
+2010,Mandai,25-59,1040
+2010,Mandai,60+,210
+2010,Marina East,0-24,0
+2010,Marina East,25-59,0
+2010,Marina East,60+,0
+2010,Marina South,0-24,0
+2010,Marina South,25-59,0
+2010,Marina South,60+,0
+2010,Marine Parade,0-24,12930
+2010,Marine Parade,25-59,24820
+2010,Marine Parade,60+,9560
+2010,Museum,0-24,80
+2010,Museum,25-59,240
+2010,Museum,60+,30
+2010,Newton,0-24,1700
+2010,Newton,25-59,3490
+2010,Newton,60+,1080
+2010,North-Eastern Islands,0-24,0
+2010,North-Eastern Islands,25-59,0
+2010,North-Eastern Islands,60+,0
+2010,Novena,0-24,12530
+2010,Novena,25-59,25430
+2010,Novena,60+,8710
+2010,Orchard,0-24,180
+2010,Orchard,25-59,520
+2010,Orchard,60+,140
+2010,Outram,0-24,3860
+2010,Outram,25-59,10660
+2010,Outram,60+,5360
+2010,Pasir Ris,0-24,50130
+2010,Pasir Ris,25-59,71560
+2010,Pasir Ris,60+,12200
+2010,Paya Lebar,0-24,0
+2010,Paya Lebar,25-59,0
+2010,Paya Lebar,60+,0
+2010,Pioneer,0-24,0
+2010,Pioneer,25-59,0
+2010,Pioneer,60+,0
+2010,Punggol,0-24,19850
+2010,Punggol,25-59,34670
+2010,Punggol,60+,4880
+2010,Queenstown,0-24,23770
+2010,Queenstown,25-59,53400
+2010,Queenstown,60+,21370
+2010,River Valley,0-24,2100
+2010,River Valley,25-59,4880
+2010,River Valley,60+,1260
+2010,Rochor,0-24,3480
+2010,Rochor,25-59,8730
+2010,Rochor,60+,3480
+2010,Seletar,0-24,100
+2010,Seletar,25-59,220
+2010,Seletar,60+,40
+2010,Sembawang,0-24,25040
+2010,Sembawang,25-59,41660
+2010,Sembawang,60+,6080
+2010,Sengkang,0-24,56150
+2010,Sengkang,25-59,96170
+2010,Sengkang,60+,14770
+2010,Serangoon,0-24,37780
+2010,Serangoon,25-59,66920
+2010,Serangoon,60+,20080
+2010,Simpang,0-24,0
+2010,Simpang,25-59,0
+2010,Simpang,60+,0
+2010,Singapore River,0-24,490
+2010,Singapore River,25-59,1360
+2010,Singapore River,60+,220
+2010,Southern Islands,0-24,200
+2010,Southern Islands,25-59,410
+2010,Southern Islands,60+,40
+2010,Straits View,0-24,0
+2010,Straits View,25-59,0
+2010,Straits View,60+,0
+2010,Sungei Kadut,0-24,200
+2010,Sungei Kadut,25-59,400
+2010,Sungei Kadut,60+,310
+2010,Tampines,0-24,87900
+2010,Tampines,25-59,143800
+2010,Tampines,60+,30090
+2010,Tanglin,0-24,4890
+2010,Tanglin,25-59,9690
+2010,Tanglin,60+,2750
+2010,Tengah,0-24,0
+2010,Tengah,25-59,0
+2010,Tengah,60+,0
+2010,Toa Payoh,0-24,31520
+2010,Toa Payoh,25-59,66650
+2010,Toa Payoh,60+,26510
+2010,Tuas,0-24,0
+2010,Tuas,25-59,0
+2010,Tuas,60+,0
+2010,Western Islands,0-24,0
+2010,Western Islands,25-59,0
+2010,Western Islands,60+,0
+2010,Western Water Catchment,0-24,400
+2010,Western Water Catchment,25-59,560
+2010,Western Water Catchment,60+,100
+2010,Woodlands,0-24,90440
+2010,Woodlands,25-59,134050
+2010,Woodlands,60+,20670
+2010,Yishun,0-24,60010
+2010,Yishun,25-59,103790
+2010,Yishun,60+,21400
+2015,Ang Mo Kio,0-24,42370
+2015,Ang Mo Kio,25-59,91020
+2015,Ang Mo Kio,60+,41380
+2015,Bedok,0-24,76230
+2015,Bedok,25-59,150790
+2015,Bedok,60+,62740
+2015,Bishan,0-24,24870
+2015,Bishan,25-59,47310
+2015,Bishan,60+,18550
+2015,Boon Lay,0-24,0
+2015,Boon Lay,25-59,0
+2015,Boon Lay,60+,0
+2015,Bukit Batok,0-24,39660
+2015,Bukit Batok,25-59,76400
+2015,Bukit Batok,60+,23210
+2015,Bukit Merah,0-24,35900
+2015,Bukit Merah,25-59,80370
+2015,Bukit Merah,60+,39600
+2015,Bukit Panjang,0-24,43230
+2015,Bukit Panjang,25-59,75700
+2015,Bukit Panjang,60+,20120
+2015,Bukit Timah,0-24,22400
+2015,Bukit Timah,25-59,37150
+2015,Bukit Timah,60+,14970
+2015,Central Water Catchment,0-24,0
+2015,Central Water Catchment,25-59,0
+2015,Central Water Catchment,60+,0
+2015,Changi,0-24,920
+2015,Changi,25-59,1300
+2015,Changi,60+,330
+2015,Changi Bay,0-24,0
+2015,Changi Bay,25-59,0
+2015,Changi Bay,60+,0
+2015,Choa Chu Kang,0-24,57930
+2015,Choa Chu Kang,25-59,94220
+2015,Choa Chu Kang,60+,22170
+2015,Clementi,0-24,22360
+2015,Clementi,25-59,47820
+2015,Clementi,60+,21440
+2015,Downtown Core,0-24,590
+2015,Downtown Core,25-59,2150
+2015,Downtown Core,60+,980
+2015,Geylang,0-24,29130
+2015,Geylang,25-59,62040
+2015,Geylang,60+,25830
+2015,Hougang,0-24,61300
+2015,Hougang,25-59,119110
+2015,Hougang,60+,41910
+2015,Jurong East,0-24,22450
+2015,Jurong East,25-59,45540
+2015,Jurong East,60+,17040
+2015,Jurong West,0-24,83290
+2015,Jurong West,25-59,150410
+2015,Jurong West,60+,38990
+2015,Kallang,0-24,23150
+2015,Kallang,25-59,53690
+2015,Kallang,60+,24410
+2015,Lim Chu Kang,0-24,0
+2015,Lim Chu Kang,25-59,0
+2015,Lim Chu Kang,60+,0
+2015,Mandai,0-24,680
+2015,Mandai,25-59,1120
+2015,Mandai,60+,310
+2015,Marina East,0-24,0
+2015,Marina East,25-59,0
+2015,Marina East,60+,0
+2015,Marina South,0-24,0
+2015,Marina South,25-59,0
+2015,Marina South,60+,0
+2015,Marine Parade,0-24,12870
+2015,Marine Parade,25-59,24820
+2015,Marine Parade,60+,11080
+2015,Museum,0-24,80
+2015,Museum,25-59,260
+2015,Museum,60+,50
+2015,Newton,0-24,1780
+2015,Newton,25-59,3790
+2015,Newton,60+,1370
+2015,North-Eastern Islands,0-24,0
+2015,North-Eastern Islands,25-59,0
+2015,North-Eastern Islands,60+,0
+2015,Novena,0-24,12660
+2015,Novena,25-59,25150
+2015,Novena,60+,10200
+2015,Orchard,0-24,190
+2015,Orchard,25-59,530
+2015,Orchard,60+,210
+2015,Outram,0-24,4650
+2015,Outram,25-59,11430
+2015,Outram,60+,6000
+2015,Pasir Ris,0-24,47610
+2015,Pasir Ris,25-59,74020
+2015,Pasir Ris,60+,18230
+2015,Paya Lebar,0-24,0
+2015,Paya Lebar,25-59,0
+2015,Paya Lebar,60+,0
+2015,Pioneer,0-24,0
+2015,Pioneer,25-59,0
+2015,Pioneer,60+,0
+2015,Punggol,0-24,35790
+2015,Punggol,25-59,63220
+2015,Punggol,60+,10760
+2015,Queenstown,0-24,23370
+2015,Queenstown,25-59,50810
+2015,Queenstown,60+,23890
+2015,River Valley,0-24,2350
+2015,River Valley,25-59,5240
+2015,River Valley,60+,1650
+2015,Rochor,0-24,3010
+2015,Rochor,25-59,7780
+2015,Rochor,60+,3850
+2015,Seletar,0-24,80
+2015,Seletar,25-59,160
+2015,Seletar,60+,20
+2015,Sembawang,0-24,24550
+2015,Sembawang,25-59,43030
+2015,Sembawang,60+,8970
+2015,Sengkang,0-24,65850
+2015,Sengkang,25-59,116780
+2015,Sengkang,60+,24100
+2015,Serangoon,0-24,32250
+2015,Serangoon,25-59,62170
+2015,Serangoon,60+,26260
+2015,Simpang,0-24,0
+2015,Simpang,25-59,0
+2015,Simpang,60+,0
+2015,Singapore River,0-24,670
+2015,Singapore River,25-59,1730
+2015,Singapore River,60+,330
+2015,Southern Islands,0-24,430
+2015,Southern Islands,25-59,900
+2015,Southern Islands,60+,150
+2015,Straits View,0-24,0
+2015,Straits View,25-59,0
+2015,Straits View,60+,0
+2015,Sungei Kadut,0-24,190
+2015,Sungei Kadut,25-59,390
+2015,Sungei Kadut,60+,270
+2015,Tampines,0-24,76860
+2015,Tampines,25-59,140690
+2015,Tampines,60+,43710
+2015,Tanglin,0-24,5320
+2015,Tanglin,25-59,10190
+2015,Tanglin,60+,3520
+2015,Tengah,0-24,0
+2015,Tengah,25-59,0
+2015,Tengah,60+,0
+2015,Toa Payoh,0-24,30250
+2015,Toa Payoh,25-59,64300
+2015,Toa Payoh,60+,30410
+2015,Tuas,0-24,0
+2015,Tuas,25-59,0
+2015,Tuas,60+,0
+2015,Western Islands,0-24,0
+2015,Western Islands,25-59,0
+2015,Western Islands,60+,0
+2015,Western Water Catchment,0-24,320
+2015,Western Water Catchment,25-59,500
+2015,Western Water Catchment,60+,100
+2015,Woodlands,0-24,84480
+2015,Woodlands,25-59,136280
+2015,Woodlands,60+,29570
+2015,Yishun,0-24,57460
+2015,Yishun,25-59,112840
+2015,Yishun,60+,31670
+2020,Ang Mo Kio,0-24,34700
+2020,Ang Mo Kio,25-59,79620
+2020,Ang Mo Kio,60+,47940
+2020,Bedok,0-24,64210
+2020,Bedok,25-59,137550
+2020,Bedok,60+,75230
+2020,Bishan,0-24,20700
+2020,Bishan,25-59,43480
+2020,Bishan,60+,23180
+2020,Boon Lay,0-24,0
+2020,Boon Lay,25-59,0
+2020,Boon Lay,60+,0
+2020,Bukit Batok,0-24,40810
+2020,Bukit Batok,25-59,83830
+2020,Bukit Batok,60+,33440
+2020,Bukit Merah,0-24,31890
+2020,Bukit Merah,25-59,74970
+2020,Bukit Merah,60+,44430
+2020,Bukit Panjang,0-24,38100
+2020,Bukit Panjang,25-59,72290
+2020,Bukit Panjang,60+,27920
+2020,Bukit Timah,0-24,22470
+2020,Bukit Timah,25-59,37370
+2020,Bukit Timah,60+,18030
+2020,Central Water Catchment,0-24,0
+2020,Central Water Catchment,25-59,0
+2020,Central Water Catchment,60+,0
+2020,Changi,0-24,630
+2020,Changi,25-59,970
+2020,Changi,60+,290
+2020,Changi Bay,0-24,0
+2020,Changi Bay,25-59,0
+2020,Changi Bay,60+,0
+2020,Choa Chu Kang,0-24,56020
+2020,Choa Chu Kang,25-59,103240
+2020,Choa Chu Kang,60+,32830
+2020,Clementi,0-24,21860
+2020,Clementi,25-59,45440
+2020,Clementi,60+,24730
+2020,Downtown Core,0-24,490
+2020,Downtown Core,25-59,2100
+2020,Downtown Core,60+,630
+2020,Geylang,0-24,23620
+2020,Geylang,25-59,56510
+2020,Geylang,60+,30010
+2020,Hougang,0-24,54570
+2020,Hougang,25-59,117500
+2020,Hougang,60+,55540
+2020,Jurong East,0-24,17880
+2020,Jurong East,25-59,39070
+2020,Jurong East,60+,21640
+2020,Jurong West,0-24,72080
+2020,Jurong West,25-59,139130
+2020,Jurong West,60+,51550
+2020,Kallang,0-24,21020
+2020,Kallang,25-59,51240
+2020,Kallang,60+,29050
+2020,Lim Chu Kang,0-24,30
+2020,Lim Chu Kang,25-59,40
+2020,Lim Chu Kang,60+,30
+2020,Mandai,0-24,590
+2020,Mandai,25-59,1100
+2020,Mandai,60+,440
+2020,Marina East,0-24,0
+2020,Marina East,25-59,0
+2020,Marina East,60+,0
+2020,Marina South,0-24,0
+2020,Marina South,25-59,0
+2020,Marina South,60+,0
+2020,Marine Parade,0-24,11510
+2020,Marine Parade,25-59,22560
+2020,Marine Parade,60+,12190
+2020,Museum,0-24,110
+2020,Museum,25-59,350
+2020,Museum,60+,80
+2020,Newton,0-24,2200
+2020,Newton,25-59,4390
+2020,Newton,60+,1670
+2020,North-Eastern Islands,0-24,0
+2020,North-Eastern Islands,25-59,0
+2020,North-Eastern Islands,60+,0
+2020,Novena,0-24,12350
+2020,Novena,25-59,25250
+2020,Novena,60+,11740
+2020,Orchard,0-24,230
+2020,Orchard,25-59,480
+2020,Orchard,60+,210
+2020,Outram,0-24,3410
+2020,Outram,25-59,8810
+2020,Outram,60+,6140
+2020,Pasir Ris,0-24,41740
+2020,Pasir Ris,25-59,78800
+2020,Pasir Ris,60+,26570
+2020,Paya Lebar,0-24,0
+2020,Paya Lebar,25-59,0
+2020,Paya Lebar,60+,0
+2020,Pioneer,0-24,0
+2020,Pioneer,25-59,0
+2020,Pioneer,60+,0
+2020,Punggol,0-24,58280
+2020,Punggol,25-59,96360
+2020,Punggol,60+,19840
+2020,Queenstown,0-24,21200
+2020,Queenstown,25-59,48170
+2020,Queenstown,60+,26560
+2020,River Valley,0-24,2560
+2020,River Valley,25-59,5650
+2020,River Valley,60+,1900
+2020,Rochor,0-24,2430
+2020,Rochor,25-59,6710
+2020,Rochor,60+,3990
+2020,Seletar,0-24,100
+2020,Seletar,25-59,160
+2020,Seletar,60+,50
+2020,Sembawang,0-24,30950
+2020,Sembawang,25-59,56990
+2020,Sembawang,60+,14680
+2020,Sengkang,0-24,76710
+2020,Sengkang,25-59,134780
+2020,Sengkang,60+,37860
+2020,Serangoon,0-24,26800
+2020,Serangoon,25-59,57530
+2020,Serangoon,60+,32600
+2020,Simpang,0-24,0
+2020,Simpang,25-59,0
+2020,Simpang,60+,0
+2020,Singapore River,0-24,890
+2020,Singapore River,25-59,1940
+2020,Singapore River,60+,460
+2020,Southern Islands,0-24,550
+2020,Southern Islands,25-59,1140
+2020,Southern Islands,60+,270
+2020,Straits View,0-24,0
+2020,Straits View,25-59,0
+2020,Straits View,60+,0
+2020,Sungei Kadut,0-24,180
+2020,Sungei Kadut,25-59,350
+2020,Sungei Kadut,60+,240
+2020,Tampines,0-24,66090
+2020,Tampines,25-59,134210
+2020,Tampines,60+,59620
+2020,Tanglin,0-24,6140
+2020,Tanglin,25-59,11220
+2020,Tanglin,60+,4470
+2020,Tengah,0-24,0
+2020,Tengah,25-59,0
+2020,Tengah,60+,0
+2020,Toa Payoh,0-24,26380
+2020,Toa Payoh,25-59,60540
+2020,Toa Payoh,60+,34950
+2020,Tuas,0-24,0
+2020,Tuas,25-59,0
+2020,Tuas,60+,0
+2020,Western Islands,0-24,0
+2020,Western Islands,25-59,0
+2020,Western Islands,60+,0
+2020,Western Water Catchment,0-24,250
+2020,Western Water Catchment,25-59,330
+2020,Western Water Catchment,60+,60
+2020,Woodlands,0-24,77050
+2020,Woodlands,25-59,136610
+2020,Woodlands,60+,41500
+2020,Yishun,0-24,58370
+2020,Yishun,25-59,118560
+2020,Yishun,60+,44700
