@@ -1,7 +1,11 @@
 <template>
     <div class="map-container w-full h-full">
         <div ref="tooltip" class="tooltip"></div>
-        <div ref="histogramTooltip" class="tooltip absolute z-50 pointer-events-none text-xs bg-white px-2 py-1 border border-gray-300 rounded shadow" style="visibility: hidden;"></div>
+        <div
+            ref="histogramTooltip"
+            class="tooltip absolute z-50 pointer-events-none text-xs bg-white px-2 py-1 border border-gray-300 rounded shadow"
+            style="visibility: hidden"
+        ></div>
         <div class="map-wrapper relative w-full h-full">
             <svg
                 ref="map"
@@ -16,48 +20,58 @@
                 <div
                     class="w-full flex flex-row gap-2 px-4 py-2 rounded-md shadow-lg text-xs bg-white border-none"
                 >
-                <Select v-model="selectedYear">
-                <SelectTrigger class="w-[130px] text-xs h-8 flex items-center gap-1">
-                    <div class="flex items-center gap-1">
-                    <Calendar :size="16" />
-                    <span class="font-semibold">Year:</span>
-                    </div>
-                    <SelectValue :placeholder="selectedYear" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                    <SelectItem
-                        v-for="year in [...Array(2023 - 1990 + 1)].map((_, i) => 1990 + i).reverse()"
-                        :key="year"
-                        :value="String(year)"
-                    >
-                        {{ year }}
-                    </SelectItem>
-                    </SelectGroup>
-                </SelectContent>
-                </Select>
+                    <Select v-model="selectedYear">
+                        <SelectTrigger
+                            class="w-[130px] text-xs h-8 flex items-center gap-1"
+                        >
+                            <div class="flex items-center gap-1">
+                                <Calendar :size="16" />
+                                <span class="font-semibold">Year:</span>
+                            </div>
+                            <SelectValue :placeholder="selectedYear" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                <SelectItem
+                                    v-for="year in [...Array(2023 - 1990 + 1)]
+                                        .map((_, i) => 1990 + i)
+                                        .reverse()"
+                                    :key="year"
+                                    :value="String(year)"
+                                >
+                                    {{ year }}
+                                </SelectItem>
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
 
-                <Select v-model="selectedFlatType">
-                <SelectTrigger class="w-[150px] text-xs h-8 flex items-center gap-1">
-                    <div class="flex items-center gap-1">
-                    <House :size="16" />
-                    <span class="font-semibold">Flat Type:</span>
-                    </div>
-                    <SelectValue placeholder="All" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectItem value="All">All</SelectItem>
-                    <SelectGroup>
-                    <SelectItem value="1 ROOM">1 Room</SelectItem>
-                    <SelectItem value="2 ROOM">2 Room</SelectItem>
-                    <SelectItem value="3 ROOM">3 Room</SelectItem>
-                    <SelectItem value="4 ROOM">4 Room</SelectItem>
-                    <SelectItem value="5 ROOM">5 Room</SelectItem>
-                    <SelectItem value="EXECUTIVE">Executive</SelectItem>
-                    <SelectItem value="MULTI-GENERATION">Multi-Generation</SelectItem>
-                    </SelectGroup>
-                </SelectContent>
-                </Select>
+                    <Select v-model="selectedFlatType">
+                        <SelectTrigger
+                            class="w-[150px] text-xs h-8 flex items-center gap-1"
+                        >
+                            <div class="flex items-center gap-1">
+                                <House :size="16" />
+                                <span class="font-semibold">Flat Type:</span>
+                            </div>
+                            <SelectValue placeholder="All" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="All">All</SelectItem>
+                            <SelectGroup>
+                                <SelectItem value="1 ROOM">1 Room</SelectItem>
+                                <SelectItem value="2 ROOM">2 Room</SelectItem>
+                                <SelectItem value="3 ROOM">3 Room</SelectItem>
+                                <SelectItem value="4 ROOM">4 Room</SelectItem>
+                                <SelectItem value="5 ROOM">5 Room</SelectItem>
+                                <SelectItem value="EXECUTIVE"
+                                    >Executive</SelectItem
+                                >
+                                <SelectItem value="MULTI-GENERATION"
+                                    >Multi-Generation</SelectItem
+                                >
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
 
                     <!-- <div class="text-xs font-medium flex items-center gap-2">
                         <Calendar :size="16" /> Year {{ selectedYear }} 
@@ -90,148 +104,6 @@
                         @update:modelValue="updateYear"
                     /> -->
                 </div>
-                <Drawer>
-                    <DrawerTrigger as-child>
-                        <Button
-                            variant="outline"
-                            class="px-4 py-2 rounded-md shadow-lg text-xs"
-                        >
-                            <MapPinned /> Amenities
-                        </Button>
-                    </DrawerTrigger>
-                    <DrawerContent>
-                        <div class="mx-auto w-full max-w-sm">
-                            <DrawerHeader>
-                                <DrawerTitle> Point of Interests </DrawerTitle>
-                                <DrawerDescription>
-                                    Select locations to display
-                                </DrawerDescription>
-                            </DrawerHeader>
-
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="flex items-center space-x-2">
-                                    <Checkbox
-                                        v-model="showHawkerCentres"
-                                        id="hawker-centres"
-                                    />
-                                    <label
-                                        for="hawker-centres"
-                                        class="text-sm font-medium"
-                                        >Hawker Centres</label
-                                    >
-                                </div>
-
-                                <div class="flex items-center space-x-2">
-                                    <Checkbox v-model="showGyms" id="gyms" />
-                                    <label
-                                        for="gyms"
-                                        class="text-sm font-medium"
-                                        >Gyms</label
-                                    >
-                                </div>
-
-                                <div class="flex items-center space-x-2">
-                                    <Checkbox v-model="showParks" id="parks" />
-                                    <label
-                                        for="parks"
-                                        class="text-sm font-medium"
-                                        >Parks</label
-                                    >
-                                </div>
-
-                                <div class="flex items-center space-x-2">
-                                    <Checkbox v-model="showMrts" id="mrts" />
-                                    <label
-                                        for="mrts"
-                                        class="text-sm font-medium"
-                                        >MRT Stations</label
-                                    >
-                                </div>
-
-                                <div class="flex items-center space-x-2">
-                                    <Checkbox
-                                        v-model="showPreschools"
-                                        id="preschools"
-                                    />
-                                    <label
-                                        for="preschools"
-                                        class="text-sm font-medium"
-                                        >Preschools</label
-                                    >
-                                </div>
-
-                                <div class="flex items-center space-x-2">
-                                    <Checkbox
-                                        v-model="showPrimarySchools"
-                                        id="primary-schools"
-                                    />
-                                    <label
-                                        for="primary-schools"
-                                        class="text-sm font-medium"
-                                        >Primary Schools</label
-                                    >
-                                </div>
-
-                                <div class="flex items-center space-x-2">
-                                    <Checkbox
-                                        v-model="showSecondarySchools"
-                                        id="secondary-schools"
-                                    />
-                                    <label
-                                        for="secondary-schools"
-                                        class="text-sm font-medium"
-                                        >Secondary Schools</label
-                                    >
-                                </div>
-
-                                <div class="flex items-center space-x-2">
-                                    <Checkbox
-                                        v-model="showJuniorColleges"
-                                        id="junior-colleges"
-                                    />
-                                    <label
-                                        for="junior-colleges"
-                                        class="text-sm font-medium"
-                                        >Junior Colleges</label
-                                    >
-                                </div>
-
-                                <div class="flex items-center space-x-2">
-                                    <Checkbox
-                                        v-model="showPolytechnics"
-                                        id="polytechnics"
-                                    />
-                                    <label
-                                        for="polytechnics"
-                                        class="text-sm font-medium"
-                                        >Polytechnics</label
-                                    >
-                                </div>
-
-                                <div class="flex items-center space-x-2">
-                                    <Checkbox
-                                        v-model="showUniversities"
-                                        id="universities"
-                                    />
-                                    <label
-                                        for="universities"
-                                        class="text-sm font-medium"
-                                        >Universities</label
-                                    >
-                                </div>
-                            </div>
-                            <DrawerFooter>
-                                <DrawerClose as-child>
-                                    <Button
-                                        class="w-full text-white px-4 py-2 rounded-md"
-                                    >
-                                        Close
-                                    </Button>
-                                </DrawerClose>
-                            </DrawerFooter>
-                        </div>
-                    </DrawerContent>
-                </Drawer>
             </div>
 
             <div class="absolute bottom-4 right-4 flex flex-col gap-2">
@@ -322,23 +194,222 @@
                         </div>
                     </div>
                 </div>
-                <div v-if="selectedAreaInfo?.name" class="mt-5 text-xs flex flex-col justify-center items-center gap-1">
-                    <div class="flex items-center gap-1">
+                <div
+                    v-if="selectedAreaInfo?.name"
+                    class="mt-5 text-xs flex flex-row justify-center items-center gap-4 w-full"
+                >
+                    <!-- Left Column: Ruling Party (Label + Content stacked) -->
+                    <div class="flex flex-col justify-center">
                         <span class="font-medium">Ruling Party</span>
+                        <div
+                            class="flex justify-center items-center gap-2 mt-1"
+                        >
+                            <span>
+                                {{
+                                    planningAreaFeatureMap.get(
+                                        selectedAreaInfo.name
+                                    )?.properties?.rulingParty ?? "N/A"
+                                }}
+                            </span>
+                            <img
+                                :src="
+                                    'img/' +
+                                    planningAreaFeatureMap.get(
+                                        selectedAreaInfo.name
+                                    )?.properties?.rulingParty +
+                                    '.png'
+                                "
+                                class="w-5 h-auto"
+                                alt="Party Logo"
+                            />
+                        </div>
                     </div>
-                    <div class="flex items-center gap-1">
-                        {{ planningAreaFeatureMap.get(selectedAreaInfo.name)?.properties?.rulingParty ?? 'N/A' }}
-                        <img
-                        :src="'img/' + planningAreaFeatureMap.get(selectedAreaInfo.name)?.properties?.rulingParty + '.png'"
-                        class="w-5 h-auto"
-                        alt="Party Logo"
-                    />
+
+                    <!-- Right Column: Vertically Centered Amenities Button -->
+                    <div class="flex items-center">
+                        <Drawer>
+                            <DrawerTrigger as-child>
+                                <Button
+                                    variant="outline"
+                                    class="px-4 py-2 rounded-md text-xs h-8 gap-1 items-center flex"
+                                >
+                                    <MapPinned /> Amenities
+                                </Button>
+                            </DrawerTrigger>
+                            <DrawerContent>
+                                <div class="mx-auto w-full max-w-sm">
+                                    <DrawerHeader>
+                                        <DrawerTitle>Amenities</DrawerTitle>
+                                        <DrawerDescription>
+                                            Select locations to display
+                                        </DrawerDescription>
+                                    </DrawerHeader>
+
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div
+                                            class="flex items-center space-x-2"
+                                        >
+                                            <Checkbox
+                                                v-model="showHawkerCentres"
+                                                id="hawker-centres"
+                                                :disabled="!hasHawkerCentres"
+                                            />
+                                            <label
+                                                for="hawker-centres"
+                                                class="text-sm font-medium"
+                                                >Hawker Centres</label
+                                            >
+                                        </div>
+                                        <div
+                                            class="flex items-center space-x-2"
+                                        >
+                                            <Checkbox
+                                                v-model="showGyms"
+                                                id="gyms"
+                                                :disabled="!hasGyms"
+                                            />
+                                            <label
+                                                for="gyms"
+                                                class="text-sm font-medium"
+                                                >Gyms</label
+                                            >
+                                        </div>
+                                        <div
+                                            class="flex items-center space-x-2"
+                                        >
+                                            <Checkbox
+                                                v-model="showParks"
+                                                id="parks"
+                                                :disabled="!hasParks"
+                                            />
+                                            <label
+                                                for="parks"
+                                                class="text-sm font-medium"
+                                                >Parks</label
+                                            >
+                                        </div>
+                                        <div
+                                            class="flex items-center space-x-2"
+                                        >
+                                            <Checkbox
+                                                v-model="showMrts"
+                                                id="mrts"
+                                                :disabled="!hasMrts"
+                                            />
+                                            <label
+                                                for="mrts"
+                                                class="text-sm font-medium"
+                                                >MRT Stations</label
+                                            >
+                                        </div>
+                                        <div
+                                            class="flex items-center space-x-2"
+                                        >
+                                            <Checkbox
+                                                v-model="showMalls"
+                                                id="malls"
+                                                :disabled="!hasMalls"
+                                            />
+                                            <label
+                                                for="malls"
+                                                class="text-sm font-medium"
+                                                >Malls</label
+                                            >
+                                        </div>
+                                        <div
+                                            class="flex items-center space-x-2"
+                                        >
+                                            <Checkbox
+                                                v-model="showPrimarySchools"
+                                                id="primary-schools"
+                                                :disabled="!hasPrimarySchools"
+                                            />
+                                            <label
+                                                for="primary-schools"
+                                                class="text-sm font-medium"
+                                                >Primary Schools</label
+                                            >
+                                        </div>
+                                        <div
+                                            class="flex items-center space-x-2"
+                                        >
+                                            <Checkbox
+                                                v-model="showSecondarySchools"
+                                                id="secondary-schools"
+                                                :disabled="!hasSecondarySchools"
+                                            />
+                                            <label
+                                                for="secondary-schools"
+                                                class="text-sm font-medium"
+                                                >Secondary Schools</label
+                                            >
+                                        </div>
+                                        <div
+                                            class="flex items-center space-x-2"
+                                        >
+                                            <Checkbox
+                                                v-model="showJuniorColleges"
+                                                id="junior-colleges"
+                                                :disabled="!hasJuniorColleges"
+                                            />
+                                            <label
+                                                for="junior-colleges"
+                                                class="text-sm font-medium"
+                                                >Junior Colleges</label
+                                            >
+                                        </div>
+                                        <div
+                                            class="flex items-center space-x-2"
+                                        >
+                                            <Checkbox
+                                                v-model="showPolytechnics"
+                                                id="polytechnics"
+                                                :disabled="!hasPolytechnics"
+                                            />
+                                            <label
+                                                for="polytechnics"
+                                                class="text-sm font-medium"
+                                                >Polytechnics</label
+                                            >
+                                        </div>
+                                        <div
+                                            class="flex items-center space-x-2"
+                                        >
+                                            <Checkbox
+                                                v-model="showUniversities"
+                                                id="universities"
+                                                :disabled="!hasUniversities"
+                                            />
+                                            <label
+                                                for="universities"
+                                                class="text-sm font-medium"
+                                                >Universities</label
+                                            >
+                                        </div>
+                                    </div>
+
+                                    <DrawerFooter>
+                                        <DrawerClose as-child>
+                                            <Button
+                                                class="w-full text-white px-4 py-2 rounded-md"
+                                                >Close</Button
+                                            >
+                                        </DrawerClose>
+                                    </DrawerFooter>
+                                </div>
+                            </DrawerContent>
+                        </Drawer>
                     </div>
                 </div>
 
-                <div v-if="selectedAreaInfo?.name" class="mt-10 text-xs flex flex-col justify-center items-center gap-1">
+                <div
+                    v-if="selectedAreaInfo?.name"
+                    class="mt-10 text-xs flex flex-col justify-center items-center gap-1"
+                >
                     <div class="flex items-center gap-1">
-                        <span class="font-medium">HDB Resale Price Distribution</span>
+                        <span class="font-medium"
+                            >HDB Resale Price Distribution</span
+                        >
                     </div>
                     <div
                         id="histogram"
@@ -416,6 +487,7 @@ const showSecondarySchools = ref(false);
 const showJuniorColleges = ref(false);
 const showPolytechnics = ref(false);
 const showUniversities = ref(false);
+const showMalls = ref(false);
 
 const minYear = 1990;
 const maxYear = 2023;
@@ -435,11 +507,16 @@ const secondarySchools = ref(null);
 const juniorColleges = ref(null);
 const polytechnics = ref(null);
 const universities = ref(null);
+const malls = ref(null);
 const rulingPartyByEDYear = {};
 const medianPriceForHistogram = ref(null);
 const histogramTooltip = ref(null);
 
-const emit = defineEmits(['areaSelected', 'resetSelection', 'selectedFlatType']);
+const emit = defineEmits([
+    "areaSelected",
+    "resetSelection",
+    "selectedFlatType",
+]);
 
 const partyColors = {
     PAP: "#1A56A3",
@@ -457,11 +534,11 @@ const partyColors = {
 };
 
 const changeYear = (direction) => {
-  if (direction === 'left' && selectedYear.value > minYear) {
-    selectedYear.value--;
-  } else if (direction === 'right' && selectedYear.value < maxYear) {
-    selectedYear.value++;
-  }
+    if (direction === "left" && selectedYear.value > minYear) {
+        selectedYear.value--;
+    } else if (direction === "right" && selectedYear.value < maxYear) {
+        selectedYear.value++;
+    }
 };
 
 const selectedAreaName = computed(() => selectedAreaInfo.value?.name ?? null);
@@ -472,28 +549,28 @@ let resizeObserver = null;
 let mapGroup = null;
 
 function emitAggregatedStats() {
-  if (!dataStore.chartData) return;
-  
-  const filteredData = dataStore.chartData.filter(
-    (d) => String(d["Year"]) === String(selectedYear.value)
-  );
-  
-  const totalUnits = filteredData.length;
-  const totalPrice = d3.sum(filteredData, d => +d["Resale Price"]);
-  
-  const pricePerSqm = d3.median(filteredData, d => {
-      return +d["Resale Price"] / +d["Floor Area Sqm"];
-  });
-  
-  emit('areaSelected', {
-    areaName: 'All Singapore',
-    totalUnits,
-    totalPrice,
-    pricePerSqm,
-    year: selectedYear.value,
-    isAggregated: true,
-    rawData: filteredData,
-  });
+    if (!dataStore.chartData) return;
+
+    const filteredData = dataStore.chartData.filter(
+        (d) => String(d["Year"]) === String(selectedYear.value)
+    );
+
+    const totalUnits = filteredData.length;
+    const totalPrice = d3.sum(filteredData, (d) => +d["Resale Price"]);
+
+    const pricePerSqm = d3.median(filteredData, (d) => {
+        return +d["Resale Price"] / +d["Floor Area Sqm"];
+    });
+
+    emit("areaSelected", {
+        areaName: "All Singapore",
+        totalUnits,
+        totalPrice,
+        pricePerSqm,
+        year: selectedYear.value,
+        isAggregated: true,
+        rawData: filteredData,
+    });
 }
 
 function handleSelection(area) {
@@ -506,18 +583,18 @@ function handleSelection(area) {
             (d) =>
                 d["Planning Area"] === areaName &&
                 String(d["Year"]) === String(selectedYear.value) &&
-                (selectedFlatType.value === "All" || d["Flat Type"] === selectedFlatType.value)
+                (selectedFlatType.value === "All" ||
+                    d["Flat Type"] === selectedFlatType.value)
         );
 
-
         const totalUnits = resaleHDBsData.length;
-        const totalPrice = d3.sum(resaleHDBsData, d => +d["Resale Price"]);
-        
-        const pricePerSqm = d3.median(resaleHDBsData, d => {
-                return +d["Resale Price"] / +d["Floor Area Sqm"];
+        const totalPrice = d3.sum(resaleHDBsData, (d) => +d["Resale Price"]);
+
+        const pricePerSqm = d3.median(resaleHDBsData, (d) => {
+            return +d["Resale Price"] / +d["Floor Area Sqm"];
         });
-        
-        emit('areaSelected', {
+
+        emit("areaSelected", {
             areaName,
             totalUnits,
             totalPrice,
@@ -525,10 +602,13 @@ function handleSelection(area) {
             year: selectedYear.value,
             rawData: resaleHDBsData,
         });
+
+        resetAmenityToggles();
     } else {
         searchQuery.value = "";
         selectedArea.value = null;
         emitAggregatedStats();
+        resetAmenityToggles();
     }
 }
 
@@ -610,210 +690,227 @@ const createLegend = () => {
     const filtered = data.filter(
         (d) =>
             String(d["Year"]) === String(selectedYear.value) &&
-            (selectedFlatType.value === "All" || d["Flat Type"] === selectedFlatType.value)
+            (selectedFlatType.value === "All" ||
+                d["Flat Type"] === selectedFlatType.value)
     );
-
 
     const legendContainer = d3.select(legend.value);
     legendContainer.html("");
 
-        const resaleHDBsData = dataStore.chartData.filter(
-            (d) => String(d["Year"]) === String(selectedYear.value)
-        );
+    const resaleHDBsData = dataStore.chartData.filter(
+        (d) => String(d["Year"]) === String(selectedYear.value)
+    );
 
-        const medianPriceByPlanningArea = d3.rollup(
-            filtered,
-            (v) => d3.median(v, (d) => +d["Resale Price"]),
-            (d) => d["Planning Area"]
-        );
+    const medianPriceByPlanningArea = d3.rollup(
+        filtered,
+        (v) => d3.median(v, (d) => +d["Resale Price"]),
+        (d) => d["Planning Area"]
+    );
 
-        const priceExtent = d3.extent(
-            Array.from(medianPriceByPlanningArea.values())
-        );
+    const priceExtent = d3.extent(
+        Array.from(medianPriceByPlanningArea.values())
+    );
 
-        const colorScale = d3
-            .scaleSequential()
-            .domain(priceExtent)
-            .interpolator((t) => d3.interpolateOranges(t * 0.8 + 0.2));
+    const colorScale = d3
+        .scaleSequential()
+        .domain(priceExtent)
+        .interpolator((t) => d3.interpolateOranges(t * 0.8 + 0.2));
 
-        const formatPrice = (value) => {
-            if (value >= 1000) {
-                return (value / 1000).toFixed(0) + "K";
-            }
-            return value.toString();
-        };
+    const formatPrice = (value) => {
+        if (value >= 1000) {
+            return (value / 1000).toFixed(0) + "K";
+        }
+        return value.toString();
+    };
 
-        const formatK = (value) => d3.format(".2s")(value).replace("k", "K");
-        const minPrice = priceExtent[0] ? formatK(priceExtent[0]) : "N/A";
-        const maxPrice = priceExtent[1] ? formatK(priceExtent[1]) : "N/A";
+    const formatK = (value) => d3.format(".2s")(value).replace("k", "K");
+    const minPrice = priceExtent[0] ? formatK(priceExtent[0]) : "N/A";
+    const maxPrice = priceExtent[1] ? formatK(priceExtent[1]) : "N/A";
 
-        const legendWidth = 150;
-        const legendHeight = 70;
-        const titleOffsetY = 12;
-        const valueOffsetY = titleOffsetY + 30;
-        const gradientOffsetY = valueOffsetY + 10;
-        const letterSpacing = "1px";
+    const legendWidth = 150;
+    const legendHeight = 70;
+    const titleOffsetY = 12;
+    const valueOffsetY = titleOffsetY + 30;
+    const gradientOffsetY = valueOffsetY + 10;
+    const letterSpacing = "1px";
 
-        const legendSvg = legendContainer
-            .append("svg")
-            .attr("width", legendWidth)
-            .attr("height", legendHeight);
+    const legendSvg = legendContainer
+        .append("svg")
+        .attr("width", legendWidth)
+        .attr("height", legendHeight);
 
-        const defs = legendSvg.append("defs");
-        const linearGradient = defs
-            .append("linearGradient")
-            .attr("id", "gradient")
-            .attr("x1", "0%")
-            .attr("y1", "0%")
-            .attr("x2", "100%")
-            .attr("y2", "0%");
+    const defs = legendSvg.append("defs");
+    const linearGradient = defs
+        .append("linearGradient")
+        .attr("id", "gradient")
+        .attr("x1", "0%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "0%");
 
-        linearGradient
-            .append("stop")
-            .attr("offset", "0%")
-            .attr("stop-color", colorScale(priceExtent[0]));
+    linearGradient
+        .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", colorScale(priceExtent[0]));
 
-        linearGradient
-            .append("stop")
-            .attr("offset", "100%")
-            .attr("stop-color", colorScale(priceExtent[1]));
+    linearGradient
+        .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", colorScale(priceExtent[1]));
 
-        legendSvg
-            .append("text")
-            .attr("x", 0)
-            .attr("y", titleOffsetY)
-            .attr("text-anchor", "left")
-            .attr("font-size", "10px")
-            .attr("fill", "black")
-            .style("letter-spacing", letterSpacing)
-            .attr("class", "font-bold")
-            .text("MEDIAN RESALE PRICE");
+    legendSvg
+        .append("text")
+        .attr("x", 0)
+        .attr("y", titleOffsetY)
+        .attr("text-anchor", "left")
+        .attr("font-size", "10px")
+        .attr("fill", "black")
+        .style("letter-spacing", letterSpacing)
+        .attr("class", "font-bold")
+        .text("MEDIAN RESALE PRICE");
 
-        legendSvg
-            .append("rect")
-            .attr("width", legendWidth)
-            .attr("height", 10)
-            .attr("y", gradientOffsetY)
-            .style("fill", "url(#gradient)");
+    legendSvg
+        .append("rect")
+        .attr("width", legendWidth)
+        .attr("height", 10)
+        .attr("y", gradientOffsetY)
+        .style("fill", "url(#gradient)");
 
-        legendSvg
-            .append("text")
-            .attr("x", 0)
-            .attr("y", valueOffsetY)
-            .attr("font-size", "10px")
-            .attr("fill", "black")
-            .text(`${formatPrice(minPrice)}`);
+    legendSvg
+        .append("text")
+        .attr("x", 0)
+        .attr("y", valueOffsetY)
+        .attr("font-size", "10px")
+        .attr("fill", "black")
+        .text(`${formatPrice(minPrice)}`);
 
-        legendSvg
-            .append("text")
-            .attr("x", legendWidth - 25)
-            .attr("y", valueOffsetY)
-            .attr("font-size", "10px")
-            .attr("fill", "black")
-            .text(`${formatPrice(maxPrice)}`);
+    legendSvg
+        .append("text")
+        .attr("x", legendWidth - 25)
+        .attr("y", valueOffsetY)
+        .attr("font-size", "10px")
+        .attr("fill", "black")
+        .text(`${formatPrice(maxPrice)}`);
+};
+
+function resetAmenityToggles() {
+    showHawkerCentres.value = false;
+    showGyms.value = false;
+    showParks.value = false;
+    showMrts.value = false;
+    showPreschools.value = false;
+    showPrimarySchools.value = false;
+    showSecondarySchools.value = false;
+    showJuniorColleges.value = false;
+    showPolytechnics.value = false;
+    showUniversities.value = false;
+    showMalls.value = false;
+}
+
+function drawHistogram(areaName) {
+    const container = d3.select("#histogram");
+    container.selectAll("*").remove();
+
+    const resaleData = dataStore.chartData.filter(
+        (d) =>
+            d["Planning Area"] === areaName &&
+            String(d["Year"]) === String(selectedYear.value) &&
+            (selectedFlatType.value === "All" ||
+                d["Flat Type"] === selectedFlatType.value)
+    );
+
+    const prices = resaleData.map((d) => +d["Resale Price"]);
+
+    if (prices.length === 0) {
+        container
+            .append("div")
+            .attr("class", "text-center text-gray-500 text-xs mt-2")
+            .text("No data available for this area and year.");
+        return;
     }
 
-    function drawHistogram(areaName) {
-  const container = d3.select("#histogram");
-  container.selectAll("*").remove();
+    const containerNode = document.getElementById("histogram");
+    const containerWidth = containerNode?.offsetWidth || 400;
 
-  const resaleData = dataStore.chartData.filter(
-  (d) =>
-    d["Planning Area"] === areaName &&
-    String(d["Year"]) === String(selectedYear.value) &&
-    (selectedFlatType.value === "All" || d["Flat Type"] === selectedFlatType.value)
-);
+    const width = containerWidth;
+    const height = 140;
+    const margin = { top: 20, right: 10, bottom: 30, left: 35 };
 
-  const prices = resaleData.map((d) => +d["Resale Price"]);
-  
-  if (prices.length === 0) {
-    container
-      .append("div")
-      .attr("class", "text-center text-gray-500 text-xs mt-2")
-      .text("No data available for this area and year.");
-    return;
-  }
+    const svg = container
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
 
-  const containerNode = document.getElementById("histogram");
-  const containerWidth = containerNode?.offsetWidth || 400;
+    const x = d3
+        .scaleLinear()
+        .domain([d3.min(prices), d3.max(prices)])
+        .range([margin.left, width - margin.right]);
 
-  const width = containerWidth;
-  const height = 140;
-  const margin = { top: 20, right: 10, bottom: 30, left: 35 };
+    const bins = d3.bin().domain(x.domain()).thresholds(15)(prices);
 
-  const svg = container
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-  const x = d3
-    .scaleLinear()
-    .domain([d3.min(prices), d3.max(prices)])
-    .range([margin.left, width - margin.right]);
-
-  const bins = d3.bin().domain(x.domain()).thresholds(15)(prices);
-
-  const y = d3
-    .scaleLinear()
-    .domain([0, d3.max(bins, (d) => d.length)])
-    .nice()
-    .range([height - margin.bottom, margin.top]);
+    const y = d3
+        .scaleLinear()
+        .domain([0, d3.max(bins, (d) => d.length)])
+        .nice()
+        .range([height - margin.bottom, margin.top]);
 
     svg.selectAll("rect")
-  .data(bins)
-  .enter()
-  .append("rect")
-  .attr("x", (d) => x(d.x0) + 1)
-  .attr("y", (d) => y(d.length))
-  .attr("width", (d) => Math.max(0, x(d.x1) - x(d.x0) - 1))
-  .attr("height", (d) => y(0) - y(d.length))
-  .attr("fill", "#93c5fd")
-  .on("mouseover", function (event, d) {
-    d3.select(this).attr("fill", "#60a5fa");
-    d3.select(histogramTooltip.value)
-      .style("visibility", "visible")
-      .html(`
+        .data(bins)
+        .enter()
+        .append("rect")
+        .attr("x", (d) => x(d.x0) + 1)
+        .attr("y", (d) => y(d.length))
+        .attr("width", (d) => Math.max(0, x(d.x1) - x(d.x0) - 1))
+        .attr("height", (d) => y(0) - y(d.length))
+        .attr("fill", "#93c5fd")
+        .on("mouseover", function (event, d) {
+            d3.select(this).attr("fill", "#60a5fa");
+            d3
+                .select(histogramTooltip.value)
+                .style("visibility", "visible").html(`
         <div><strong>${d.length}</strong> resale units</div>
-        <div>Price range: $${d3.format(",")(d.x0)} – $${d3.format(",")(d.x1)}</div>
+        <div>Price range: $${d3.format(",")(
+            d.x0
+        )} – $${d3.format(",")(d.x1)}</div>
       `);
-  })
-  .on("mousemove", function (event) {
-    const [mouseX, mouseY] = d3.pointer(event, map.value);
-    d3.select(histogramTooltip.value)
-      .style("left", `${mouseX + 15}px`)
-      .style("top", `${mouseY}px`);
-  })
-  .on("mouseout", function () {
-    d3.select(this).attr("fill", "#93c5fd");
-    d3.select(histogramTooltip.value).style("visibility", "hidden");
-  });
+        })
+        .on("mousemove", function (event) {
+            const [mouseX, mouseY] = d3.pointer(event, map.value);
+            d3.select(histogramTooltip.value)
+                .style("left", `${mouseX + 15}px`)
+                .style("top", `${mouseY}px`);
+        })
+        .on("mouseout", function () {
+            d3.select(this).attr("fill", "#93c5fd");
+            d3.select(histogramTooltip.value).style("visibility", "hidden");
+        });
 
-  svg.append("g")
-    .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x).ticks(4).tickFormat(d3.format("~s")));
+    svg.append("g")
+        .attr("transform", `translate(0,${height - margin.bottom})`)
+        .call(d3.axisBottom(x).ticks(4).tickFormat(d3.format("~s")));
 
-  svg.append("g")
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).ticks(4));
+    svg.append("g")
+        .attr("transform", `translate(${margin.left},0)`)
+        .call(d3.axisLeft(y).ticks(4));
 
-  const median = d3.median(prices);
-  medianPriceForHistogram.value = median;
-  
-  svg.append("line")
-    .attr("x1", x(median))
-    .attr("x2", x(median))
-    .attr("y1", y(0))
-    .attr("y2", y(d3.max(bins, (d) => d.length)))
-    .attr("stroke", "red")
-    .attr("stroke-width", 2)
-    .attr("stroke-dasharray", "4 2");
+    const median = d3.median(prices);
+    medianPriceForHistogram.value = median;
 
-  svg.append("text")
-    .attr("x", x(median) + 4)
-    .attr("y", y(d3.max(bins, (d) => d.length)) - 5)
-    .attr("fill", "red")
-    .attr("font-size", "10px")
-    .text("Median" + ": $" + d3.format(",")(median));
+    svg.append("line")
+        .attr("x1", x(median))
+        .attr("x2", x(median))
+        .attr("y1", y(0))
+        .attr("y2", y(d3.max(bins, (d) => d.length)))
+        .attr("stroke", "red")
+        .attr("stroke-width", 2)
+        .attr("stroke-dasharray", "4 2");
+
+    svg.append("text")
+        .attr("x", x(median) + 4)
+        .attr("y", y(d3.max(bins, (d) => d.length)) - 5)
+        .attr("fill", "red")
+        .attr("font-size", "10px")
+        .text("Median" + ": $" + d3.format(",")(median));
 }
 
 const redrawMap = (forceReset = false) => {
@@ -841,18 +938,20 @@ const redrawMap = (forceReset = false) => {
         .attr("fill", "transparent")
         .lower()
         .on("click", () => {
-                selectedArea.value = null;
-                selectedAreaInfo.value = null;
-                searchQuery.value = "";
+            selectedArea.value = null;
+            selectedAreaInfo.value = null;
+            searchQuery.value = "";
 
-                d3.select("#histogram").selectAll("*").remove();
+            resetAmenityToggles();
 
-                d3.select(map.value)
-                    .selectAll("path")
-                    .attr("stroke", "black")
-                    .attr("stroke-width", 0.5);
-                
-                emitAggregatedStats();
+            d3.select("#histogram").selectAll("*").remove();
+
+            d3.select(map.value)
+                .selectAll("path")
+                .attr("stroke", "black")
+                .attr("stroke-width", 0.5);
+
+            emitAggregatedStats();
         });
 
     if (forceReset) {
@@ -1038,98 +1137,96 @@ const drawMapContent = () => {
     const resaleHDBsData = dataStore.chartData.filter(
         (d) =>
             String(d["Year"]) === String(selectedYear.value) &&
-            (selectedFlatType.value === "All" || d["Flat Type"] === selectedFlatType.value)
+            (selectedFlatType.value === "All" ||
+                d["Flat Type"] === selectedFlatType.value)
     );
 
-        const medianPriceByPlanningArea = d3.rollup(
-            resaleHDBsData,
-            (v) => d3.median(v, (d) => +d["Resale Price"]),
-            (d) => d["Planning Area"]
-        );
+    const medianPriceByPlanningArea = d3.rollup(
+        resaleHDBsData,
+        (v) => d3.median(v, (d) => +d["Resale Price"]),
+        (d) => d["Planning Area"]
+    );
 
-        const priceExtent = d3.extent(
-            Array.from(medianPriceByPlanningArea.values())
-        );
-        
-        const colorScale = d3
-            .scaleSequential()
-            .domain(priceExtent)
-            .interpolator((t) => d3.interpolateOranges(t * 0.8 + 0.2));
+    const priceExtent = d3.extent(
+        Array.from(medianPriceByPlanningArea.values())
+    );
 
-        mapGroup
-            .selectAll("path.planning")
-            .data(selectedDataset.features)
-            .enter()
-            .append("path")
-            .attr("d", path)
-            .attr("fill", (d) => {
-                let areaName;
-                const description = d.properties.Description;
-                const parser = new DOMParser();
-                const htmlDoc = parser.parseFromString(
-                    description,
-                    "text/html"
-                );
-                const edDescTd = Array.from(
-                    htmlDoc.querySelectorAll("td")
-                ).find((td) => {
+    const colorScale = d3
+        .scaleSequential()
+        .domain(priceExtent)
+        .interpolator((t) => d3.interpolateOranges(t * 0.8 + 0.2));
+
+    mapGroup
+        .selectAll("path.planning")
+        .data(selectedDataset.features)
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .attr("fill", (d) => {
+            let areaName;
+            const description = d.properties.Description;
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(description, "text/html");
+            const edDescTd = Array.from(htmlDoc.querySelectorAll("td")).find(
+                (td) => {
                     const prevTh = td.previousElementSibling;
                     return prevTh && prevTh.textContent.trim() === "PLN_AREA_N";
-                });
-
-                if (edDescTd) {
-                    areaName = edDescTd.textContent;
                 }
+            );
 
-                const medianPrice = medianPriceByPlanningArea.get(areaName);
+            if (edDescTd) {
+                areaName = edDescTd.textContent;
+            }
 
-                if (!medianPrice) {
-                    d.properties.noData = true;
-                    return "lightgray";
-                }
+            const medianPrice = medianPriceByPlanningArea.get(areaName);
 
-                d.properties.noData = false;
-                return colorScale(medianPrice);
-            })
-            .attr("stroke", "black")
-            .attr("stroke-width", 0.5)
-            .style("pointer-events", "visible")
-            .on("mouseover", function (event, d) {
-                if (d.properties.noData) return;
+            if (!medianPrice) {
+                d.properties.noData = true;
+                return "lightgray";
+            }
 
-                d3.select(this)
-                    .attr("stroke", "#4c51bf")
-                    .attr("stroke-width", 2.5)
-                    .style("cursor", "pointer");
+            d.properties.noData = false;
+            return colorScale(medianPrice);
+        })
+        .attr("stroke", "black")
+        .attr("stroke-width", 0.5)
+        .style("pointer-events", "visible")
+        .on("mouseover", function (event, d) {
+            if (d.properties.noData) return;
 
-                const areaName = extractPlanningAreaName(d);
+            d3.select(this)
+                .attr("stroke", "#4c51bf")
+                .attr("stroke-width", 2.5)
+                .style("cursor", "pointer");
 
-                if (tooltipLocked.value && selectedAreaName.value === areaName)
-                    return;
+            const areaName = extractPlanningAreaName(d);
 
-                const medianPrice = medianPriceByPlanningArea.get(areaName);
-                const formattedPrice = medianPrice
-                    ? `${d3.format(",.2f")(medianPrice)}`
-                    : "No data";
+            if (tooltipLocked.value && selectedAreaName.value === areaName)
+                return;
 
-                d3.select(tooltip.value)
-                    .style("visibility", "visible")
-                    .html(
-                        `<div class="font-bold text-center">${areaName
-                            .toLowerCase()
-                            .split(" ")
-                            .map(
-                                (word) =>
-                                    word.charAt(0).toUpperCase() + word.slice(1)
-                            )
-                            .join(" ")
-                            .replace(
-                                /\b(\w+)-(\w+)\b/g,
-                                (match, p1, p2) =>
-                                    `${p1}\-${p2
-                                        .charAt(0)
-                                        .toUpperCase()}${p2.slice(1)}`
-                            )}</div>
+            const medianPrice = medianPriceByPlanningArea.get(areaName);
+            const formattedPrice = medianPrice
+                ? `${d3.format(",.2f")(medianPrice)}`
+                : "No data";
+
+            d3.select(tooltip.value)
+                .style("visibility", "visible")
+                .html(
+                    `<div class="font-bold text-center">${areaName
+                        .toLowerCase()
+                        .split(" ")
+                        .map(
+                            (word) =>
+                                word.charAt(0).toUpperCase() + word.slice(1)
+                        )
+                        .join(" ")
+                        .replace(
+                            /\b(\w+)-(\w+)\b/g,
+                            (match, p1, p2) =>
+                                `${p1}\-${p2.charAt(0).toUpperCase()}${p2.slice(
+                                    1
+                                )}`
+                        )}</div>
                             <div class="flex flex-row items-center gap-1">
                                 <div class="tracking-wider">$${formattedPrice}</div>
                                 <div>
@@ -1137,140 +1234,141 @@ const drawMapContent = () => {
                                 </div>
                             </div>
                     `
-                    );
-            })
-            .on("mousemove", (event) => {
-                const [mouseX, mouseY] = d3.pointer(event, map.value);
-
-                d3.select(tooltip.value)
-                    .style("top", `${mouseY - 30}px`)
-                    .style("left", `${mouseX + 10}px`);
-            })
-            .on("mouseout", function (event, d) {
-                const htmlDoc = new DOMParser().parseFromString(
-                    d.properties.Description,
-                    "text/html"
                 );
-                const cell = Array.from(htmlDoc.querySelectorAll("td")).find(
-                    (td) => {
-                        const prevTh = td.previousElementSibling;
-                        return (
-                            prevTh && prevTh.textContent.trim() === "PLN_AREA_N"
-                        );
-                    }
-                );
+        })
+        .on("mousemove", (event) => {
+            const [mouseX, mouseY] = d3.pointer(event, map.value);
 
-                const areaName = cell?.textContent;
-
-                if (areaName === selectedAreaName.value) {
-                    d3.select(this)
-                        .attr("stroke", "#4c51bf")
-                        .attr("stroke-width", 3);
-                } else {
-                    d3.select(this)
-                        .attr("stroke", "black")
-                        .attr("stroke-width", 0.5);
-                }
-
-                d3.select(tooltip.value).style("visibility", "hidden");
-            })
-            .on("click", (event, d) => {
-                if (d.properties.noData) {
-                    selectedArea.value = null;
-                    selectedAreaInfo.value = null;
-                    searchQuery.value = "";
-                    d3.select("#histogram").selectAll("*").remove();
-
-                    d3.select(map.value)
-                        .selectAll("path")
-                        .attr("stroke", "black")
-                        .attr("stroke-width", 0.5);
-
-                    emitAggregatedStats();
-
-                    return;
-                }
-
-                zoomToBoundary(d);
-
-                let areaName;
-                const description = d.properties.Description;
-                const parser = new DOMParser();
-                const htmlDoc = parser.parseFromString(
-                    description,
-                    "text/html"
-                );
-                const edDescTd = Array.from(
-                    htmlDoc.querySelectorAll("td")
-                ).find((td) => {
+            d3.select(tooltip.value)
+                .style("top", `${mouseY - 30}px`)
+                .style("left", `${mouseX + 10}px`);
+        })
+        .on("mouseout", function (event, d) {
+            const htmlDoc = new DOMParser().parseFromString(
+                d.properties.Description,
+                "text/html"
+            );
+            const cell = Array.from(htmlDoc.querySelectorAll("td")).find(
+                (td) => {
                     const prevTh = td.previousElementSibling;
                     return prevTh && prevTh.textContent.trim() === "PLN_AREA_N";
-                });
-
-                if (edDescTd) {
-                    areaName = edDescTd.textContent;
-                } else {
-                    areaName = "UNKNOWN";
                 }
+            );
 
-                const medianPrice = medianPriceByPlanningArea.get(areaName);
+            const areaName = cell?.textContent;
 
-                selectedAreaInfo.value = {
-                    name: areaName,
-                    price: medianPrice || null,
-                };
-
-                selectedArea.value = {
-                    value: areaName,
-                    label: formattedAreaName(areaName),
-                };
-                searchQuery.value = formattedAreaName(areaName);
-
-                tooltipLocked.value = true;
-                d3.select(tooltip.value).style("visibility", "hidden");
-
-                nextTick(() => {
-                    drawHistogram(areaName);
-                });
-
-                const resaleHDBsData = dataStore.chartData.filter(
-                    (d) =>
-                        d["Planning Area"] === areaName &&
-                        String(d["Year"]) === String(selectedYear.value)
-                );
-
-                const totalUnits = resaleHDBsData.length;
-                const totalPrice = d3.sum(resaleHDBsData, (d) => +d["Resale Price"]);
-
-                const pricePerSqm = d3.median(resaleHDBsData, (d) => {
-                        return +d["Resale Price"] / +d["Floor Area Sqm"];
-                });
-
-                emit('areaSelected', {
-                    areaName,
-                    totalUnits,
-                    totalPrice,
-                    pricePerSqm,
-                    year: selectedYear.value,
-                    rawData: resaleHDBsData,
-                });
-            });
-        planningAreas.value[2019].features.forEach((paFeature) => {
-            const paCenter = turf.center(paFeature);
-            const edFeatures = electoralBoundaries.value[2020].features;
-
-            for (const edFeature of edFeatures) {
-                if (turf.booleanPointInPolygon(paCenter, edFeature)) {
-                    const constituency = edFeature.properties.ED_DESC || edFeature.properties.Name;
-                    const key = `2020_${constituency}`;
-                    const ruling = rulingPartyByEDYear[key]?.party || "UNKNOWN";
-
-                    paFeature.properties.rulingParty = ruling;
-                    break;
-                }
+            if (areaName === selectedAreaName.value) {
+                d3.select(this)
+                    .attr("stroke", "#4c51bf")
+                    .attr("stroke-width", 3);
+            } else {
+                d3.select(this)
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 0.5);
             }
+
+            d3.select(tooltip.value).style("visibility", "hidden");
+        })
+        .on("click", (event, d) => {
+            if (d.properties.noData) {
+                selectedArea.value = null;
+                selectedAreaInfo.value = null;
+                searchQuery.value = "";
+                d3.select("#histogram").selectAll("*").remove();
+
+                d3.select(map.value)
+                    .selectAll("path")
+                    .attr("stroke", "black")
+                    .attr("stroke-width", 0.5);
+
+                emitAggregatedStats();
+
+                return;
+            }
+
+            zoomToBoundary(d);
+
+            let areaName;
+            const description = d.properties.Description;
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(description, "text/html");
+            const edDescTd = Array.from(htmlDoc.querySelectorAll("td")).find(
+                (td) => {
+                    const prevTh = td.previousElementSibling;
+                    return prevTh && prevTh.textContent.trim() === "PLN_AREA_N";
+                }
+            );
+
+            if (edDescTd) {
+                areaName = edDescTd.textContent;
+            } else {
+                areaName = "UNKNOWN";
+            }
+
+            const medianPrice = medianPriceByPlanningArea.get(areaName);
+
+            selectedAreaInfo.value = {
+                name: areaName,
+                price: medianPrice || null,
+            };
+
+            resetAmenityToggles();
+
+            selectedArea.value = {
+                value: areaName,
+                label: formattedAreaName(areaName),
+            };
+            searchQuery.value = formattedAreaName(areaName);
+
+            tooltipLocked.value = true;
+            d3.select(tooltip.value).style("visibility", "hidden");
+
+            nextTick(() => {
+                drawHistogram(areaName);
+            });
+
+            const resaleHDBsData = dataStore.chartData.filter(
+                (d) =>
+                    d["Planning Area"] === areaName &&
+                    String(d["Year"]) === String(selectedYear.value)
+            );
+
+            const totalUnits = resaleHDBsData.length;
+            const totalPrice = d3.sum(
+                resaleHDBsData,
+                (d) => +d["Resale Price"]
+            );
+
+            const pricePerSqm = d3.median(resaleHDBsData, (d) => {
+                return +d["Resale Price"] / +d["Floor Area Sqm"];
+            });
+
+            emit("areaSelected", {
+                areaName,
+                totalUnits,
+                totalPrice,
+                pricePerSqm,
+                year: selectedYear.value,
+                rawData: resaleHDBsData,
+            });
         });
-    };
+    planningAreas.value[2019].features.forEach((paFeature) => {
+        const paCenter = turf.center(paFeature);
+        const edFeatures = electoralBoundaries.value[2020].features;
+
+        for (const edFeature of edFeatures) {
+            if (turf.booleanPointInPolygon(paCenter, edFeature)) {
+                const constituency =
+                    edFeature.properties.ED_DESC || edFeature.properties.Name;
+                const key = `2020_${constituency}`;
+                const ruling = rulingPartyByEDYear[key]?.party || "UNKNOWN";
+
+                paFeature.properties.rulingParty = ruling;
+                break;
+            }
+        }
+    });
+};
 
 const planningAreaOptions = computed(() =>
     planningAreaNames.value
@@ -1284,31 +1382,33 @@ const planningAreaOptions = computed(() =>
 );
 
 const clearSearch = () => {
-  searchQuery.value = "";
-  selectedArea.value = null;
-  selectedAreaInfo.value = null;
-  tooltipLocked.value = false;
+    searchQuery.value = "";
+    selectedArea.value = null;
+    selectedAreaInfo.value = null;
+    tooltipLocked.value = false;
 
-  const container = d3.select("#histogram");
-  container.selectAll("*").remove();
+    resetAmenityToggles();
 
-  d3.select(map.value)
-    .selectAll("path")
-    .attr("stroke", "black")
-    .attr("stroke-width", 0.5);
-   
-  emitAggregatedStats();
+    const container = d3.select("#histogram");
+    container.selectAll("*").remove();
+
+    d3.select(map.value)
+        .selectAll("path")
+        .attr("stroke", "black")
+        .attr("stroke-width", 0.5);
+
+    emitAggregatedStats();
 };
 
 const updateYear = (value) => {
     selectedYear.value = Array.isArray(value) ? value[0] : value;
 
-        if (selectedYear.value < 2019) {
-            currentYear.value = 2019;
-        } else {
-            currentYear.value = 2019;
-        }
-    };
+    if (selectedYear.value < 2019) {
+        currentYear.value = 2019;
+    } else {
+        currentYear.value = 2019;
+    }
+};
 
 const planningAreaFeatureMap = computed(() => {
     const map = new Map();
@@ -1338,44 +1438,48 @@ const loadData = async () => {
         "/data/election_result/ParliamentaryGeneralElectionResultsbyCandidate.csv"
     );
 
-    electionResults.value.forEach(row => {
+    electionResults.value.forEach((row) => {
         const year = row["year"];
         const ed = row["constituency"].toUpperCase();
         const party = row["party"];
         const votes = +row["vote_count"] || 0;
 
         const key = `${year}_${ed}`;
-        if (!rulingPartyByEDYear[key] || votes > rulingPartyByEDYear[key].votes) {
+        if (
+            !rulingPartyByEDYear[key] ||
+            votes > rulingPartyByEDYear[key].votes
+        ) {
             rulingPartyByEDYear[key] = { party, votes };
         }
     });
 
-    hawkerCentres.value = await d3.json(
-        "/data/point_of_interest/HawkerCentresGEOJSON.geojson"
+    hawkerCentres.value = await d3.csv(
+        "/data/point_of_interest/joined_hawker_centres.csv"
     );
-    gyms.value = await d3.json("/data/point_of_interest/GymsSGGEOJSON.geojson");
-    parks.value = await d3.json("/data/point_of_interest/Parks.geojson");
-    mrts.value = await d3.json(
-        "/data/point_of_interest/UpdatedMRTStations.geojson"
+    gyms.value = await d3.csv("/data/point_of_interest/joined_gyms.csv");
+    parks.value = await d3.csv("/data/point_of_interest/joined_parks.csv");
+    mrts.value = await d3.csv(
+        "/data/point_of_interest/joined_mrt_stations.csv"
     );
-    preschools.value = await d3.json(
-        "/data/point_of_interest/PreSchoolsLocation.geojson"
-    );
+    // preschools.value = await d3.json(
+    //     "/data/point_of_interest/PreSchoolsLocation.geojson"
+    // );
     primarySchools.value = await d3.csv(
-        "/data/point_of_interest/PrimarySchoolsLocation.csv"
+        "/data/point_of_interest/joined_primary_schools_gdf.csv"
     );
     secondarySchools.value = await d3.csv(
-        "/data/point_of_interest/SecondarySchoolsLocation.csv"
+        "/data/point_of_interest/joined_secondary_schools.csv"
     );
     juniorColleges.value = await d3.csv(
-        "/data/point_of_interest/JuniorCollegesLocation.csv"
+        "/data/point_of_interest/joined_junior_colleges.csv"
     );
     polytechnics.value = await d3.csv(
-        "/data/point_of_interest/PolytechnicsLocation.csv"
+        "/data/point_of_interest/joined_polytechnics_gdf.csv"
     );
     universities.value = await d3.csv(
-        "/data/point_of_interest/UniversitiesLocation.csv"
+        "/data/point_of_interest/joined_universities.csv"
     );
+    malls.value = await d3.csv("/data/point_of_interest/joined_malls.csv");
 
     electoralBoundaries.value = {
         2006: await d3.json(
@@ -1443,52 +1547,33 @@ function updatePOIs() {
 
     mapGroup.selectAll(".poi").remove();
 
-    if (
-        showHawkerCentres.value &&
-        hawkerCentres.value &&
-        hawkerCentres.value.features
-    ) {
+    if (showHawkerCentres.value && hawkerCentres.value) {
+        const hawkersInArea = selectedAreaName.value
+            ? hawkerCentres.value.filter(
+                  (d) =>
+                      d["planning_area"]?.toLowerCase() ===
+                      selectedAreaName.value.toLowerCase()
+              )
+            : hawkerCentres.value;
+
         mapGroup
             .selectAll(".hawker")
-            .data(hawkerCentres.value.features)
+            .data(hawkersInArea)
             .enter()
             .append("circle")
             .attr("class", "poi hawker")
-            .attr("cx", (d) => projection(d.geometry.coordinates)[0])
-            .attr("cy", (d) => projection(d.geometry.coordinates)[1])
+            .attr("cx", (d) => projection([+d["longitude"], +d["latitude"]])[0])
+            .attr("cy", (d) => projection([+d["longitude"], +d["latitude"]])[1])
             .attr("r", 1)
             .attr("stroke", "black")
             .attr("stroke-width", 0.5)
-            .attr("fill", "red")
+            .attr("fill", "#e03131")
             .on("mouseover", function (event, d) {
-                const description = d.properties.Description;
-                const parser = new DOMParser();
-                const htmlDoc = parser.parseFromString(
-                    description,
-                    "text/html"
-                );
-
-                const getValueFromTable = (label) => {
-                    const thElements = htmlDoc.querySelectorAll("th");
-                    for (const th of thElements) {
-                        if (th.textContent.trim() === label) {
-                            const td = th.nextElementSibling;
-                            if (td && td.tagName === "TD") {
-                                return td.textContent.trim();
-                            }
-                        }
-                    }
-                    return null;
-                };
-
-                const name =
-                    getValueFromTable("NAME") ||
-                    getValueFromTable("ADDRESSBUILDINGNAME") ||
-                    "Name not available";
+                const name = d.name || "Name not available";
 
                 d3.select(tooltip.value)
                     .style("visibility", "visible")
-                    .html(`${name}`);
+                    .html(`Hawker Centre: <strong>${name}</strong>`);
             })
             .on("mousemove", function (event) {
                 const [mouseX, mouseY] = d3.pointer(event, map.value);
@@ -1502,48 +1587,31 @@ function updatePOIs() {
             });
     }
 
-    if (showGyms.value && gyms.value && gyms.value.features) {
+    if (showGyms.value && gyms.value) {
+        const gymsInArea = selectedAreaName.value
+            ? gyms.value.filter(
+                  (d) =>
+                      d.planning_area.toUpperCase() === selectedAreaName.value
+              )
+            : gyms.value;
+
         mapGroup
             .selectAll(".gym")
-            .data(gyms.value.features)
+            .data(gymsInArea)
             .enter()
             .append("circle")
             .attr("class", "poi gym")
-            .attr("cx", (d) => projection(d.geometry.coordinates)[0])
-            .attr("cy", (d) => projection(d.geometry.coordinates)[1])
+            .attr("cx", (d) => projection([+d["longitude"], +d["latitude"]])[0])
+            .attr("cy", (d) => projection([+d["longitude"], +d["latitude"]])[1])
             .attr("r", 1)
             .attr("stroke", "black")
             .attr("stroke-width", 0.5)
-            .attr("fill", "blue")
+            .attr("fill", "#b33dc6")
             .on("mouseover", function (event, d) {
-                const description = d.properties.Description;
-                const parser = new DOMParser();
-                const htmlDoc = parser.parseFromString(
-                    description,
-                    "text/html"
-                );
-
-                const getValueFromTable = (label) => {
-                    const thElements = htmlDoc.querySelectorAll("th");
-                    for (const th of thElements) {
-                        if (th.textContent.trim() === label) {
-                            const td = th.nextElementSibling;
-                            if (td && td.tagName === "TD") {
-                                return td.textContent.trim();
-                            }
-                        }
-                    }
-                    return null;
-                };
-
-                const name =
-                    getValueFromTable("NAME") ||
-                    getValueFromTable("ADDRESSBUILDINGNAME") ||
-                    "Name not available";
-
+                const name = d.name || "Name not available";
                 d3.select(tooltip.value)
                     .style("visibility", "visible")
-                    .html(`${name}`);
+                    .html(`Gym: <strong>${name}</strong>`);
             })
             .on("mousemove", function (event) {
                 const [mouseX, mouseY] = d3.pointer(event, map.value);
@@ -1557,32 +1625,31 @@ function updatePOIs() {
             });
     }
 
-    if (showParks.value && parks.value && parks.value.features) {
+    if (showParks.value && parks.value) {
+        const parksInArea = selectedAreaName.value
+            ? parks.value.filter(
+                  (d) =>
+                      d.planning_area.toUpperCase() === selectedAreaName.value
+              )
+            : parks.value;
+
         mapGroup
             .selectAll(".park")
-            .data(parks.value.features)
+            .data(parksInArea)
             .enter()
             .append("circle")
             .attr("class", "poi park")
-            .attr("cx", (d) => projection(d.geometry.coordinates)[0])
-            .attr("cy", (d) => projection(d.geometry.coordinates)[1])
+            .attr("cx", (d) => projection([+d["longitude"], +d["latitude"]])[0])
+            .attr("cy", (d) => projection([+d["longitude"], +d["latitude"]])[1])
             .attr("r", 1)
             .attr("stroke", "black")
             .attr("stroke-width", 0.5)
-            .attr("fill", "green")
+            .attr("fill", "#87bc45")
             .on("mouseover", function (event, d) {
-                const name =
-                    d.properties.NAME.toLowerCase()
-                        .split(" ")
-                        .map(
-                            (word) =>
-                                word.charAt(0).toUpperCase() + word.slice(1)
-                        )
-                        .join(" ") || "Name not available";
-
+                const name = d.name || "Name not available";
                 d3.select(tooltip.value)
                     .style("visibility", "visible")
-                    .html(`${name}`);
+                    .html(`Park: <strong>${name}</strong>`);
             })
             .on("mousemove", function (event) {
                 const [mouseX, mouseY] = d3.pointer(event, map.value);
@@ -1596,32 +1663,31 @@ function updatePOIs() {
             });
     }
 
-    if (showMrts.value && mrts.value && mrts.value.features) {
+    if (showMrts.value && mrts.value) {
+        const mrtsInArea = selectedAreaName.value
+            ? mrts.value.filter(
+                  (d) =>
+                      d.planning_area.toUpperCase() === selectedAreaName.value
+              )
+            : mrts.value;
+
         mapGroup
             .selectAll(".mrt")
-            .data(mrts.value.features)
+            .data(mrtsInArea)
             .enter()
             .append("circle")
             .attr("class", "poi mrt")
-            .attr("cx", (d) => projection(d.geometry.coordinates)[0])
-            .attr("cy", (d) => projection(d.geometry.coordinates)[1])
+            .attr("cx", (d) => projection([+d["Longitude"], +d["Latitude"]])[0])
+            .attr("cy", (d) => projection([+d["Longitude"], +d["Latitude"]])[1])
             .attr("r", 1)
             .attr("stroke", "black")
             .attr("stroke-width", 0.5)
-            .attr("fill", "purple")
+            .attr("fill", "#f46a9b")
             .on("mouseover", function (event, d) {
-                const name =
-                    d.properties.Name.toLowerCase()
-                        .split(" ")
-                        .map(
-                            (word) =>
-                                word.charAt(0).toUpperCase() + word.slice(1)
-                        )
-                        .join(" ") + " MRT" || "Name not available";
-
+                const name = d.name || "Name not available";
                 d3.select(tooltip.value)
                     .style("visibility", "visible")
-                    .html(`${name}`);
+                    .html(`Station: <strong>${name}</strong>`);
             })
             .on("mousemove", function (event) {
                 const [mouseX, mouseY] = d3.pointer(event, map.value);
@@ -1635,49 +1701,35 @@ function updatePOIs() {
             });
     }
 
-    if (showPreschools.value && preschools.value && preschools.value.features) {
+    if (showMalls.value && malls.value) {
+        const mallsInArea = selectedAreaName.value
+            ? malls.value.filter(
+                  (d) =>
+                      d.planning_area &&
+                      d.planning_area.toUpperCase() === selectedAreaName.value
+              )
+            : malls.value;
+
         mapGroup
-            .selectAll(".preschool")
-            .data(preschools.value.features)
+            .selectAll(".mall")
+            .data(mallsInArea)
             .enter()
             .append("circle")
-            .attr("class", "poi preschool")
-            .attr("cx", (d) => projection(d.geometry.coordinates)[0])
-            .attr("cy", (d) => projection(d.geometry.coordinates)[1])
+            .attr("class", "poi mall")
+            .attr("cx", (d) => projection([+d["Longitude"], +d["Latitude"]])[0])
+            .attr("cy", (d) => projection([+d["Longitude"], +d["Latitude"]])[1])
             .attr("r", 1)
             .attr("stroke", "black")
             .attr("stroke-width", 0.5)
-            .attr("fill", "orange")
+            .attr("fill", "#ea5545")
             .on("mouseover", function (event, d) {
-                const getValueFromTable = (label) => {
-                    const description = d.properties.Description;
-                    const parser = new DOMParser();
-                    const htmlDoc = parser.parseFromString(
-                        description,
-                        "text/html"
-                    );
-                    const thElements = htmlDoc.querySelectorAll("th");
-                    for (const th of thElements) {
-                        if (th.textContent.trim() === label) {
-                            const td = th.nextElementSibling;
-                            if (td && td.tagName === "TD") {
-                                return td.textContent.trim();
-                            }
-                        }
-                    }
-                    return null;
-                };
-
-                const name =
-                    getValueFromTable("CENTRE_NAME") || "Name not available";
-
+                const name = d.name || "Name not available";
                 d3.select(tooltip.value)
                     .style("visibility", "visible")
-                    .html(`${name}`);
+                    .html(`Mall: <strong>${name}</strong>`);
             })
             .on("mousemove", function (event) {
                 const [mouseX, mouseY] = d3.pointer(event, map.value);
-
                 d3.select(tooltip.value)
                     .style("top", `${mouseY - 20}px`)
                     .style("left", `${mouseX + 10}px`);
@@ -1688,36 +1740,31 @@ function updatePOIs() {
     }
 
     if (showPrimarySchools.value && primarySchools.value) {
+        const schoolsInArea = selectedAreaName.value
+            ? primarySchools.value.filter(
+                  (d) =>
+                      d.planning_area &&
+                      d.planning_area.toUpperCase() === selectedAreaName.value
+              )
+            : primarySchools.value;
+
         mapGroup
             .selectAll(".primary-school")
-            .data(primarySchools.value)
+            .data(schoolsInArea)
             .enter()
             .append("circle")
             .attr("class", "poi primary-school")
-            .attr("cx", (d) => {
-                const coords = projection([
-                    parseFloat(d.long),
-                    parseFloat(d.lat),
-                ]);
-                return coords ? coords[0] : 0;
-            })
-            .attr("cy", (d) => {
-                const coords = projection([
-                    parseFloat(d.long),
-                    parseFloat(d.lat),
-                ]);
-                return coords ? coords[1] : 0;
-            })
+            .attr("cx", (d) => projection([+d["Longitude"], +d["Latitude"]])[0])
+            .attr("cy", (d) => projection([+d["Longitude"], +d["Latitude"]])[1])
             .attr("r", 1)
             .attr("stroke", "black")
             .attr("stroke-width", 0.5)
-            .attr("fill", "orange")
+            .attr("fill", "#ef9b20")
             .on("mouseover", function (event, d) {
-                const name = d.school_name || "Name not available";
-
+                const name = d.name || "Name not available";
                 d3.select(tooltip.value)
                     .style("visibility", "visible")
-                    .html(`${name}`);
+                    .html(`Primary School: <strong>${name}</strong>`);
             })
             .on("mousemove", function (event) {
                 const [mouseX, mouseY] = d3.pointer(event, map.value);
@@ -1732,34 +1779,31 @@ function updatePOIs() {
     }
 
     if (showSecondarySchools.value && secondarySchools.value) {
+        const schoolsInArea = selectedAreaName.value
+            ? secondarySchools.value.filter(
+                  (d) =>
+                      d.planning_area &&
+                      d.planning_area.toUpperCase() === selectedAreaName.value
+              )
+            : secondarySchools.value;
+
         mapGroup
             .selectAll(".secondary-school")
-            .data(secondarySchools.value)
+            .data(schoolsInArea)
             .enter()
             .append("circle")
             .attr("class", "poi secondary-school")
-            .attr("cx", (d) => {
-                const coords = projection([
-                    parseFloat(d.long),
-                    parseFloat(d.lat),
-                ]);
-                return coords ? coords[0] : 0;
-            })
-            .attr("cy", (d) => {
-                const coords = projection([
-                    parseFloat(d.long),
-                    parseFloat(d.lat),
-                ]);
-                return coords ? coords[1] : 0;
-            })
+            .attr("cx", (d) => projection([+d["Longitude"], +d["Latitude"]])[0])
+            .attr("cy", (d) => projection([+d["Longitude"], +d["Latitude"]])[1])
             .attr("r", 1)
             .attr("stroke", "black")
             .attr("stroke-width", 0.5)
-            .attr("fill", "purple")
+            .attr("fill", "#edbf33")
             .on("mouseover", function (event, d) {
+                const name = d.name || "Name not available";
                 d3.select(tooltip.value)
                     .style("visibility", "visible")
-                    .html(`<b>${d.school_name}</b>`);
+                    .html(`Secondary School: <strong>${name}</strong>`);
             })
             .on("mousemove", function (event) {
                 const [mouseX, mouseY] = d3.pointer(event, map.value);
@@ -1774,34 +1818,31 @@ function updatePOIs() {
     }
 
     if (showJuniorColleges.value && juniorColleges.value) {
+        const schoolsInArea = selectedAreaName.value
+            ? juniorColleges.value.filter(
+                  (d) =>
+                      d.planning_area &&
+                      d.planning_area.toUpperCase() === selectedAreaName.value
+              )
+            : juniorColleges.value;
+
         mapGroup
             .selectAll(".junior-college")
-            .data(juniorColleges.value)
+            .data(schoolsInArea)
             .enter()
             .append("circle")
             .attr("class", "poi junior-college")
-            .attr("cx", (d) => {
-                const coords = projection([
-                    parseFloat(d.long),
-                    parseFloat(d.lat),
-                ]);
-                return coords ? coords[0] : 0;
-            })
-            .attr("cy", (d) => {
-                const coords = projection([
-                    parseFloat(d.long),
-                    parseFloat(d.lat),
-                ]);
-                return coords ? coords[1] : 0;
-            })
+            .attr("cx", (d) => projection([+d["Longitude"], +d["Latitude"]])[0])
+            .attr("cy", (d) => projection([+d["Longitude"], +d["Latitude"]])[1])
             .attr("r", 1)
             .attr("stroke", "black")
             .attr("stroke-width", 0.5)
-            .attr("fill", "purple")
+            .attr("fill", "#bdcf32")
             .on("mouseover", function (event, d) {
+                const name = d.name || "Name not available";
                 d3.select(tooltip.value)
                     .style("visibility", "visible")
-                    .html(`<b>${d.school_name}</b>`);
+                    .html(`Junior College: <strong>${name}</strong>`);
             })
             .on("mousemove", function (event) {
                 const [mouseX, mouseY] = d3.pointer(event, map.value);
@@ -1816,34 +1857,31 @@ function updatePOIs() {
     }
 
     if (showPolytechnics.value && polytechnics.value) {
+        const schoolsInArea = selectedAreaName.value
+            ? polytechnics.value.filter(
+                  (d) =>
+                      d.planning_area &&
+                      d.planning_area.toUpperCase() === selectedAreaName.value
+              )
+            : polytechnics.value;
+
         mapGroup
             .selectAll(".polytechnic")
-            .data(polytechnics.value)
+            .data(schoolsInArea)
             .enter()
             .append("circle")
             .attr("class", "poi polytechnic")
-            .attr("cx", (d) => {
-                const coords = projection([
-                    parseFloat(d.long),
-                    parseFloat(d.lat),
-                ]);
-                return coords ? coords[0] : 0;
-            })
-            .attr("cy", (d) => {
-                const coords = projection([
-                    parseFloat(d.long),
-                    parseFloat(d.lat),
-                ]);
-                return coords ? coords[1] : 0;
-            })
+            .attr("cx", (d) => projection([+d["Longitude"], +d["Latitude"]])[0])
+            .attr("cy", (d) => projection([+d["Longitude"], +d["Latitude"]])[1])
             .attr("r", 1)
             .attr("stroke", "black")
             .attr("stroke-width", 0.5)
-            .attr("fill", "purple")
+            .attr("fill", "#1a53ff")
             .on("mouseover", function (event, d) {
+                const name = d.name || "Name not available";
                 d3.select(tooltip.value)
                     .style("visibility", "visible")
-                    .html(`<b>${d.school_name}</b>`);
+                    .html(`Polytechnic: <strong>${name}</strong>`);
             })
             .on("mousemove", function (event) {
                 const [mouseX, mouseY] = d3.pointer(event, map.value);
@@ -1858,34 +1896,31 @@ function updatePOIs() {
     }
 
     if (showUniversities.value && universities.value) {
+        const schoolsInArea = selectedAreaName.value
+            ? universities.value.filter(
+                  (d) =>
+                      d.planning_area &&
+                      d.planning_area.toUpperCase() === selectedAreaName.value
+              )
+            : universities.value;
+
         mapGroup
             .selectAll(".university")
-            .data(universities.value)
+            .data(schoolsInArea)
             .enter()
             .append("circle")
             .attr("class", "poi university")
-            .attr("cx", (d) => {
-                const coords = projection([
-                    parseFloat(d.long),
-                    parseFloat(d.lat),
-                ]);
-                return coords ? coords[0] : 0;
-            })
-            .attr("cy", (d) => {
-                const coords = projection([
-                    parseFloat(d.long),
-                    parseFloat(d.lat),
-                ]);
-                return coords ? coords[1] : 0;
-            })
+            .attr("cx", (d) => projection([+d["Longitude"], +d["Latitude"]])[0])
+            .attr("cy", (d) => projection([+d["Longitude"], +d["Latitude"]])[1])
             .attr("r", 1)
             .attr("stroke", "black")
             .attr("stroke-width", 0.5)
-            .attr("fill", "purple")
+            .attr("fill", "#27aeef")
             .on("mouseover", function (event, d) {
+                const name = d.name || "Name not available";
                 d3.select(tooltip.value)
                     .style("visibility", "visible")
-                    .html(`<b>${d.school_name}</b>`);
+                    .html(`University: <strong>${name}</strong>`);
             })
             .on("mousemove", function (event) {
                 const [mouseX, mouseY] = d3.pointer(event, map.value);
@@ -1900,6 +1935,96 @@ function updatePOIs() {
     }
 }
 
+const hasHawkerCentres = computed(() => {
+    if (!hawkerCentres.value) return false;
+    if (!selectedAreaName.value) return hawkerCentres.value.length > 0;
+
+    return hawkerCentres.value.some(
+        (d) => d.planning_area?.toUpperCase() === selectedAreaName.value
+    );
+});
+
+const hasGyms = computed(() => {
+    if (!gyms.value) return false;
+    if (!selectedAreaName.value) return gyms.value.length > 0;
+
+    return gyms.value.some(
+        (d) => d.planning_area?.toUpperCase() === selectedAreaName.value
+    );
+});
+
+const hasParks = computed(() => {
+    if (!parks.value) return false;
+    if (!selectedAreaName.value) return parks.value.length > 0;
+
+    return parks.value.some(
+        (d) => d.planning_area?.toUpperCase() === selectedAreaName.value
+    );
+});
+
+const hasMrts = computed(() => {
+    if (!mrts.value) return false;
+    if (!selectedAreaName.value) return mrts.value.length > 0;
+
+    return mrts.value.some(
+        (d) => d.planning_area?.toUpperCase() === selectedAreaName.value
+    );
+});
+
+const hasPrimarySchools = computed(() => {
+    if (!primarySchools.value) return false;
+    if (!selectedAreaName.value) return primarySchools.value.length > 0;
+
+    return primarySchools.value.some(
+        (d) => d.planning_area?.toUpperCase() === selectedAreaName.value
+    );
+});
+
+const hasSecondarySchools = computed(() => {
+    if (!secondarySchools.value) return false;
+    if (!selectedAreaName.value) return secondarySchools.value.length > 0;
+
+    return secondarySchools.value.some(
+        (d) => d.planning_area?.toUpperCase() === selectedAreaName.value
+    );
+});
+
+const hasJuniorColleges = computed(() => {
+    if (!juniorColleges.value) return false;
+    if (!selectedAreaName.value) return juniorColleges.value.length > 0;
+
+    return juniorColleges.value.some(
+        (d) => d.planning_area?.toUpperCase() === selectedAreaName.value
+    );
+});
+
+const hasPolytechnics = computed(() => {
+    if (!polytechnics.value) return false;
+    if (!selectedAreaName.value) return polytechnics.value.length > 0;
+
+    return polytechnics.value.some(
+        (d) => d.planning_area?.toUpperCase() === selectedAreaName.value
+    );
+});
+
+const hasUniversities = computed(() => {
+    if (!universities.value) return false;
+    if (!selectedAreaName.value) return universities.value.length > 0;
+
+    return universities.value.some(
+        (d) => d.planning_area?.toUpperCase() === selectedAreaName.value
+    );
+});
+
+const hasMalls = computed(() => {
+    if (!malls.value) return false;
+    if (!selectedAreaName.value) return malls.value.length > 0;
+
+    return malls.value.some(
+        (d) => d.planning_area?.toUpperCase() === selectedAreaName.value
+    );
+});
+
 watch(
     [
         showHawkerCentres,
@@ -1912,6 +2037,7 @@ watch(
         showJuniorColleges,
         showPolytechnics,
         showUniversities,
+        showMalls,
     ],
     () => {
         updatePOIs();
@@ -1932,24 +2058,25 @@ watch([selectedYear], async () => {
     } else {
         const areaName = selectedArea.value.value;
         const resaleHDBsData = dataStore.chartData.filter(
-        (d) => d["Planning Area"] === areaName && 
-        String(d["Year"]) === String(selectedYear.value)
+            (d) =>
+                d["Planning Area"] === areaName &&
+                String(d["Year"]) === String(selectedYear.value)
         );
-        
+
         const totalUnits = resaleHDBsData.length;
-        const totalPrice = d3.sum(resaleHDBsData, d => +d["Resale Price"]);
-        
-        const pricePerSqm = d3.median(resaleHDBsData, d => {
+        const totalPrice = d3.sum(resaleHDBsData, (d) => +d["Resale Price"]);
+
+        const pricePerSqm = d3.median(resaleHDBsData, (d) => {
             return +d["Resale Price"] / +d["Floor Area Sqm"];
         });
-        
-        emit('areaSelected', {
-        areaName,
-        totalUnits,
-        totalPrice,
-        pricePerSqm,
-        year: selectedYear.value,
-        rawData: resaleHDBsData,
+
+        emit("areaSelected", {
+            areaName,
+            totalUnits,
+            totalPrice,
+            pricePerSqm,
+            year: selectedYear.value,
+            rawData: resaleHDBsData,
         });
     }
 });
@@ -1958,74 +2085,80 @@ watch(selectedFlatType, (newVal) => {
     console.log("MapChart emitting:", newVal);
 
     emit("selectedFlatType", newVal);
-    
+
     redrawMap();
     createLegend();
 
-  if (selectedAreaName.value) {
-    nextTick(() => {
-        drawHistogram(selectedAreaName.value);
-    });
-}
+    if (selectedAreaName.value) {
+        nextTick(() => {
+            drawHistogram(selectedAreaName.value);
+        });
+    }
 
-  if (!selectedArea.value) {
-    emitAggregatedStats();
-  } else {
-    const areaName = selectedArea.value.value;
-    const resaleHDBsData = dataStore.chartData.filter(
-      (d) =>
-        d["Planning Area"] === areaName &&
-        String(d["Year"]) === String(selectedYear.value) &&
-        (selectedFlatType.value === "All" || d["Flat Type"] === selectedFlatType.value)
-    );
+    if (!selectedArea.value) {
+        emitAggregatedStats();
+    } else {
+        const areaName = selectedArea.value.value;
+        const resaleHDBsData = dataStore.chartData.filter(
+            (d) =>
+                d["Planning Area"] === areaName &&
+                String(d["Year"]) === String(selectedYear.value) &&
+                (selectedFlatType.value === "All" ||
+                    d["Flat Type"] === selectedFlatType.value)
+        );
 
-    const totalUnits = resaleHDBsData.length;
-    const totalPrice = d3.sum(resaleHDBsData, (d) => +d["Resale Price"]);
-    const pricePerSqm = d3.median(resaleHDBsData, (d) => +d["Resale Price"] / +d["Floor Area Sqm"]);
+        const totalUnits = resaleHDBsData.length;
+        const totalPrice = d3.sum(resaleHDBsData, (d) => +d["Resale Price"]);
+        const pricePerSqm = d3.median(
+            resaleHDBsData,
+            (d) => +d["Resale Price"] / +d["Floor Area Sqm"]
+        );
 
-    emit("areaSelected", {
-      areaName,
-      totalUnits,
-      totalPrice,
-      pricePerSqm,
-      year: selectedYear.value,
-      rawData: resaleHDBsData,
-    });
-  }
+        emit("areaSelected", {
+            areaName,
+            totalUnits,
+            totalPrice,
+            pricePerSqm,
+            year: selectedYear.value,
+            rawData: resaleHDBsData,
+        });
+    }
 });
 
 watch(selectedYear, async () => {
-  console.log(`Updating map for year: ${selectedYear.value}`);
-  
-  currentYear.value = selectedYear.value;
+    console.log(`Updating map for year: ${selectedYear.value}`);
 
-  redrawMap();
-  createLegend();
+    currentYear.value = selectedYear.value;
 
-  if (!selectedArea.value) {
-    emitAggregatedStats();
-  } else {
-    const areaName = selectedArea.value.value;
-    const resaleHDBsData = dataStore.chartData.filter(
-      (d) => d["Planning Area"] === areaName && String(d["Year"]) === String(selectedYear.value)
-    );
-    
-    const totalUnits = resaleHDBsData.length;
-    const totalPrice = d3.sum(resaleHDBsData, d => +d["Resale Price"]);
-    
-    const pricePerSqm = d3.median(resaleHDBsData, d => {
-      return +d["Resale Price"] / +d["Floor Area Sqm"];
-    });
-    
-    emit('areaSelected', {
-      areaName,
-      totalUnits,
-      totalPrice,
-      pricePerSqm,
-      year: selectedYear.value,
-      rawData: resaleHDBsData,
-    });
-  }
+    redrawMap();
+    createLegend();
+
+    if (!selectedArea.value) {
+        emitAggregatedStats();
+    } else {
+        const areaName = selectedArea.value.value;
+        const resaleHDBsData = dataStore.chartData.filter(
+            (d) =>
+                d["Planning Area"] === areaName &&
+                String(d["Year"]) === String(selectedYear.value)
+        );
+
+        const totalUnits = resaleHDBsData.length;
+        const totalPrice = d3.sum(resaleHDBsData, (d) => +d["Resale Price"]);
+
+        const pricePerSqm = d3.median(resaleHDBsData, (d) => {
+            return +d["Resale Price"] / +d["Floor Area Sqm"];
+        });
+
+        emit("areaSelected", {
+            areaName,
+            totalUnits,
+            totalPrice,
+            pricePerSqm,
+            year: selectedYear.value,
+            rawData: resaleHDBsData,
+        });
+    }
 });
 
 watch(selectedArea, (newArea) => {
