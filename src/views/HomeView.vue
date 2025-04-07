@@ -6,6 +6,7 @@ import Section2 from "../components/Section2.vue";
 import FactorsOverview from "../components/FactorsOverview.vue";
 import Conclusion from "../components/Conclusion.vue";
 import Section3 from "../components/Section3.vue";
+import OverallConclusion from "../components/OverallConclusion.vue";
 </script>
 
 <template>
@@ -16,6 +17,7 @@ import Section3 from "../components/Section3.vue";
         <FactorsOverview />
         <Section3 />
         <Conclusion />
+        <OverallConclusion />
         <Dashboard />
     </main>
 </template>
