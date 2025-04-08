@@ -117,6 +117,58 @@ export const useDataStore = defineStore("dataStore", () => {
         2000: 4398,
     };
 
+    function reshapeTotalPop(raw) {
+        const ageGroupMap = {
+          "0-4 Years": "0-24 Years",
+          "5-9 Years": "0-24 Years",
+          "10-14 Years": "0-24 Years",
+          "15-19 Years": "0-24 Years",
+          "20-24 Years": "0-24 Years",
+          "25-29 Years": "Adults (25-59 Years)",
+          "30-34 Years": "Adults (25-59 Years)",
+          "35-39 Years": "Adults (25-59 Years)",
+          "40-44 Years": "Adults (25-59 Years)",
+          "45-49 Years": "Adults (25-59 Years)",
+          "50-54 Years": "Adults (25-59 Years)",
+          "55-59 Years": "Adults (25-59 Years)",
+          "60-64 Years": "Seniors (60+ Years)",
+          "65-69 Years": "Seniors (60+ Years)",
+          "70-74 Years": "Seniors (60+ Years)",
+          "75-79 Years": "Seniors (60+ Years)",
+          "80-84 Years": "Seniors (60+ Years)",
+          "85-89 Years": "Seniors (60+ Years)",
+          "90 Years & Over": "Seniors (60+ Years)"
+        };
+      
+        const grouped = d3.rollups(
+          raw.flatMap((row) => {
+            const ageCat = ageGroupMap[row["Age Group"]];
+            if (!ageCat) return [];
+            return Object.entries(row)
+              .filter(([key]) => key !== "Age Group")
+              .map(([year, value]) => ({
+                Year: +year,
+                "Age Group Category": ageCat,
+                Population: +value,
+              }));
+          }),
+          (entries) => d3.sum(entries, (d) => d.Population),
+          (d) => `${d.Year}_${d["Age Group Category"]}`
+        );
+      
+        return grouped.map(([key, total]) => {
+          const [year, group] = key.split("_");
+          return {
+            Year: +year,
+            "Age Group Category": group,
+            Population: total,
+          };
+        });
+      }
+      
+      
+      
+
     async function loadData() {
         if (isDataLoaded.value) return;
 
@@ -201,22 +253,54 @@ export const useDataStore = defineStore("dataStore", () => {
             }));
 
             function reshapeAgeData(raw, flatType) {
+                const ageGroupMap = {
+                  "0-4 Years": "0-24 Years",
+                  "5-9 Years": "0-24 Years",
+                  "10-14 Years": "0-24 Years",
+                  "15-19 Years": "0-24 Years",
+                  "20-24 Years": "0-24 Years",
+                  "25-29 Years": "Adults (25-59 Years)",
+                  "30-34 Years": "Adults (25-59 Years)",
+                  "35-39 Years": "Adults (25-59 Years)",
+                  "40-44 Years": "Adults (25-59 Years)",
+                  "45-49 Years": "Adults (25-59 Years)",
+                  "50-54 Years": "Adults (25-59 Years)",
+                  "55-59 Years": "Adults (25-59 Years)",
+                  "60-64 Years": "Seniors (60+ Years)",
+                  "65-69 Years": "Seniors (60+ Years)",
+                  "70-74 Years": "Seniors (60+ Years)",
+                  "75-79 Years": "Seniors (60+ Years)",
+                  "80-84 Years": "Seniors (60+ Years)",
+                  "85-89 Years": "Seniors (60+ Years)",
+                  "90 Years & Over": "Seniors (60+ Years)",
+                };
+              
                 return raw.flatMap((row) => {
-                    return Object.keys(row)
-                        .filter((key) => key !== "Age Group")
-                        .map((year) => ({
-                            "Age Group": row["Age Group"],
-                            "Year": +year,
-                            "Population": +row[year],
-                            "Flat Type": flatType
-                        }));
+                  const ageCat = ageGroupMap[row["Age Group"]];
+                  if (!ageCat) return [];
+              
+                  return Object.entries(row)
+                    .filter(([key]) => key !== "Age Group")
+                    .map(([year, value]) => ({
+                      Year: +year,
+                      "Age Group Category": ageCat,
+                      Population: +value,
+                      "Flat Type": flatType,
+                    }));
                 });
-            }
+              }
+              
+              
             
             flatAgeDist_1and2.value = reshapeAgeData(ageAndDwelling1And2, "1- & 2-Room Flats");
             flatAgeDist_3and4.value = reshapeAgeData(ageAndDwelling3And4, "3- & 4-Room Flats");
-            flatAgeDist_5exec.value = reshapeAgeData(ageAndDwelling5Exec, "5-Room & Executive Flats");            
-            totalHdbPop.value = hdbPopTotal;
+            flatAgeDist_5exec.value = reshapeAgeData(ageAndDwelling5Exec, "5-Room & Executive Flats");  
+
+            totalHdbPop.value = reshapeTotalPop(hdbPopTotal);
+
+            // totalHdbPop.value.forEach((d) => {
+            //     console.log(d)
+            // });
 
             const splitHdbResaleData = Array.from(
                 { length: 2023 - 1990 + 1 },
