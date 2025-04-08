@@ -329,7 +329,7 @@ const steps = [
     },
     {
         number: 3,
-        title: "Price per sqm by Planning Area",
+        title: "Planning Area",
         description: [
             'This boxplot shows <span class="font-semibold">price per sqm</span> of resale flats across planning areas in <span class="font-semibold">alphabetical order</span>. While this view gives an overview of all regions, price trends are less immediately visible.',
             'You can still observe key differences: areas like <span class="font-semibold">Downtown Core</span> and <span class="font-semibold">Outram</span> stand out with high median prices, while <span class="font-semibold">Lim Chu Kang</span> appears at the lower end.',
@@ -339,7 +339,7 @@ const steps = [
     },
     {
         number: 3,
-        title: "Price per sqm by Planning Area",
+        title: "Planning Area",
         description: [
             'This version sorts planning areas by <span class="font-semibold">median price</span>, revealing a clear price gradient across Singapore.',
             '<span class="font-semibold">Central locations</span> like <span class="font-semibold">Downtown Core</span> and <span class="font-semibold">Outram</span> command the highest prices due to proximity to the <span class="font-semibold">CBD</span>, <span class="font-semibold">MRT stations</span>, and key amenities.',
@@ -353,8 +353,8 @@ const steps = [
         title: "Amenities & Accessibility",
         description: [
             'This chart illustrates how proximity to primary schools—shaped by Singapore’s <span class="font-semibold">Home-School Distance (HSD) policy</span>—significantly influences <span class="font-semibold">HDB resale prices</span>. Under the HSD framework, children living <span class="font-semibold">within 1km</span> of a school are given priority during the <span class="font-semibold">Primary 1 admission exercise</span>, with those living <span class="font-semibold">within 2km</span> receiving second-tier priority.',
-            'As a result, homes closer to <span class="font-semibold">popular schools</span> are in higher demand, which translates into <span class="font-semibold">higher resale values</span>. The chart shows that since the <span class="font-semibold">2009 awareness spike</span> and further policy refinements in <span class="font-semibold">2014</span> and <span class="font-semibold">2021</span>, the <span class="font-semibold">price gap between tiers has widened</span>. This reflects growing competition among parents for <span class="font-semibold">limited school places</span>, making HSD a critical factor for <span class="font-semibold">young families</span> and a driver of <span class="font-semibold">long-term property value</span>.',
-            'In 2021, the introduction of the <span class="font-semibold">School Land Boundary (SLB)</span> as the basis for calculating HSD further refined the policy. Unlike the previous method, which used a single reference point, SLB measures the distance from any point on the school’s boundary to the registrant’s home. This change provides a <span class="font-semibold">more stable and consistent</span> basis for computing HSD, resulting in a <span class="font-semibold">slightly larger coverage</span> of residential addresses within 1km and 2km for all primary schools. Consequently, this adjustment has further increased the demand for homes near schools, amplifying the <span class="font-semibold">School Location Bonus (SLB)</span> effect and driving up resale prices in these areas.'
+            'As a result, homes closer to <span class="font-semibold">primary schools</span> are in higher demand, which translates into <span class="font-semibold">higher resale values</span>. The chart shows that since the <span class="font-semibold">2009 awareness spike</span> and further policy refinements in <span class="font-semibold">2014</span> and <span class="font-semibold">2021</span>, the <span class="font-semibold">price gap between tiers has widened</span>.',
+            'In 2021, the introduction of the <span class="font-semibold">School Land Boundary (SLB)</span> as the basis for calculating HSD further refined the policy. Unlike the previous method, which used a single reference point, SLB measures the distance from any point on the school’s boundary to the registrant’s home. This change provides a <span class="font-semibold">more stable and consistent</span> basis for computing HSD, resulting in a <span class="font-semibold">slightly larger coverage</span> of residential addresses within 1km and 2km for all primary schools.'
         ],
         years: [
             1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
