@@ -46,7 +46,7 @@
                         </div>
                     </transition>
 
-                    <div ref="factorContainerRef" class="relative w-full max-w-xs mx-auto min-h-[550px]">
+                    <div ref="factorContainerRef" class="relative w-full max-w-xs mx-auto min-h-[675px]">
                         <transition name="fade-fade">
                             <div v-if="currentStep.layout === 'ranked'"
                                 class="absolute -top-8 left-1/2 -translate-x-1/2 text-xs text-gray-500 text-center uppercase">

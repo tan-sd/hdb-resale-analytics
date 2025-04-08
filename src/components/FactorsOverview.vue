@@ -51,7 +51,7 @@
   const factors = [
     "Storey Levels",
     "Flat Types & Sizes",
-    "Price per sqm by Planning Area",
+    "Planning Area",
     "Amenities & Accessibility",
     "Electoral Boundaries",
     "Years Remaining on Lease",
