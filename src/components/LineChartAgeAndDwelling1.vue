@@ -164,8 +164,8 @@
 
   function remapFlatDataAgeGroups(data) {
   const ageGroupMap = {
-    "Children (0-14 Years)": "0-24 Years",
-    "Youth (15-24 Years)": "0-24 Years",
+    "Children (0-14 Years)": "Young (0-24 Years)",
+    "Youth (15-24 Years)": "Young (0-24 Years)",
     "Adults (25-59 Years)": "Adults (25-59 Years)",
     "Seniors (60+ Years)": "Seniors (60+ Years)",
   };

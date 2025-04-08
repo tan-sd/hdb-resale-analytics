@@ -119,11 +119,11 @@ export const useDataStore = defineStore("dataStore", () => {
 
     function reshapeTotalPop(raw) {
         const ageGroupMap = {
-          "0-4 Years": "0-24 Years",
-          "5-9 Years": "0-24 Years",
-          "10-14 Years": "0-24 Years",
-          "15-19 Years": "0-24 Years",
-          "20-24 Years": "0-24 Years",
+          "0-4 Years": "Young (0-24 Years)",
+          "5-9 Years": "Young (0-24 Years)",
+          "10-14 Years": "Young (0-24 Years)",
+          "15-19 Years": "Young (0-24 Years)",
+          "20-24 Years": "Young (0-24 Years)",
           "25-29 Years": "Adults (25-59 Years)",
           "30-34 Years": "Adults (25-59 Years)",
           "35-39 Years": "Adults (25-59 Years)",
@@ -254,11 +254,11 @@ export const useDataStore = defineStore("dataStore", () => {
 
             function reshapeAgeData(raw, flatType) {
                 const ageGroupMap = {
-                  "0-4 Years": "0-24 Years",
-                  "5-9 Years": "0-24 Years",
-                  "10-14 Years": "0-24 Years",
-                  "15-19 Years": "0-24 Years",
-                  "20-24 Years": "0-24 Years",
+                  "0-4 Years": "Young (0-24 Years)",
+                  "5-9 Years": "Young (0-24 Years)",
+                  "10-14 Years": "Young (0-24 Years)",
+                  "15-19 Years": "Young (0-24 Years)",
+                  "20-24 Years": "Young (0-24 Years)",
                   "25-29 Years": "Adults (25-59 Years)",
                   "30-34 Years": "Adults (25-59 Years)",
                   "35-39 Years": "Adults (25-59 Years)",
