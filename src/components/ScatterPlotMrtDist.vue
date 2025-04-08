@@ -171,7 +171,7 @@ export default defineComponent({
 
             canvas.value.width = totalWidth * dpr;
             canvas.value.height = totalHeight * dpr;
-            console.log("Canvas pixel size:", canvas.value.width, canvas.value.height);
+            // console.log("Canvas pixel size:", canvas.value.width, canvas.value.height);
             canvas.value.style.width = `${totalWidth}px`;
             canvas.value.style.height = `${totalHeight}px`;
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

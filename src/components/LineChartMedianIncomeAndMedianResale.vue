@@ -74,7 +74,7 @@ export default {
 
         const store = useDataStore();
 
-        console.log(store.medianMonthlyIncome);
+        // console.log(store.medianMonthlyIncome);
 
         watch(
             () => [store.yearMedians, store.affordabilityIndex],

@@ -420,7 +420,7 @@ const handleFallbackYear = (data) => {
 };
 
 function handleFlatTypeChange(newFlatType) {
-    console.log("Flat type changed to:", newFlatType);
+    // console.log("Flat type changed to:", newFlatType);
     selectedFlatType.value = newFlatType;
 }
 

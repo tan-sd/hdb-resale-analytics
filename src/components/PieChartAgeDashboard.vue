@@ -53,7 +53,7 @@ async function loadData() {
             "data/population_demographics/age_group_population_by_year.csv",
             d3.autoType
         );
-        console.log("Data loaded:", rawData.value);
+        // console.log("Data loaded:", rawData.value);
     } catch (error) {
         console.error("Error loading data:", error);
     }

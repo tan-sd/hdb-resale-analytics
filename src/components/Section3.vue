@@ -185,9 +185,27 @@
                         <div
                             class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
                         >
-                            <LineChartAgeAndDwelling
-                                ref="LineChartAgeAndDwellingRef"
+                            <LineChartAgeAndDwelling1
+                                ref="LineChartAgeAndDwelling1Ref"
                                 v-show="currentStepIndex === 12"
+                                class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                            />
+                        </div>
+                        <div
+                            class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
+                        >
+                            <LineChartAgeAndDwelling2
+                                ref="LineChartAgeAndDwelling2Ref"
+                                v-show="currentStepIndex === 13"
+                                class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
+                            />
+                        </div>
+                        <div
+                            class="w-full flex justify-center h-[50vh] lg:h-screen mt-6 lg:mt-0"
+                        >
+                            <LineChartAgeAndDwelling3
+                                ref="LineChartAgeAndDwelling3Ref"
+                                v-show="currentStepIndex === 14"
                                 class="absolute inset-0 transition-opacity duration-500 ease-in-out opacity-0"
                             />
                         </div>
@@ -220,7 +238,9 @@ import BoxPlotPricePerSqm from "./BoxPlotPricePerSqm.vue";
 import LineChartHSD from "./LineChartHSD.vue";
 import BoxPlotElectoralBoundaries from "./BoxPlotElectoralBoundaries.vue";
 import LineChartLeaseRemaining from "./LineChartLeaseRemaining.vue";
-import LineChartAgeAndDwelling from "./LineChartAgeAndDwelling.vue";
+import LineChartAgeAndDwelling1 from "./LineChartAgeAndDwelling1.vue";
+import LineChartAgeAndDwelling2 from "./LineChartAgeAndDwelling2.vue";
+import LineChartAgeAndDwelling3 from "./LineChartAgeAndDwelling3.vue";
 import ScatterPlotMrtDist from "./ScatterPlotMrtDist.vue";
 import {
     ref,
@@ -246,7 +266,9 @@ const lineChartHSDRef = ref(null);
 const scatterPlotMrtDistRef = ref(null);
 const boxPlotElectoralBoundariesChartRef = ref(null);
 const LineChartLeaseRemainingRef = ref(null);
-const LineChartAgeAndDwellingRef = ref(null);
+const LineChartAgeAndDwelling1Ref = ref(null);
+const LineChartAgeAndDwelling2Ref = ref(null);
+const LineChartAgeAndDwelling3Ref = ref(null);
 const isAfterSteps = ref(false);
 const isBeforeSteps = ref(true);
 const descScrollRef = ref(null);
@@ -407,6 +429,34 @@ const steps = [
             2022, 2023, 2024,
         ],
     },
+    {
+        number: 7,
+        title: "Demographics (Age)",
+        description: [
+            "This chart highlights the population distribution of HDB 1- and 2-room flats across different age groups from 2000 to 2024. The data reveals a significant increase in the population of <span class='font-semibold'>Seniors (60+ Years)</span>, reflecting Singapore's aging population and the growing demand for smaller, more manageable flats among elderly residents.",
+            "In contrast, the <span class='font-semibold'>Children (0–14 Years)</span> and <span class='font-semibold'>Youth (15–24 Years)</span> groups show relatively stable trends, indicating a shift towards smaller family sizes and declining birth rates. Meanwhile, the <span class='font-semibold'>Adults (25–59 Years)</span> group remains the largest, with a steady increase in population, likely driven by working-age individuals and families seeking affordable housing options.",
+            "These demographic shifts may influence <span class='font-semibold'>resale prices</span> and <span class='font-semibold'>buyer preferences</span>. The rising senior population could sustain demand for smaller flats, while younger families may prioritize flats in areas with <span class='font-semibold'>proximity to schools</span> and <span class='font-semibold'>amenities</span>. Understanding these trends is crucial for predicting future market dynamics and planning housing policies.",
+        ],
+        years: [
+            2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+            2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021,
+            2022, 2023, 2024,
+        ],
+    },
+    {
+        number: 7,
+        title: "Demographics (Age)",
+        description: [
+            "This chart highlights the population distribution of HDB 1- and 2-room flats across different age groups from 2000 to 2024. The data reveals a significant increase in the population of <span class='font-semibold'>Seniors (60+ Years)</span>, reflecting Singapore's aging population and the growing demand for smaller, more manageable flats among elderly residents.",
+            "In contrast, the <span class='font-semibold'>Children (0–14 Years)</span> and <span class='font-semibold'>Youth (15–24 Years)</span> groups show relatively stable trends, indicating a shift towards smaller family sizes and declining birth rates. Meanwhile, the <span class='font-semibold'>Adults (25–59 Years)</span> group remains the largest, with a steady increase in population, likely driven by working-age individuals and families seeking affordable housing options.",
+            "These demographic shifts may influence <span class='font-semibold'>resale prices</span> and <span class='font-semibold'>buyer preferences</span>. The rising senior population could sustain demand for smaller flats, while younger families may prioritize flats in areas with <span class='font-semibold'>proximity to schools</span> and <span class='font-semibold'>amenities</span>. Understanding these trends is crucial for predicting future market dynamics and planning housing policies.",
+        ],
+        years: [
+            2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010,
+            2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021,
+            2022, 2023, 2024,
+        ],
+    },
 ];
 
 const currentStep = computed(() => steps[currentStepIndex.value]);
@@ -495,7 +545,9 @@ watch(currentStepIndex, (newIndex) => {
     const showMrtDist = newIndex === 7 || newIndex === 8 || newIndex === 9;
     const showBoxPlotElectoral = newIndex === 10;
     const showLease = newIndex === 11;
-    const showAgeAndDwelling = newIndex === 12;
+    const showAgeAndDwelling1 = newIndex === 12;
+    const showAgeAndDwelling2 = newIndex === 13;
+    const showAgeAndDwelling3 = newIndex === 14;
 
     gsap.to(storeyScatterChartRef.value?.$el, {
         opacity: showScatter ? 1 : 0,
@@ -600,7 +652,7 @@ watch(currentStepIndex, (newIndex) => {
         duration: 0.3,
         ease: "power2.out",
         onStart: () => {
-            console.log("Current Step Index:", currentStepIndex.value);
+            // console.log("Current Step Index:", currentStepIndex.value);
             // console.log("opacity:", showMrtDist);
             if (
                 showMrtDist &&
@@ -648,17 +700,47 @@ watch(currentStepIndex, (newIndex) => {
         },
     });
 
-    gsap.to(LineChartAgeAndDwellingRef.value?.$el, {
-        opacity: showAgeAndDwelling ? 1 : 0,
+    gsap.to(LineChartAgeAndDwelling1Ref.value?.$el, {
+        opacity: showAgeAndDwelling1 ? 1 : 0,
         duration: 0.3,
         ease: "power2.out",
         onStart: () => {
             if (
-                showAgeAndDwelling &&
-                typeof LineChartAgeAndDwellingRef.value?.resizeAndRedraw ===
+                showAgeAndDwelling1 &&
+                typeof LineChartAgeAndDwelling1Ref.value?.resizeAndRedraw ===
                     "function"
             ) {
-                LineChartAgeAndDwellingRef.value.resizeAndRedraw();
+                LineChartAgeAndDwelling1Ref.value.resizeAndRedraw();
+            }
+        },
+    });
+
+    gsap.to(LineChartAgeAndDwelling2Ref.value?.$el, {
+        opacity: showAgeAndDwelling2 ? 1 : 0,
+        duration: 0.3,
+        ease: "power2.out",
+        onStart: () => {
+            if (
+                showAgeAndDwelling2 &&
+                typeof LineChartAgeAndDwelling2Ref.value?.resizeAndRedraw ===
+                    "function"
+            ) {
+                LineChartAgeAndDwelling2Ref.value.resizeAndRedraw();
+            }
+        },
+    });
+
+    gsap.to(LineChartAgeAndDwelling3Ref.value?.$el, {
+        opacity: showAgeAndDwelling3 ? 1 : 0,
+        duration: 0.3,
+        ease: "power2.out",
+        onStart: () => {
+            if (
+                showAgeAndDwelling3 &&
+                typeof LineChartAgeAndDwelling3Ref.value?.resizeAndRedraw ===
+                    "function"
+            ) {
+                LineChartAgeAndDwelling3Ref.value.resizeAndRedraw();
             }
         },
     });

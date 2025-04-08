@@ -916,7 +916,7 @@ function drawHistogram(areaName) {
 const redrawMap = (forceReset = false) => {
     if (!map.value || width.value <= 0 || height.value <= 0) return;
 
-    console.log("Redrawing map with dimensions:", width.value, height.value);
+    // console.log("Redrawing map with dimensions:", width.value, height.value);
 
     const svg = d3.select(map.value);
     const currentTransform = svg.property("__zoom") || d3.zoomIdentity;
@@ -2082,7 +2082,7 @@ watch(
 );
 
 watch([selectedYear], async () => {
-    console.log(`Updating map for year: ${selectedYear.value}`);
+    // console.log(`Updating map for year: ${selectedYear.value}`);
 
     currentYear.value = selectedYear.value;
 
@@ -2118,7 +2118,7 @@ watch([selectedYear], async () => {
 });
 
 watch(selectedFlatType, (newVal) => {
-    console.log("MapChart emitting:", newVal);
+    // console.log("MapChart emitting:", newVal);
 
     emit("selectedFlatType", newVal);
 
@@ -2162,7 +2162,7 @@ watch(selectedFlatType, (newVal) => {
 });
 
 watch(selectedYear, async () => {
-    console.log(`Updating map for year: ${selectedYear.value}`);
+    // console.log(`Updating map for year: ${selectedYear.value}`);
 
     currentYear.value = selectedYear.value;
 

@@ -254,7 +254,6 @@ const steps = [
         title: "1997–2006: Market Cooling through Supply and Usage Restrictions",
         description: [
             'After the rapid surge in the mid-90s, the government moved to cool the market and safeguard long-term affordability. In 1997, <span class="font-semibold">CPF usage was restricted</span> for the purchase of <span class="font-semibold">older flats</span>, reducing financing options for aging resale units. The <span class="font-semibold">Minimum Occupation Period (MOP)</span> was also more <span class="font-semibold">strictly enforced</span>, requiring flat owners to live in their homes for at least <span class="font-semibold">five years</span> before they could sell — a move aimed at curbing speculative activity.',
-            'In the early 2000s, HDB also <span class="font-semibold">scaled back</span> the launch of new BTO flats in response to oversupply concerns. These combined measures — tighter financing rules, stricter eligibility, and reduced supply — contributed to a prolonged period of declining prices and a relatively stagnant resale market.',
         ],
         years: [1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006],
     },
