@@ -1,29 +1,35 @@
-# hdb-resale-analytics
+# Behind the Price Tag
 
-This template should help get you started developing with Vue 3 in Vite.
+### Team Members
 
-## Recommended IDE Setup
+| Members               | 
+| --------------------- | 
+| Bryan Low Chee Theng  |
+| Seow Wei Xuan         |
+| Tan Shan Mei |
+| Tan Sheng Da   |
+| Teoh Jin Sheng    |
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Deployment
+View the deployed system on Vercel <a href="https://behindthepricetag-is428.vercel.app/">`here`</a>
 
-## Customize configuration
+<br/>
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Installation
 
-## Project Setup
+### Clone
+Clone the github repository to your local machine by typing in the terminal `git clone https://github.com/tan-sd/hdb-resale-analytics.git`
 
-```sh
+### Project setup
+```
+cd hdb-resale-analytics
+
 npm install
 ```
 
-### Compile and Hot-Reload for Development
-
-```sh
+### Running Development Server
+```
 npm run dev
 ```
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+<br>
